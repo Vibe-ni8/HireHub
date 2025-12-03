@@ -1,4 +1,6 @@
-﻿using HireHub.Core.Utils.Common;
+﻿using HireHub.Core.Data.Interface;
+using HireHub.Core.Utils.Common;
+using HireHub.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,8 @@ public static class ServiceCollectionExtensions
         var connectionString = configuration.GetConnectionString(AppSettingKey.DefaultConnection)
            ?? throw new InvalidOperationException(ExceptionMessage.ConnectionStringNotConfigured);
         services.AddDbContext<HireHubDbContext>(options => options.UseSqlServer(connectionString));
+
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

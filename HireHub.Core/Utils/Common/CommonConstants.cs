@@ -4,8 +4,9 @@ public static class LogMessage
 {
     public const string StartMethod = "Start - {Method}";
     public const string EndMethod = "End - {Method}";
-    //public const string UserNotFoundOnLogin = "Login failed: user not found: {Username}";
-    //public const string InvalidPassword = "Login failed: invalid password for {EmpId}";
+    public const string EndMethodException = "End - {Method} - {Exception}";
+    public const string UserNotFoundOnLogin = "Login failed: user not found: {Username}";
+    public const string InvalidPassword = "Login failed: invalid password for {EmpId}";
     //public const string UserNotFoundOnReset = "Reset failed: user not found: {Email}";
     //public const string ResetTokenNotGeneratedOrInvalid = "Reset failed: Reset token not generated or invalid";
     //public const string ResetTokenExpired = "Reset failed: Reset token expired";
@@ -45,6 +46,12 @@ public static class FieldName
     //public const string Username = "Username";
     //public const string Email = "Email";
     //public const string Role = "Role";
+}
+
+public static class PropertyName
+{
+    public const string Exception = "Exception";
+    public const string Main = "Main";
 }
 
 public static class AppSettingKey

@@ -24,12 +24,14 @@ public class HireHubDbContext : DbContext
 
             b.Property(e => e.EmailId).HasColumnName("email_id")
             .HasColumnType("Varchar(max)").IsRequired();
+            b.HasIndex(e => e.EmailId).IsUnique();
 
             b.Property(e => e.Role).HasColumnName("role")
             .HasColumnType("Varchar(max)").IsRequired();
 
             b.Property(e => e.PhoneNumber).HasColumnName("phone_number")
             .HasColumnType("Varchar(max)").IsRequired();
+            b.HasIndex(e => e.PhoneNumber).IsUnique();
 
             b.Property(e => e.IsActive).HasColumnName("is_active")
             .HasColumnType("Varchar(max)").IsRequired();
