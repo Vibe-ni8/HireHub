@@ -22,6 +22,10 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<HireHubDbContext>(options => options.UseSqlServer(connectionString));
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ISlotRepository, SlotRepository>();
+        services.AddScoped<IUserSlotRepository, UserSlotRepository>();
+        services.AddScoped<ICandidateRepository, CandidateRepository>();
+        services.AddScoped<ICandidateMapRepository, CandidateMapRepository>();
 
         return services;
     }

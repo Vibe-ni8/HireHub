@@ -42,11 +42,11 @@ public class TokenService
 
         if (!VerifyPassword(user, user.PasswordHash, request.Password))
         {
-            _logger.LogWarning(LogMessage.InvalidPassword, user.UserId);
+            _logger.LogWarning(LogMessage.InvalidPassword, user.Id);
             return new() { Errors = [new { PropertyName = PropertyName.Main, ErrorMessage = CommonRS.Auth_InvalidCredentials_Format(request.Username) }] };
         }
 
-        var token = _jwtTokenService.GenerateToken(user.UserId.ToString(), user.Role);
+        var token = _jwtTokenService.GenerateToken(user.Id.ToString(), user.Role);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GenerateToken));
 
