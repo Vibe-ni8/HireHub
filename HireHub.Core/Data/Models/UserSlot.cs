@@ -13,7 +13,7 @@ public class UserSlot : BaseEntity
     public virtual User User { get; set; } = null!;
     public int SlotId { get; set; }
     public virtual Slot Slot { get; set; } = null!;
-    public virtual ICollection<CandidateMap> CandidateMaps { get; set; } = null!;
+    public virtual ICollection<CandidateMap> CandidateMaps { get; set; } = [];
 }
 
 

@@ -15,7 +15,7 @@ public class User : BaseEntity
     public string PhoneNumber { get; set; } = null!;
     public bool IsActive { get; set; }
     public string? PasswordHash { get; set; }
-    public virtual ICollection<UserSlot> UserSlots { get; set; } = null!;
+    public virtual ICollection<UserSlot> UserSlots { get; set; } = [];
 
 }
 

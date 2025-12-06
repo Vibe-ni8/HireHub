@@ -10,7 +10,7 @@ public class Candidate : BaseEntity
 
     public int Id { get; set; }
     public string Name { get; set; } = null!;
-    public virtual ICollection<CandidateMap> CandidateMaps { get; set; } = null!;
+    public virtual ICollection<CandidateMap> CandidateMaps { get; set; } = [];
 
 }
 

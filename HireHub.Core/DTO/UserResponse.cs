@@ -36,12 +36,12 @@ public class UserSlotDetailsDTO
 {
     public int Id { get; set; }
     public SlotDetailsDTO Slot { get; set; } = null!;
-    public List<CandidateDetailsDTO> Candidates { get; set; } = new List<CandidateDetailsDTO>();
+    public List<CandidateDetailsDTO> Candidates { get; set; } = [];
 
 }
 
 public class UserCompleteDetailsDTO
 {
     public UserDetailsDTO User { get; set; } = null!;
-    public List<UserSlotDetailsDTO> UserSlots { get; set; } = new List<UserSlotDetailsDTO>();
+    public List<UserSlotDetailsDTO> UserSlots { get; set; } = [];
 }

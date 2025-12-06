@@ -12,7 +12,7 @@ public class Slot : BaseEntity
     public DateOnly SlotDate { get; set; }
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
-    public virtual ICollection<UserSlot> UserSlots { get; set; } = null!;
+    public virtual ICollection<UserSlot> UserSlots { get; set; } = [];
 
 }
 
