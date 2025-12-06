@@ -1,0 +1,60 @@
+CREATE TABLE [user] (
+    user_id INT IDENTITY(1,1) PRIMARY KEY,
+    user_name VARCHAR(100) NOT NULL,
+    email_id VARCHAR(250) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    phone_number VARCHAR(32) NOT NULL,
+    is_active BIT NOT NULL,
+    password_hash VARCHAR(max) NULL
+);
+
+CREATE TABLE slot (
+    slot_id INT IDENTITY(1,1) PRIMARY KEY,
+    slot_date DATE NOT NULL,
+    start_time VARCHAR(20) NOT NULL,
+    end_time VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE user_slot (
+    user_slot_id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NOT NULL,
+    slot_id INT NOT NULL,
+
+    CONSTRAINT UQ_UserSlot_UserId_SlotId UNIQUE (user_id, slot_id),
+
+    CONSTRAINT FK_UserSlot_User FOREIGN KEY (user_id)
+        REFERENCES [user] (user_id)
+	ON UPDATE CASCADE
+	ON DELETE CASCADE,
+
+    CONSTRAINT FK_UserSlot_Slot FOREIGN KEY (slot_id)
+        REFERENCES slot (slot_id)
+	ON UPDATE CASCADE
+	ON DELETE CASCADE
+);
+
+
+CREATE TABLE candidate (
+    candidate_id INT IDENTITY(1,1) PRIMARY KEY,
+    candidate_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE candidate_map (
+    candidate_id INT NOT NULL,
+    user_slot_id INT NOT NULL,
+    scheduled_time VARCHAR(20) NOT NULL,
+
+    CONSTRAINT PK_CandidateMap PRIMARY KEY (candidate_id, user_slot_id),
+
+    CONSTRAINT FK_CandidateMap_Candidate FOREIGN KEY (candidate_id)
+        REFERENCES candidate (candidate_id)
+	ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_CandidateMap_UserSlot FOREIGN KEY (user_slot_id)
+        REFERENCES user_slot (user_slot_id)
+	ON UPDATE CASCADE
+	ON DELETE CASCADE
+);
+
+
