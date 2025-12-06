@@ -36,7 +36,7 @@ public class UserSlotDetailsDTO
 {
     public int Id { get; set; }
     public SlotDetailsDTO Slot { get; set; } = null!;
-    public List<CandidateDetailsDTO> Candidates = new List<CandidateDetailsDTO>();
+    public List<CandidateDetailsDTO> Candidates { get; set; } = new List<CandidateDetailsDTO>();
 
 }
 

@@ -42,7 +42,7 @@ public class UserProvider : IUserProvider
 
         var userId = _http.HttpContext?.Items[Key.UserId]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserIdNotSetOnMiddleware);
 
-        var user = await _userRepository.GetByIdAsync(userId);
+        var user = await _userRepository.GetByIdAsync(int.Parse(userId));
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUser));
 

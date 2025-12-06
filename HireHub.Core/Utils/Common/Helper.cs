@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json.Linq;
 
 namespace HireHub.Core.Utils.Common;
 
@@ -15,24 +16,30 @@ public static class Helper
         Type fromType = typeof(F);
         Type toType = typeof(T);
 
+        return Map(fromData, fromType, toData, toType);
+    }
+
+    private static T Map<F, T>(F fromData, Type fromType, T toData, Type toType) where F : class where T : class
+    {
         foreach (var fromProperty in fromType.GetProperties())
         {
             var toProperty = toType.GetProperty(fromProperty.Name);
             if (toProperty == null) continue;
             if (!toProperty.CanWrite) continue;
 
-            if ( fromProperty.PropertyType.IsValueType && (fromProperty.PropertyType == toProperty.PropertyType) )
-                toProperty.SetValue(toData, fromProperty.GetValue(fromData));
+            object? value = fromProperty.GetValue(fromData);
 
-            if (fromProperty.PropertyType.IsClass)
+            if (fromProperty.PropertyType.IsClass && fromProperty.PropertyType != typeof(string))
             {
                 var fromPropertyData = fromProperty.GetValue(fromData);
                 var toPropertyData = toProperty.GetValue(toData) ?? Activator.CreateInstance(toProperty.PropertyType);
 
-                var value = (toPropertyData != null && fromPropertyData != null) ? Map(fromPropertyData, toPropertyData) : null;
-
-                toProperty.SetValue(toData, value);
+                value = (toPropertyData != null && fromPropertyData != null) ? 
+                    Map(fromPropertyData, fromProperty.PropertyType, toPropertyData, toProperty.PropertyType) : 
+                    null;
             }
+
+            toProperty.SetValue(toData, value);
         }
 
         return toData;
@@ -40,7 +47,7 @@ public static class Helper
 
     public static readonly ValueConverter<TimeOnly, string> TimeConverter = new
     (
-        v => v.ToString("hh:mm tt", CultureInfo.InvariantCulture), // TimeOnly → string
-        v => TimeOnly.ParseExact(v, "hh:mm tt") // string → TimeOnly
+        v => v.ToString("HH:mm", CultureInfo.InvariantCulture), // TimeOnly → string
+        v => TimeOnly.ParseExact(v, new string[] { "HH:mm", "hh:mm tt" }) // string → TimeOnly
     );
 }
