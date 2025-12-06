@@ -27,7 +27,7 @@ public class UserProvider : IUserProvider
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUserId));
 
-        var userId = _http.HttpContext?.Items[Keys.UserId]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserIdNotSetOnMiddleware);
+        var userId = _http.HttpContext?.Items[Key.UserId]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserIdNotSetOnMiddleware);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserId));
 
@@ -40,7 +40,7 @@ public class UserProvider : IUserProvider
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUser));
 
-        var userId = _http.HttpContext?.Items[Keys.UserId]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserIdNotSetOnMiddleware);
+        var userId = _http.HttpContext?.Items[Key.UserId]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserIdNotSetOnMiddleware);
 
         var user = await _userRepository.GetByIdAsync(userId);
 
@@ -55,7 +55,7 @@ public class UserProvider : IUserProvider
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUserRole));
 
-        var role = _http.HttpContext?.Items[Keys.Role]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserRoleNotSetOnMiddleware);
+        var role = _http.HttpContext?.Items[Key.Role]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserRoleNotSetOnMiddleware);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserRole));
 

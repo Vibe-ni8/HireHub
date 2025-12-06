@@ -71,10 +71,13 @@ public class UserService
         userSlots.ForEach( userSlot =>
         {
             var userSlotDetail = Helper.Map<UserSlot, UserSlotDetailsDTO>(userSlot);
-            var candidates = _userRepository.GetCandidatesAssignedForUserOnSlot(userSlot.Id);
-            candidates.ForEach(candidate => 
-                userSlotDetail.Candidates.Add(Helper.Map<Candidate, CandidateDetailsDTO>(candidate))
-            );
+            var candidateMaps = _userRepository.GetCandidatesAssignedForUserOnSlot(userSlot.Id);
+            candidateMaps.ForEach(candidateMap =>
+            {
+                var candidateDetails = Helper.Map<Candidate, CandidateDetailsDTO>(candidateMap.Candidate);
+                candidateDetails.ScheduledTime = candidateMap.ScheduledTime;
+                userSlotDetail.Candidates.Add(candidateDetails);
+            });
             userSlotDetails.Add(userSlotDetail);
         });
     }

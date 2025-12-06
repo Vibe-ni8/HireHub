@@ -1,5 +1,4 @@
-﻿using HireHub.Core.Data.Models;
-using HireHub.Shared.Common.Models;
+﻿using HireHub.Shared.Common.Models;
 
 namespace HireHub.Core.DTO;
 
@@ -22,14 +21,15 @@ public class UserDetailsDTO
 public class SlotDetailsDTO
 {
     public DateOnly SlotDate { get; set; }
-    public string StartTime { get; set; } = null!;
-    public string EndTime { get; set; } = null!;
+    public TimeOnly StartTime { get; set; }
+    public TimeOnly EndTime { get; set; }
 }
 
 public class CandidateDetailsDTO
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
+    public TimeOnly ScheduledTime { get; set; }
 }
 
 public class UserSlotDetailsDTO
@@ -42,6 +42,6 @@ public class UserSlotDetailsDTO
 
 public class UserCompleteDetailsDTO
 {
-    public UserDetailsDTO? User { get; set; } = null!;
+    public UserDetailsDTO User { get; set; } = null!;
     public List<UserSlotDetailsDTO> UserSlots { get; set; } = new List<UserSlotDetailsDTO>();
 }

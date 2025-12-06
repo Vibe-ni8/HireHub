@@ -1,4 +1,7 @@
-﻿namespace HireHub.Core.Utils.Common;
+﻿using System.Globalization;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+namespace HireHub.Core.Utils.Common;
 
 public static class Helper
 {
@@ -34,4 +37,10 @@ public static class Helper
 
         return toData;
     }
+
+    public static readonly ValueConverter<TimeOnly, string> TimeConverter = new
+    (
+        v => v.ToString("hh:mm tt", CultureInfo.InvariantCulture), // TimeOnly → string
+        v => TimeOnly.ParseExact(v, "hh:mm tt") // string → TimeOnly
+    );
 }

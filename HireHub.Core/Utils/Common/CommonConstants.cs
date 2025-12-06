@@ -69,8 +69,16 @@ public static class EmailAddress
     //public const string NoReplyDarkwolf = "noreply@darkwolf.com";
 }
 
-public static class Keys
+public static class Key
 {
     public const string UserId = "UserId";
     public const string Role = "Role";
+}
+
+public static class Role
+{
+    public const string Mentor = "MENTOR";
+    public const string Hr = "HR";
+    public const string Panel = "PANEL";
+    public const string Admin = "ADMIN";
 }

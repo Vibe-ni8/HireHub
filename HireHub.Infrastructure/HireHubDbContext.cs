@@ -1,4 +1,5 @@
 ﻿using HireHub.Core.Data.Models;
+using HireHub.Core.Utils.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace HireHub.Infrastructure;
@@ -62,11 +63,13 @@ public class HireHubDbContext : DbContext
             b.Property(e => e.StartTime)
                 .HasColumnName("start_time")
                 .HasColumnType("varchar(20)")
+                .HasConversion(Helper.TimeConverter)
                 .IsRequired();
 
             b.Property(e => e.EndTime)
                 .HasColumnName("end_time")
                 .HasColumnType("varchar(20)")
+                .HasConversion(Helper.TimeConverter)
                 .IsRequired();
         });
 
@@ -139,7 +142,11 @@ public class HireHubDbContext : DbContext
                 .HasColumnType("int")
                 .IsRequired();
 
-            b.HasIndex(e => e.CandidateId).IsUnique();
+            b.Property(e => e.ScheduledTime)
+                .HasColumnName("scheduled_time")
+                .HasColumnType("varchar(20)")
+                .HasConversion(Helper.TimeConverter)
+                .IsRequired();
 
             // Relationship: CandidateMap → Candidate
             b.HasOne(cm => cm.Candidate)

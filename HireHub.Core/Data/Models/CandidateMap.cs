@@ -12,6 +12,7 @@ public class CandidateMap : BaseEntity
     public virtual Candidate Candidate { get; set; } = null!;
     public int UserSlotId { get; set; }
     public virtual UserSlot UserSlot { get; set; } = null!;
+    public TimeOnly ScheduledTime { get; }
 
 }
 

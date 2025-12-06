@@ -10,8 +10,8 @@ public class Slot : BaseEntity
 
     public int Id { get; set; }
     public DateOnly SlotDate { get; set; }
-    public string StartTime { get; set; } = null!;
-    public string EndTime { get; set; } = null!;
+    public TimeOnly StartTime { get; set; }
+    public TimeOnly EndTime { get; set; }
     public virtual ICollection<UserSlot> UserSlots { get; set; } = null!;
 
 }

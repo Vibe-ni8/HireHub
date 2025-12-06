@@ -1,7 +1,6 @@
 ﻿using HireHub.Core.DTO;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
-using HireHub.Core.Utils.UserProgram;
 using HireHub.Shared.Authentication.Filters;
 using HireHub.Shared.Common.Exceptions;
 using HireHub.Shared.Common.Models;
@@ -47,6 +46,7 @@ public class UserController : ControllerBase
         }
     }
 
+    [RequireAuth([Role.Mentor])]
     [HttpGet("current/info/all")]
     [ProducesResponseType<UserResponse<UserCompleteDetailsDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]

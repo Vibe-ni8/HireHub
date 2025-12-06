@@ -6,6 +6,6 @@ namespace HireHub.Core.Data.Interface;
 public interface IUserRepository : IGenericRepository<User>
 {
     Task<User?> GetByEmailAsync(string emailId);
-    List<Candidate> GetCandidatesAssignedForUserOnSlot(int userSlotId);
+    List<CandidateMap> GetCandidatesAssignedForUserOnSlot(int userSlotId);
     Task<List<UserSlot>> GetUserSlotsWithSlotDetailsForUser(int userId);
 }
