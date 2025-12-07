@@ -2,7 +2,6 @@
 using HireHub.Core.DTO.Base;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
-using HireHub.Core.Utils.UserProgram;
 using HireHub.Core.Utils.UserProgram.Interface;
 using HireHub.Core.Validators;
 using HireHub.Shared.Authentication.Filters;
@@ -100,7 +99,8 @@ public class UserController : ControllerBase
         {
             var baseResponse = new BaseResponse();
 
-            var validator = await new SetAvailabilityRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
+            var validator = await new 
+                SetAvailabilityRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
                 .ValidateAsync(request);
 
             if (!validator.IsValid)
