@@ -43,4 +43,31 @@ public class UserRepository : GenericRepository<User>, IUserRepository
              )
             .ToListAsync();
     }
+
+    public async Task<bool> IsUserRegisterForTheSlot(int userId, int slotId)
+    {
+        return await _context.Users
+            .Where(u => u.Id == userId)
+            .Join(_context.UserSlots, u => u.Id, us => us.UserId, (u, us) => us)
+            .AnyAsync(us => us.SlotId == slotId);
+    }
+
+    public async Task<bool> IsUserRegisterAnyOfTheSlots(int userId, List<int> slotIds)
+    {
+        return await _context.Users
+            .Where(u => u.Id == userId)
+            .Join(_context.UserSlots, u => u.Id, us => us.UserId, (u, us) => us)
+            .AnyAsync(us => slotIds.Contains(us.SlotId));
+    }
+
+    public async Task<List<int>> RegisterUserToSlots(int userId, List<int> slotIds)
+    {
+        var user = await _context.Users.FirstAsync(u => u.Id == userId);
+        slotIds.ForEach( slotId => 
+            user.UserSlots.Add(new() { UserId = userId, SlotId = slotId })
+        );
+        _context.Update(user);
+        _context.SaveChanges();
+        return user.UserSlots.Select(us => us.Id).ToList();
+    }
 }

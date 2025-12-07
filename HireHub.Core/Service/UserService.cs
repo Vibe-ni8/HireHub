@@ -3,7 +3,6 @@ using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.DTO.Base;
 using HireHub.Core.Utils.Common;
-using HireHub.Core.Utils.UserProgram.Interface;
 using Microsoft.Extensions.Logging;
 
 namespace HireHub.Core.Service;
@@ -11,24 +10,21 @@ namespace HireHub.Core.Service;
 public class UserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IUserProvider _userProvider;
     private readonly ILogger<UserService> _logger;
 
-    public UserService(IUserRepository userRepository,
-        IUserProvider userProvider, ILogger<UserService> logger)
+    public UserService(IUserRepository userRepository, ILogger<UserService> logger)
     {
         _userRepository = userRepository;
-        _userProvider = userProvider;
         _logger = logger;
     }
 
-    public async Task<UserResponse<UserDetailsDTO>> GetCurrentUserDetails()
+    public async Task<UserResponse<UserDetailsDTO>> GetUserDetails(int userId)
     {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUserDetails));
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetUserDetails));
 
         var response = new UserResponse<UserDetailsDTO>();
 
-        var user = await _userProvider.CurrentUser;
+        var user = await _userRepository.GetByIdAsync(userId);
 
         if (user == null)
         {
@@ -40,19 +36,19 @@ public class UserService
 
         response.Data = (user != null) ? Helper.Map<User, UserDetailsDTO>(user) : null;
 
-        _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserDetails));
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetUserDetails));
 
         return response;
     }
 
-    public async Task<UserResponse<UserCompleteDetailsDTO>> GetCurrentUserCompleteDetails()
+    public async Task<UserResponse<UserCompleteDetailsDTO>> GetUserCompleteDetails(int userId)
     {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUserCompleteDetails));
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetUserCompleteDetails));
 
         var response = new UserResponse<UserCompleteDetailsDTO>();
         response.Data = new UserCompleteDetailsDTO();
 
-        var user = await _userProvider.CurrentUser;
+        var user = await _userRepository.GetByIdAsync(userId);
 
         if (user != null)
         {
@@ -67,7 +63,7 @@ public class UserService
             });
         }
 
-        _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserCompleteDetails));
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetUserCompleteDetails));
 
         return response;
     }
@@ -87,5 +83,26 @@ public class UserService
             });
             userSlotDetails.Add(userSlotDetail);
         });
+    }
+
+    public async Task<UserResponse<List<string>>> SetAvailability(int userId, List<int> slotIds)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(SetAvailability));
+
+        var response = new UserResponse<List<string>>();
+
+        var finalSlotIds = new List<int>();
+        slotIds.ForEach( async slotId => { 
+            if (!await _userRepository.IsUserRegisterForTheSlot(userId, slotId))
+                finalSlotIds.Add(slotId);
+        });
+
+        var userSlotIds = await _userRepository.RegisterUserToSlots(userId, finalSlotIds);
+
+        response.Data = userSlotIds.Select(id => id.ToString()).ToList();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(SetAvailability));
+
+        return response;
     }
 }

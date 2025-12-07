@@ -40,6 +40,9 @@ public static class ResponseMessage
     public const string UserNotFound = "User not found";
     public const string PasswordSetRequire = "Password require to be set";
     public const string PasswordReSetRequire = "Password require to be re-set";
+    public const string NoSlotsProvided = "No slots provided";
+    public const string InvalidSlots = "Some slots are invalid";
+    public const string SlotsAlreadySet = "Some slots are already registered";
 }
 
 public static class FieldName

@@ -1,0 +1,34 @@
+﻿using FluentValidation;
+using HireHub.Core.Service;
+using HireHub.Core.Utils.Common;
+using HireHub.Core.Utils.UserProgram.Interface;
+
+namespace HireHub.Core.Validators;
+
+public class SetAvailabilityRequestValidator : AbstractValidator<List<string>>
+{
+    public SetAvailabilityRequestValidator(List<object> warnings, RepoService repoService, IUserProvider userProvider)
+    {
+
+        RuleFor(e => e).CustomAsync( async (request, context, cancellationToken) => 
+        {
+            if (request.Count == 0)
+                warnings.Add(ResponseMessage.NoSlotsProvided);
+
+            bool IsSlotNotExist = false;
+            request.ForEach(async slotId =>
+            {
+                if (!await repoService.SlotRepository.ExistsAsync(int.Parse(slotId), cancellationToken))
+                    { IsSlotNotExist = true; return; }
+            });
+            if (IsSlotNotExist) context.AddFailure(PropertyName.SetAvailability, ResponseMessage.InvalidSlots);
+
+            var userId = int.Parse(userProvider.CurrentUserId);
+            var slotIds = request.Select(int.Parse).ToList();
+            if ( await repoService.UserRepository.IsUserRegisterAnyOfTheSlots(userId, slotIds) )
+                warnings.Add(ResponseMessage.SlotsAlreadySet);
+        });
+
+    }
+
+}

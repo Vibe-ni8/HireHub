@@ -21,7 +21,7 @@ public class UserProvider : IUserProvider
         _logger = logger;
     }
 
-    public string? CurrentUserId => GetCurrentUserId();
+    public string CurrentUserId => GetCurrentUserId();
 
     private string GetCurrentUserId()
     {
@@ -49,9 +49,9 @@ public class UserProvider : IUserProvider
         return user;
     }
 
-    public string? CurrentUserRole => GetCurrentUserRole();
+    public string CurrentUserRole => GetCurrentUserRole();
 
-    private string? GetCurrentUserRole()
+    private string GetCurrentUserRole()
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUserRole));
 

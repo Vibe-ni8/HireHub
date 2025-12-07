@@ -2,6 +2,7 @@
 using HireHub.Core.DTO.Base;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
+using HireHub.Core.Utils.UserProgram;
 using HireHub.Core.Utils.UserProgram.Interface;
 using HireHub.Core.Validators;
 using HireHub.Shared.Authentication.Filters;
@@ -41,7 +42,7 @@ public class UserController : ControllerBase
 
         try
         {
-            var response = await _userService.GetCurrentUserDetails();
+            var response = await _userService.GetUserDetails(int.Parse(_userProvider.CurrentUserId));
 
             _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserInfo));
 
@@ -69,7 +70,7 @@ public class UserController : ControllerBase
 
         try
         {
-            var response = await _userService.GetCurrentUserCompleteDetails();
+            var response = await _userService.GetUserCompleteDetails(int.Parse(_userProvider.CurrentUserId));
 
             _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserAllInfo));
 
@@ -99,16 +100,24 @@ public class UserController : ControllerBase
         {
             var baseResponse = new BaseResponse();
 
-            var validator = await new SetAvailabilityValidator(baseResponse.Warnings, _repoService, _userProvider)
+            var validator = await new SetAvailabilityRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
                 .ValidateAsync(request);
 
             if (!validator.IsValid)
             {
-                validator.Errors.ForEach(e => baseResponse.Errors.Add(new { e.PropertyName, e.ErrorMessage }));
+                validator.Errors.ForEach( e => 
+                    baseResponse.Errors.Add( new ValidationError { 
+                        PropertyName = e.PropertyName, 
+                        ErrorMessage = e.ErrorMessage 
+                    })
+                );
                 return Ok(baseResponse);
             }
 
-            var response = await _userService.SetAvailability(request);
+            var userId = int.Parse(_userProvider.CurrentUserId);
+            var slotIds = request.Select(int.Parse).ToList();
+
+            var response = await _userService.SetAvailability(userId, slotIds);
 
             baseResponse.Warnings.ForEach(response.Warnings.Add);
 
