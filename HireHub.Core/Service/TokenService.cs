@@ -1,6 +1,7 @@
 ﻿using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
+using HireHub.Core.DTO.Base;
 using HireHub.Core.Utils.Common;
 using HireHub.Shared.Authentication.Interface;
 using HireHub.Shared.Common;
@@ -32,23 +33,43 @@ public class TokenService
         if (user == null)
         {
             _logger.LogWarning(LogMessage.UserNotFoundOnLogin, request.Username);
-            return new() { Errors = [new { PropertyName = PropertyName.Main, ErrorMessage = CommonRS.Auth_InvalidCredentials_Format(request.Username) }] };
+            return new() {
+                Errors = [
+                    new ValidationError { 
+                        PropertyName = PropertyName.Main, 
+                        ErrorMessage = CommonRS.Auth_InvalidCredentials_Format(request.Username) 
+                    }
+                ] 
+            };
         }
 
         if (string.IsNullOrEmpty(user.PasswordHash))
         {
-            return new() { Warnings = ["Password not set"] };
+            return new() { Warnings = [ResponseMessage.PasswordSetRequire] };
         }
 
         if (!VerifyPassword(user, user.PasswordHash, request.Password))
         {
             _logger.LogWarning(LogMessage.InvalidPassword, user.Id);
-            return new() { Errors = [new { PropertyName = PropertyName.Main, ErrorMessage = CommonRS.Auth_InvalidCredentials_Format(request.Username) }] };
+            return new() { 
+                Errors = [
+                    new ValidationError { 
+                        PropertyName = PropertyName.Main, 
+                        ErrorMessage = CommonRS.Auth_InvalidCredentials_Format(request.Username) 
+                    }
+                ] 
+            };
         }
 
         var token = _jwtTokenService.GenerateToken(user.Id.ToString(), user.Role);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GenerateToken));
+
+        if (request.Password.Equals("Welcome@123"))
+            return new() {
+                Data = token,
+                Warnings = [ResponseMessage.PasswordReSetRequire] 
+            };
 
         return new() { Data = token };
     }

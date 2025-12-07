@@ -1,6 +1,7 @@
 ﻿using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
+using HireHub.Core.DTO.Base;
 using HireHub.Core.Utils.Common;
 using HireHub.Core.Utils.UserProgram.Interface;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,10 @@ public class UserService
 
         if (user == null)
         {
-            response.Errors.Add(new { PropertyName = PropertyName.Main, ErrorMessage = "User not found" });
+            response.Errors.Add( new ValidationError { 
+                PropertyName = PropertyName.Main, 
+                ErrorMessage = ResponseMessage.UserNotFound 
+            });
         }
 
         response.Data = (user != null) ? Helper.Map<User, UserDetailsDTO>(user) : null;
@@ -57,7 +61,10 @@ public class UserService
         }
         else
         {
-            response.Errors.Add(new { PropertyName = PropertyName.Main, ErrorMessage = "User not found" });
+            response.Errors.Add( new ValidationError { 
+                PropertyName = PropertyName.Main, 
+                ErrorMessage = ResponseMessage.UserNotFound 
+            });
         }
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserCompleteDetails));

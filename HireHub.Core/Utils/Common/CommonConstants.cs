@@ -18,7 +18,7 @@ public static class ExceptionMessage
 {
     public const string JwtNotConfigured = "JWT settings not configured";
     public const string ConnectionStringNotConfigured = "ConnectionString not configured";
-    //public const string DarkwolfEmailNotConfigured = "Darkwolf email config not configured";
+    //public const string EmailNotConfigured = "Email config not configured";
     public const string AzureLogicAppNotConfigured = "Azure Logic App not configured";
     public const string UserIdNotSetOnMiddleware = "Middlerware failed: User Id not set";
     public const string UserRoleNotSetOnMiddleware = "Middlerware failed: User Role not set";
@@ -37,7 +37,9 @@ public static class ResponseMessage
     //public const string ResetTokenRequired = "Reset token is required";
     //public const string InvalidUser = "Invalid user";
     //public const string InvalidResetToken = "Invalid reset token";
-    //public const string UserNotFound = "User not found";
+    public const string UserNotFound = "User not found";
+    public const string PasswordSetRequire = "Password require to be set";
+    public const string PasswordReSetRequire = "Password require to be re-set";
 }
 
 public static class FieldName
@@ -52,6 +54,7 @@ public static class PropertyName
 {
     public const string Exception = "Exception";
     public const string Main = "Main";
+    public const string SetAvailability = "SetAvailability";
 }
 
 public static class AppSettingKey

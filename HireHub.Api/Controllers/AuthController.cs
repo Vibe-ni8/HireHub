@@ -1,4 +1,5 @@
 ﻿using HireHub.Core.DTO;
+using HireHub.Core.DTO.Base;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
 using HireHub.Core.Validators;
@@ -38,7 +39,12 @@ public class AuthController : ControllerBase
 
             if (!validator.IsValid)
             {
-                validator.Errors.ForEach( e => baseResponse.Errors.Add(new { e.PropertyName, e.ErrorMessage }) );
+                validator.Errors.ForEach( e =>
+                    baseResponse.Errors.Add( new ValidationError { 
+                        PropertyName = e.PropertyName, 
+                        ErrorMessage = e.ErrorMessage 
+                    }) 
+                );
                 return Ok(baseResponse);
             }
 
@@ -53,7 +59,11 @@ public class AuthController : ControllerBase
         catch (CommonException ex)
         {
             _logger.LogWarning(LogMessage.EndMethodException, nameof(Token), ex.Message);
-            return BadRequest(new BaseResponse() { Errors = [new { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }] });
+            return BadRequest( new BaseResponse() { 
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
+                ] 
+            });
         }
     }
 }
