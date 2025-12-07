@@ -75,7 +75,7 @@ public class UserService
         {
             var userSlotDetail = Helper.Map<UserSlot, UserSlotDetailsDTO>(userSlot);
             var candidateMaps = _userRepository.GetCandidatesAssignedForUserOnSlot(userSlot.Id);
-            candidateMaps.ForEach(candidateMap =>
+            candidateMaps.ForEach( candidateMap =>
             {
                 var candidateDetails = Helper.Map<Candidate, CandidateDetailsDTO>(candidateMap.Candidate);
                 candidateDetails.ScheduledTime = candidateMap.ScheduledTime;
@@ -92,10 +92,18 @@ public class UserService
         var response = new UserResponse<List<UserSlotDetailsDTO>>();
 
         var finalSlotIds = new List<int>();
-        slotIds.ForEach( async slotId => { 
-            if (!await _userRepository.IsUserRegisterForTheSlot(userId, slotId))
+        slotIds.ForEach( slotId => 
+        {
+            var isRegistered = _userRepository.IsUserRegisterForTheSlot(userId, slotId);
+            if (!isRegistered.WaitAsync(CancellationToken.None).Result)
                 finalSlotIds.Add(slotId);
         });
+
+        if (finalSlotIds.Count == 0)
+        {
+            response.Data = [];
+            return response;
+        }
 
         var userSlotIds = await _userRepository.RegisterUserToSlots(userId, finalSlotIds);
 

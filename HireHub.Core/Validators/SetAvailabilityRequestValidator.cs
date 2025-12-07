@@ -16,9 +16,10 @@ public class SetAvailabilityRequestValidator : AbstractValidator<List<string>>
                 warnings.Add(ResponseMessage.NoSlotsProvided);
 
             bool IsSlotNotExist = false;
-            request.ForEach(async slotId =>
+            request.ForEach( slotId =>
             {
-                if (!await repoService.SlotRepository.ExistsAsync(int.Parse(slotId), cancellationToken))
+                var isExist = repoService.SlotRepository.ExistsAsync(int.Parse(slotId), cancellationToken);
+                if (!isExist.WaitAsync(CancellationToken.None).Result)
                     { IsSlotNotExist = true; return; }
             });
             if (IsSlotNotExist) context.AddFailure(PropertyName.SetAvailability, ResponseMessage.InvalidSlots);
