@@ -88,7 +88,7 @@ public class UserController : ControllerBase
 
     [RequireAuth([Role.Panel])]
     [HttpPost("current/availability/set")]
-    [ProducesResponseType<UserResponse<List<string>>>(200)]
+    [ProducesResponseType<UserResponse<List<UserSlotDetailsDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> SetAvailability([FromBody] List<string> request)

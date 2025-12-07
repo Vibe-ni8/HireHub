@@ -85,11 +85,11 @@ public class UserService
         });
     }
 
-    public async Task<UserResponse<List<string>>> SetAvailability(int userId, List<int> slotIds)
+    public async Task<UserResponse<List<UserSlotDetailsDTO>>> SetAvailability(int userId, List<int> slotIds)
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(SetAvailability));
 
-        var response = new UserResponse<List<string>>();
+        var response = new UserResponse<List<UserSlotDetailsDTO>>();
 
         var finalSlotIds = new List<int>();
         slotIds.ForEach( async slotId => { 
@@ -99,7 +99,10 @@ public class UserService
 
         var userSlotIds = await _userRepository.RegisterUserToSlots(userId, finalSlotIds);
 
-        response.Data = userSlotIds.Select(id => id.ToString()).ToList();
+        var userSlotDetails = new List<UserSlotDetailsDTO>();
+        await SetUserSlots(userSlotDetails, userId);
+
+        response.Data = userSlotDetails.Where(e => userSlotIds.Contains(e.Id)).ToList();
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(SetAvailability));
 
