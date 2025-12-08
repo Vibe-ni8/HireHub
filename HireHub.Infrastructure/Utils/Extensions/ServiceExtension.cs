@@ -23,9 +23,6 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ISlotRepository, SlotRepository>();
-        services.AddScoped<IUserSlotRepository, UserSlotRepository>();
-        services.AddScoped<ICandidateRepository, CandidateRepository>();
-        services.AddScoped<ICandidateMapRepository, CandidateMapRepository>();
 
         return services;
     }
