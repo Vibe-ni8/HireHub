@@ -1,4 +1,5 @@
-﻿using HireHub.Shared.Common.Models;
+﻿using HireHub.Core.Data.Models;
+using HireHub.Shared.Common.Models;
 
 namespace HireHub.Core.DTO;
 
@@ -25,6 +26,17 @@ public class SlotDetailsDTO
     public TimeOnly EndTime { get; set; }
 }
 
+public class FeedbackDTO
+{
+    public int Id { get; set; }
+    public int StarRating { get; set; }
+    public string TechnicalSkills { get; set; } = null!;
+    public string CommunicationSkill { get; set; } = null!;
+    public string ProblemSolvingAbility { get; set; } = null!;
+    public string OverallFeedback { get; set; } = null!;
+    public string Recommendation { get; set; } = null!;
+}
+
 public class CandidateDetailsDTO
 {
     public int Id { get; set; }
@@ -33,15 +45,19 @@ public class CandidateDetailsDTO
     public string PhoneNumber { get; set; } = null!;
     public int Experience { get; set; }
     public string CurrentPosition { get; set; } = null!;
+    public string? ResumeUrl { get; set; } = null!;
     public TimeOnly ScheduledTime { get; set; }
-
-    // add other columns like IsPresent, etc 
+    public bool? IsPresent { get; set; } = null;
+    public int InterviewRounds { get; set; }
+    public int? FeedbackId { get; set; }
+    public FeedbackDTO? Feedback { get; set; } = null;
 }
 
 public class UserSlotDetailsDTO
 {
     public int Id { get; set; }
     public SlotDetailsDTO Slot { get; set; } = null!;
+    public bool IsLocked { get; set; }
     public List<CandidateDetailsDTO> Candidates { get; set; } = [];
 
 }

@@ -79,6 +79,11 @@ public class UserService
             {
                 var candidateDetails = Helper.Map<Candidate, CandidateDetailsDTO>(candidateMap.Candidate);
                 candidateDetails.ScheduledTime = candidateMap.ScheduledTime;
+                candidateDetails.IsPresent = candidateMap.IsPresent;
+                candidateDetails.InterviewRounds = candidateMap.InterviewRounds;
+                candidateDetails.FeedbackId = candidateMap.FeedbackId;
+                candidateDetails.Feedback = candidateMap.Feedback != null ? 
+                    Helper.Map<Feedback, FeedbackDTO>(candidateMap.Feedback) : null;
                 userSlotDetail.Candidates.Add(candidateDetails);
             });
             userSlotDetails.Add(userSlotDetail);

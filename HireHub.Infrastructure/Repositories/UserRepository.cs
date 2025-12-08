@@ -24,6 +24,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         return _context.CandidateMaps
             .Where(cm => cm.UserSlotId == userSlotId)
             .Include(cm => cm.Candidate)
+            .Include(cm => cm.Feedback)
             .ToList();
     }
 
@@ -64,7 +65,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     {
         var user = await _context.Users.FirstAsync(u => u.Id == userId);
         slotIds.ForEach( slotId => 
-            user.UserSlots.Add(new() { UserId = userId, SlotId = slotId })
+            user.UserSlots.Add(new() { UserId = userId, SlotId = slotId, IsLocked = false })
         );
         _context.Update(user);
         _context.SaveChanges();
