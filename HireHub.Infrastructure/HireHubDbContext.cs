@@ -12,7 +12,9 @@ public class HireHubDbContext : DbContext
     public DbSet<Slot> Slots => Set<Slot>();
     public DbSet<UserSlot> UserSlots => Set<UserSlot>();
     public DbSet<Candidate> Candidates => Set<Candidate>();
+    public DbSet<Feedback> Feedbacks => Set<Feedback>();
     public DbSet<CandidateMap> CandidateMaps => Set<CandidateMap>();
+    public DbSet<Reassign> Reassigns => Set<Reassign>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -95,6 +97,11 @@ public class HireHubDbContext : DbContext
 
             b.HasIndex(e => new { e.UserId, e.SlotId }).IsUnique();
 
+            b.Property(e => e.IsLocked)
+                .HasColumnName("is_locked")
+                .HasColumnType("BIT")
+                .IsRequired();
+
             // Relationship: UserSlot → User (Many-to-One)
             b.HasOne(us => us.User)
                 .WithMany(u => u.UserSlots)
@@ -124,6 +131,72 @@ public class HireHubDbContext : DbContext
                 .HasColumnName("candidate_name")
                 .HasColumnType("varchar(100)")
                 .IsRequired();
+
+            b.Property(e => e.Email)
+                .HasColumnName("email_id")
+                .HasColumnType("varchar(250)")
+                .IsRequired();
+
+            b.Property(e => e.PhoneNumber)
+                .HasColumnName("phone_number")
+                .HasColumnType("varchar(32)")
+                .IsRequired();
+
+            b.Property(e => e.Experience)
+                .HasColumnName("candidate_exp")
+                .HasColumnType("int")
+                .IsRequired();
+
+            b.Property(e => e.CurrentPosition)
+                .HasColumnName("current_position")
+                .HasColumnType("varchar(150)")
+                .IsRequired();
+
+            b.Property(e => e.ResumeUrl)
+                .HasColumnName("resume_url")
+                .HasColumnType("varchar(100)")
+                .IsRequired(false);
+        });
+
+        modelBuilder.Entity<Feedback>(b =>
+        {
+            b.ToTable("feedback");
+            b.HasKey(e => e.Id);
+
+            b.Property(e => e.Id)
+                .HasColumnName("feedback_id")
+                .HasColumnType("int")
+                .IsRequired();
+
+            b.Property(e => e.StarRating)
+                .HasColumnName("star_rating")
+                .HasColumnType("int")
+                .IsRequired();
+
+            b.Property(e => e.TechnicalSkills)
+                .HasColumnName("technical_skills")
+                .HasColumnType("varchar(max)")
+                .IsRequired();
+
+            b.Property(e => e.CommunicationSkill)
+                .HasColumnName("communication_skills")
+                .HasColumnType("varchar(max)")
+                .IsRequired();
+
+            b.Property(e => e.ProblemSolvingAbility)
+                .HasColumnName("problem_solving_ability")
+                .HasColumnType("varchar(max)")
+                .IsRequired();
+
+            b.Property(e => e.OverallFeedback)
+                .HasColumnName("overall_feedback")
+                .HasColumnType("varchar(max)")
+                .IsRequired();
+
+            b.Property(e => e.Recommendation)
+                .HasColumnName("recommendation")
+                .HasColumnType("varchar(20)")
+                .IsRequired();
         });
 
         modelBuilder.Entity<CandidateMap>(b =>
@@ -148,10 +221,26 @@ public class HireHubDbContext : DbContext
                 .HasConversion(Helper.TimeConverter)
                 .IsRequired();
 
+            b.Property(e => e.IsPresent)
+                .HasColumnName("is_present")
+                .HasColumnType("BIT")
+                .IsRequired(false);
+
+            b.Property(e => e.InterviewRounds)
+                .HasColumnName("interview_rounds")
+                .HasColumnType("int")
+                .IsRequired();
+
+            b.Property(e => e.FeedbackId)
+                .HasColumnName("feedback_id")
+                .HasColumnType("int")
+                .IsRequired(false);
+            b.HasIndex(e => e.FeedbackId).IsUnique();
+
             // Relationship: CandidateMap → Candidate
             b.HasOne(cm => cm.Candidate)
                 .WithMany(c => c.CandidateMaps)
-                .HasPrincipalKey (c => c.Id)
+                .HasPrincipalKey(c => c.Id)
                 .HasForeignKey(cm => cm.CandidateId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -161,6 +250,49 @@ public class HireHubDbContext : DbContext
                 .HasPrincipalKey(us => us.Id)
                 .HasForeignKey(cm => cm.UserSlotId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Relationship: CandidateMap → Feedback
+            b.HasOne(cm => cm.Feedback)
+                .WithOne(f => f.CandidateMap)
+                .HasPrincipalKey<Feedback>(f => f.Id)
+                .HasForeignKey<CandidateMap>(cm => cm.FeedbackId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Reassign>(b =>
+        {
+            b.ToTable("reassign");
+            b.HasKey(e => e.Id);
+
+            b.Property(e => e.Id)
+                .HasColumnName("reassign_id")
+                .HasColumnType("int")
+                .IsRequired();
+
+            b.Property(e => e.CandidateId)
+                .HasColumnName("candidate_id")
+                .HasColumnType("int")
+                .IsRequired();
+
+            b.Property(e => e.OldUserSlotId)
+                .HasColumnName("old_userslot_id")
+                .HasColumnType("int")
+                .IsRequired();
+
+            b.Property(e => e.NewUserSlotId)
+                .HasColumnName("new_userslot_id")
+                .HasColumnType("int")
+                .IsRequired();
+
+            b.Property(e => e.Reason)
+                .HasColumnName("reason")
+                .HasColumnType("Varchar(50)")
+                .IsRequired();
+
+            b.Property(e => e.AdditionalNotes)
+                .HasColumnName("additional_notes")
+                .HasColumnType("Varchar(max)")
+                .IsRequired(false);
         });
     }
 }

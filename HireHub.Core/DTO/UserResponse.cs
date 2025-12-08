@@ -29,7 +29,13 @@ public class CandidateDetailsDTO
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
+    public string Email { get; set; } = null!;
+    public string PhoneNumber { get; set; } = null!;
+    public int Experience { get; set; }
+    public string CurrentPosition { get; set; } = null!;
     public TimeOnly ScheduledTime { get; set; }
+
+    // add other columns like IsPresent, etc 
 }
 
 public class UserSlotDetailsDTO
