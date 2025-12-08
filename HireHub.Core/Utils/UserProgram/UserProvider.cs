@@ -21,13 +21,13 @@ public class UserProvider : IUserProvider
         _logger = logger;
     }
 
-    public string? CurrentUserId => GetCurrentUserId();
+    public string CurrentUserId => GetCurrentUserId();
 
     private string GetCurrentUserId()
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUserId));
 
-        var userId = _http.HttpContext?.Items[Keys.UserId]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserIdNotSetOnMiddleware);
+        var userId = _http.HttpContext?.Items[Key.UserId]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserIdNotSetOnMiddleware);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserId));
 
@@ -40,22 +40,22 @@ public class UserProvider : IUserProvider
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUser));
 
-        var userId = _http.HttpContext?.Items[Keys.UserId]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserIdNotSetOnMiddleware);
+        var userId = _http.HttpContext?.Items[Key.UserId]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserIdNotSetOnMiddleware);
 
-        var user = await _userRepository.GetByIdAsync(userId);
+        var user = await _userRepository.GetByIdAsync(int.Parse(userId));
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUser));
 
         return user;
     }
 
-    public string? CurrentUserRole => GetCurrentUserRole();
+    public string CurrentUserRole => GetCurrentUserRole();
 
-    private string? GetCurrentUserRole()
+    private string GetCurrentUserRole()
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUserRole));
 
-        var role = _http.HttpContext?.Items[Keys.Role]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserRoleNotSetOnMiddleware);
+        var role = _http.HttpContext?.Items[Key.Role]?.ToString() ?? throw new InvalidOperationException(ExceptionMessage.UserRoleNotSetOnMiddleware);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserRole));
 

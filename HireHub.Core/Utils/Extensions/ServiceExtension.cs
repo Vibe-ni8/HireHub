@@ -1,4 +1,5 @@
-﻿using HireHub.Core.Utils.Common;
+﻿using HireHub.Core.Service;
+using HireHub.Core.Utils.Common;
 using HireHub.Core.Utils.UserProgram;
 using HireHub.Core.Utils.UserProgram.Interface;
 using HireHub.Shared.Authentication.Models;
@@ -23,7 +24,10 @@ public static class ServiceCollectionExtensions
             throw new InvalidOperationException(ExceptionMessage.AzureLogicAppNotConfigured)
         );
 
-        services.AddSingleton<IUserProvider, UserProvider>();
+        services.AddScoped<IUserProvider, UserProvider>();
+        services.AddScoped<RepoService>();
+        services.AddScoped<TokenService>();
+        services.AddScoped<UserService>();
 
         return services;
     }

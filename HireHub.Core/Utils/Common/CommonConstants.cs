@@ -4,8 +4,9 @@ public static class LogMessage
 {
     public const string StartMethod = "Start - {Method}";
     public const string EndMethod = "End - {Method}";
-    //public const string UserNotFoundOnLogin = "Login failed: user not found: {Username}";
-    //public const string InvalidPassword = "Login failed: invalid password for {EmpId}";
+    public const string EndMethodException = "End - {Method} - {Exception}";
+    public const string UserNotFoundOnLogin = "Login failed: user not found: {Username}";
+    public const string InvalidPassword = "Login failed: invalid password for {EmpId}";
     //public const string UserNotFoundOnReset = "Reset failed: user not found: {Email}";
     //public const string ResetTokenNotGeneratedOrInvalid = "Reset failed: Reset token not generated or invalid";
     //public const string ResetTokenExpired = "Reset failed: Reset token expired";
@@ -17,7 +18,7 @@ public static class ExceptionMessage
 {
     public const string JwtNotConfigured = "JWT settings not configured";
     public const string ConnectionStringNotConfigured = "ConnectionString not configured";
-    //public const string DarkwolfEmailNotConfigured = "Darkwolf email config not configured";
+    //public const string EmailNotConfigured = "Email config not configured";
     public const string AzureLogicAppNotConfigured = "Azure Logic App not configured";
     public const string UserIdNotSetOnMiddleware = "Middlerware failed: User Id not set";
     public const string UserRoleNotSetOnMiddleware = "Middlerware failed: User Role not set";
@@ -36,7 +37,12 @@ public static class ResponseMessage
     //public const string ResetTokenRequired = "Reset token is required";
     //public const string InvalidUser = "Invalid user";
     //public const string InvalidResetToken = "Invalid reset token";
-    //public const string UserNotFound = "User not found";
+    public const string UserNotFound = "User not found";
+    public const string PasswordSetRequire = "Password require to be set";
+    public const string PasswordReSetRequire = "Password require to be re-set";
+    public const string NoSlotsProvided = "No slots provided";
+    public const string InvalidSlots = "Some slots are invalid";
+    public const string SlotsAlreadySet = "Some slots are already registered";
 }
 
 public static class FieldName
@@ -45,6 +51,12 @@ public static class FieldName
     //public const string Username = "Username";
     //public const string Email = "Email";
     //public const string Role = "Role";
+}
+
+public static class PropertyName
+{
+    public const string Exception = "Exception";
+    public const string Main = "Main";
 }
 
 public static class AppSettingKey
@@ -62,8 +74,16 @@ public static class EmailAddress
     //public const string NoReplyDarkwolf = "noreply@darkwolf.com";
 }
 
-public static class Keys
+public static class Key
 {
     public const string UserId = "UserId";
     public const string Role = "Role";
+}
+
+public static class Role
+{
+    public const string Mentor = "MENTOR";
+    public const string Hr = "HR";
+    public const string Panel = "PANEL";
+    public const string Admin = "ADMIN";
 }

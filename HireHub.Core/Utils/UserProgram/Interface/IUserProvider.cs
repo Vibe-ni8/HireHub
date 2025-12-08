@@ -4,7 +4,7 @@ namespace HireHub.Core.Utils.UserProgram.Interface;
 
 public interface IUserProvider
 {
-    string? CurrentUserId { get; }
+    string CurrentUserId { get; }
     Task<User?> CurrentUser {  get; }
-    string? CurrentUserRole { get; }
+    string CurrentUserRole { get; }
 }
