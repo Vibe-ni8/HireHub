@@ -284,6 +284,8 @@ public class HireHubDbContext : DbContext
                 .HasColumnType("int")
                 .IsRequired();
 
+            b.HasIndex(e => new { e.CandidateId, e.OldUserSlotId, e.NewUserSlotId }).IsUnique();
+
             b.Property(e => e.Reason)
                 .HasColumnName("reason")
                 .HasColumnType("Varchar(50)")
@@ -293,6 +295,24 @@ public class HireHubDbContext : DbContext
                 .HasColumnName("additional_notes")
                 .HasColumnType("Varchar(max)")
                 .IsRequired(false);
+
+            // Relationship: Reassign → Candidate
+            b.HasOne(r => r.Candidate)
+                .WithMany() // no back-reference collection needed
+                .HasForeignKey(r => r.CandidateId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relationship: Reassign → OldUserSlot
+            b.HasOne(r => r.OldUserSlot)
+                .WithMany() // no back-reference collection needed
+                .HasForeignKey(r => r.OldUserSlotId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relationship: Reassign → NewUserSlot
+            b.HasOne(r => r.NewUserSlot)
+                .WithMany() // no back-reference collection needed
+                .HasForeignKey(r => r.NewUserSlotId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

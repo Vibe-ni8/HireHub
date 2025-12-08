@@ -82,8 +82,8 @@ public static class Key
 
 public static class Role
 {
-    public const string Mentor = "MENTOR";
+    public const string Mentor = "Mentor";
     public const string Hr = "HR";
-    public const string Panel = "PANEL";
-    public const string Admin = "ADMIN";
+    public const string Panel = "Panel";
+    public const string Admin = "Admin";
 }
