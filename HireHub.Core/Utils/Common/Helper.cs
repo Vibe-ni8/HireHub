@@ -29,7 +29,17 @@ public static class Helper
 
             object? value = fromProperty.GetValue(fromData);
 
-            if (fromProperty.PropertyType.IsClass && fromProperty.PropertyType != typeof(string))
+            if (    
+                    fromProperty.PropertyType.IsClass && 
+                    (    
+                        fromProperty.PropertyType.IsArray || 
+                        (fromProperty.PropertyType.IsGenericType && typeof(System.Collections.IEnumerable).IsAssignableFrom(fromProperty.PropertyType))
+                    )
+               )
+            {
+                value = MapCollectionOrArray(value, fromProperty.PropertyType, toProperty.PropertyType);
+            }
+            else if (fromProperty.PropertyType.IsClass && fromProperty.PropertyType != typeof(string))
             {
                 var fromPropertyData = fromProperty.GetValue(fromData);
                 var toPropertyData = toProperty.GetValue(toData) ?? Activator.CreateInstance(toProperty.PropertyType);
@@ -44,6 +54,58 @@ public static class Helper
 
         return toData;
     }
+
+    private static object? MapCollectionOrArray(object? fromValue, Type fromType, Type toType)
+    {
+        if (fromValue == null) return null;
+
+        // Handle arrays
+        if (fromType.IsArray && toType.IsArray)
+        {
+            var fromArray = (Array)fromValue;
+            var elementType = toType.GetElementType();
+            var toArray = Array.CreateInstance(elementType!, fromArray.Length);
+
+            for (int i = 0; i < fromArray.Length; i++)
+            {
+                var fromElement = fromArray.GetValue(i);
+                var toElement = Activator.CreateInstance(elementType!);
+
+                var mappedElement = (fromElement != null && toElement != null)
+                    ? Map(fromElement, fromElement.GetType(), toElement, elementType!)
+                    : null;
+
+                toArray.SetValue(mappedElement, i);
+            }
+
+            return toArray;
+        }
+
+        // Handle generic collections (e.g., List<T>)
+        if (fromType.IsGenericType &&
+            typeof(System.Collections.IEnumerable).IsAssignableFrom(fromType))
+        {
+            var fromCollection = (System.Collections.IEnumerable)fromValue;
+            var toCollection = (System.Collections.IList?)Activator.CreateInstance(toType);
+            var elementType = toType.GetGenericArguments()[0];
+
+            foreach (var fromElement in fromCollection)
+            {
+                var toElement = Activator.CreateInstance(elementType);
+
+                var mappedElement = (fromElement != null && toElement != null)
+                    ? Map(fromElement, fromElement.GetType(), toElement, elementType)
+                    : null;
+
+                toCollection!.Add(mappedElement);
+            }
+
+            return toCollection;
+        }
+
+        return null;
+    }
+
 
     public static readonly ValueConverter<TimeOnly, string> TimeConverter = new
     (
