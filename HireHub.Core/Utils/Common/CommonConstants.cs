@@ -57,7 +57,6 @@ public static class PropertyName
 {
     public const string Exception = "Exception";
     public const string Main = "Main";
-    public const string SetAvailability = "SetAvailability";
 }
 
 public static class AppSettingKey

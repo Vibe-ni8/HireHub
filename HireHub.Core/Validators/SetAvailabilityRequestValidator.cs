@@ -22,7 +22,7 @@ public class SetAvailabilityRequestValidator : AbstractValidator<List<string>>
                 if (!isExist.WaitAsync(CancellationToken.None).Result)
                     { IsSlotNotExist = true; return; }
             });
-            if (IsSlotNotExist) context.AddFailure(PropertyName.SetAvailability, ResponseMessage.InvalidSlots);
+            if (IsSlotNotExist) context.AddFailure(PropertyName.Main, ResponseMessage.InvalidSlots);
 
             var userId = int.Parse(userProvider.CurrentUserId);
             var slotIds = request.Select(int.Parse).ToList();

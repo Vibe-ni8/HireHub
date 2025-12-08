@@ -1,4 +1,5 @@
-﻿using HireHub.Core.DTO;
+﻿using HireHub.Core.Data.Interface;
+using HireHub.Core.DTO;
 using HireHub.Core.DTO.Base;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
@@ -20,14 +21,17 @@ public class UserController : ControllerBase
     private readonly UserService _userService;
     private readonly IUserProvider _userProvider;
     private readonly RepoService _repoService;
+    private readonly ITransactionRepository _transactionRepository;
     private readonly ILogger<UserController> _logger;
 
     public UserController(UserService userService, IUserProvider userProvider,
-        RepoService repoService, ILogger<UserController> logger)
+        RepoService repoService, ITransactionRepository transactionRepository, 
+        ILogger<UserController> logger)
     {
         _userService = userService;
         _userProvider = userProvider;
         _repoService = repoService;
+        _transactionRepository = transactionRepository;
         _logger = logger;
     }
 
@@ -97,37 +101,44 @@ public class UserController : ControllerBase
 
         try
         {
-            var baseResponse = new BaseResponse();
-
-            var validator = await new 
-                SetAvailabilityRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
-                .ValidateAsync(request);
-
-            if (!validator.IsValid)
+            using (_transactionRepository.BeginTransaction())
             {
-                validator.Errors.ForEach( e => 
-                    baseResponse.Errors.Add( new ValidationError { 
-                        PropertyName = e.PropertyName, 
-                        ErrorMessage = e.ErrorMessage 
-                    })
-                );
-                return Ok(baseResponse);
+                var baseResponse = new BaseResponse();
+
+                var validator = await new
+                    SetAvailabilityRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
+                    .ValidateAsync(request);
+
+                if (!validator.IsValid)
+                {
+                    validator.Errors.ForEach(e =>
+                        baseResponse.Errors.Add(new ValidationError
+                        {
+                            PropertyName = e.PropertyName,
+                            ErrorMessage = e.ErrorMessage
+                        })
+                    );
+                    return Ok(baseResponse);
+                }
+
+                var userId = int.Parse(_userProvider.CurrentUserId);
+                var slotIds = request.Select(int.Parse).ToList();
+
+                var response = await _userService.SetAvailability(userId, slotIds);
+
+                baseResponse.Warnings.ForEach(response.Warnings.Add);
+
+                _transactionRepository.CommitTransaction();
+
+                _logger.LogInformation(LogMessage.EndMethod, nameof(SetAvailability));
+
+                return Ok(response);
             }
-
-            var userId = int.Parse(_userProvider.CurrentUserId);
-            var slotIds = request.Select(int.Parse).ToList();
-
-            var response = await _userService.SetAvailability(userId, slotIds);
-
-            baseResponse.Warnings.ForEach(response.Warnings.Add);
-
-            _logger.LogInformation(LogMessage.EndMethod, nameof(SetAvailability));
-
-            return Ok(response);
         }
         catch (CommonException ex)
         {
             _logger.LogWarning(LogMessage.EndMethodException, nameof(SetAvailability), ex.Message);
+            _transactionRepository.RollbackTransaction();
             return BadRequest( new BaseResponse() { 
                 Errors = [
                     new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
