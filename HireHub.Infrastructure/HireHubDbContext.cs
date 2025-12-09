@@ -235,7 +235,6 @@ public class HireHubDbContext : DbContext
                 .HasColumnName("feedback_id")
                 .HasColumnType("int")
                 .IsRequired(false);
-            b.HasIndex(e => e.FeedbackId).IsUnique();
 
             // Relationship: CandidateMap → Candidate
             b.HasOne(cm => cm.Candidate)
