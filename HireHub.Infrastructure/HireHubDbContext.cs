@@ -305,14 +305,11 @@ public class HireHubDbContext : DbContext
             // Relationship: Reassign → OldUserSlot
             b.HasOne(r => r.OldUserSlot)
                 .WithMany() // no back-reference collection needed
-                .HasForeignKey(r => r.OldUserSlotId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+                .HasForeignKey(r => r.OldUserSlotId);
             // Relationship: Reassign → NewUserSlot
             b.HasOne(r => r.NewUserSlot)
                 .WithMany() // no back-reference collection needed
-                .HasForeignKey(r => r.NewUserSlotId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(r => r.NewUserSlotId);
         });
     }
 }
