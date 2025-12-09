@@ -32,6 +32,7 @@ public static class ResponseMessage
     public const string CandidateNotAssignedToPanel = "Candidate not assigned to this Panel";
     public const string CanNotSetFeedbackForPastCandidate = "Can not set Feedback for Past Interviewed Candidate";
     public const string UserDifferFromLoggedUser = "Provided user is differ from logged in user";
+    public const string CanNotChangeOrSetAttendanceForPastCandidate = "Can not change or set Attendance for Past Interviewed Candidate";
 }
 
 public static class FieldName
