@@ -32,7 +32,6 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     {
         var now = DateTime.Now;
         var today = DateOnly.FromDateTime(now);
-        var currentTime = TimeOnly.FromDateTime(now);
 
         return await _context.Users
             .Where(u => u.Id == userId)
