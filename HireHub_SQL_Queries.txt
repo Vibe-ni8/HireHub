@@ -57,7 +57,7 @@ CREATE TABLE candidate_map (
     scheduled_time VARCHAR(20) NOT NULL,
     is_present BIT NULL,
     interview_rounds INT NOT NULL,
-    feedback_id INT NULL UNIQUE,
+    feedback_id INT NULL,
     PRIMARY KEY (candidate_id, user_slot_id),
     CONSTRAINT FK_candidate_map_candidate FOREIGN KEY (candidate_id) REFERENCES candidate(candidate_id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT FK_candidate_map_user_slot FOREIGN KEY (user_slot_id) REFERENCES user_slot(user_slot_id) ON UPDATE CASCADE ON DELETE CASCADE,

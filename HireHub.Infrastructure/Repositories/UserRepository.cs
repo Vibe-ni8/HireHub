@@ -14,9 +14,9 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         _context = context;
     }
 
-    public async Task<User?> GetByEmailAsync(string emailId)
+    public async Task<User?> GetByEmailAsync(string emailId, CancellationToken cancellationToken = default)
     {
-        return await _context.Users.FirstOrDefaultAsync(e => e.EmailId == emailId);
+        return await _context.Users.FirstOrDefaultAsync(e => e.EmailId == emailId, cancellationToken);
     }
 
     public List<CandidateMap> GetCandidatesAssignedForUserOnSlot(int userSlotId)
@@ -28,7 +28,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
             .ToList();
     }
 
-    public async Task<List<UserSlot>> GetUserSlotsWithSlotDetailsForUser(int userId)
+    public async Task<List<UserSlot>> GetUserSlotsWithSlotDetailsForUser(int userId, CancellationToken cancellationToken = default)
     {
         var now = DateTime.Now;
         var today = DateOnly.FromDateTime(now);
@@ -38,32 +38,29 @@ public class UserRepository : GenericRepository<User>, IUserRepository
             .Where(u => u.Id == userId)
             .Join(_context.UserSlots, u => u.Id, us => us.UserId, (u, us) => us)
             .Include(us => us.Slot)
-            .Where(us => 
-                us.Slot.SlotDate > today || 
-                (us.Slot.SlotDate == today && us.Slot.StartTime > currentTime)
-             )
-            .ToListAsync();
+            .Where(us => us.Slot.SlotDate >= today )
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> IsUserRegisterForTheSlot(int userId, int slotId)
+    public async Task<bool> IsUserRegisterForTheSlot(int userId, int slotId, CancellationToken cancellationToken = default)
     {
         return await _context.Users
             .Where(u => u.Id == userId)
             .Join(_context.UserSlots, u => u.Id, us => us.UserId, (u, us) => us)
-            .AnyAsync(us => us.SlotId == slotId);
+            .AnyAsync(us => us.SlotId == slotId, cancellationToken);
     }
 
-    public async Task<bool> IsUserRegisterAnyOfTheSlots(int userId, List<int> slotIds)
+    public async Task<bool> IsUserRegisterAnyOfTheSlots(int userId, List<int> slotIds, CancellationToken cancellationToken = default)
     {
         return await _context.Users
             .Where(u => u.Id == userId)
             .Join(_context.UserSlots, u => u.Id, us => us.UserId, (u, us) => us)
-            .AnyAsync(us => slotIds.Contains(us.SlotId));
+            .AnyAsync(us => slotIds.Contains(us.SlotId), cancellationToken);
     }
 
-    public async Task<List<int>> RegisterUserToSlots(int userId, List<int> slotIds)
+    public async Task<List<int>> RegisterUserToSlots(int userId, List<int> slotIds, CancellationToken cancellationToken = default)
     {
-        var user = await _context.Users.FirstAsync(u => u.Id == userId);
+        var user = await _context.Users.FirstAsync(u => u.Id == userId, cancellationToken);
         slotIds.ForEach( slotId => 
             user.UserSlots.Add(new() { UserId = userId, SlotId = slotId, IsLocked = false })
         );
