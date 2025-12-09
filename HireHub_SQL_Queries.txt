@@ -1,13 +1,15 @@
+-- USER TABLE
 CREATE TABLE [user] (
     user_id INT IDENTITY(1,1) PRIMARY KEY,
     user_name VARCHAR(100) NOT NULL,
-    email_id VARCHAR(250) NOT NULL,
+    email_id VARCHAR(250) NOT NULL UNIQUE,
     role VARCHAR(50) NOT NULL,
-    phone_number VARCHAR(32) NOT NULL,
+    phone_number VARCHAR(32) NOT NULL UNIQUE,
     is_active BIT NOT NULL,
-    password_hash VARCHAR(max) NULL
+    password_hash VARCHAR(MAX) NULL
 );
 
+-- SLOT TABLE
 CREATE TABLE slot (
     slot_id INT IDENTITY(1,1) PRIMARY KEY,
     slot_date DATE NOT NULL,
@@ -15,46 +17,165 @@ CREATE TABLE slot (
     end_time VARCHAR(20) NOT NULL
 );
 
+-- USER_SLOT TABLE
 CREATE TABLE user_slot (
     user_slot_id INT IDENTITY(1,1) PRIMARY KEY,
     user_id INT NOT NULL,
     slot_id INT NOT NULL,
-
-    CONSTRAINT UQ_UserSlot_UserId_SlotId UNIQUE (user_id, slot_id),
-
-    CONSTRAINT FK_UserSlot_User FOREIGN KEY (user_id)
-        REFERENCES [user] (user_id)
-	ON UPDATE CASCADE
-	ON DELETE CASCADE,
-
-    CONSTRAINT FK_UserSlot_Slot FOREIGN KEY (slot_id)
-        REFERENCES slot (slot_id)
-	ON UPDATE CASCADE
-	ON DELETE CASCADE
+    is_locked BIT NOT NULL,
+    CONSTRAINT UQ_user_slot UNIQUE (user_id, slot_id),
+    CONSTRAINT FK_user_slot_user FOREIGN KEY (user_id) REFERENCES [user](user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT FK_user_slot_slot FOREIGN KEY (slot_id) REFERENCES slot(slot_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
+-- CANDIDATE TABLE
 CREATE TABLE candidate (
     candidate_id INT IDENTITY(1,1) PRIMARY KEY,
-    candidate_name VARCHAR(100) NOT NULL
+    candidate_name VARCHAR(100) NOT NULL,
+    email_id VARCHAR(250) NOT NULL,
+    phone_number VARCHAR(32) NOT NULL,
+    candidate_exp INT NOT NULL,
+    current_position VARCHAR(150) NOT NULL,
+    resume_url VARCHAR(100) NULL
 );
 
+-- FEEDBACK TABLE
+CREATE TABLE feedback (
+    feedback_id INT IDENTITY(1,1) PRIMARY KEY,
+    star_rating INT NOT NULL,
+    technical_skills VARCHAR(MAX) NOT NULL,
+    communication_skills VARCHAR(MAX) NOT NULL,
+    problem_solving_ability VARCHAR(MAX) NOT NULL,
+    overall_feedback VARCHAR(MAX) NOT NULL,
+    recommendation VARCHAR(20) NOT NULL
+);
+
+-- CANDIDATE_MAP TABLE
 CREATE TABLE candidate_map (
     candidate_id INT NOT NULL,
     user_slot_id INT NOT NULL,
     scheduled_time VARCHAR(20) NOT NULL,
-
-    CONSTRAINT PK_CandidateMap PRIMARY KEY (candidate_id, user_slot_id),
-
-    CONSTRAINT FK_CandidateMap_Candidate FOREIGN KEY (candidate_id)
-        REFERENCES candidate (candidate_id)
-	ON UPDATE CASCADE
-        ON DELETE CASCADE,
-
-    CONSTRAINT FK_CandidateMap_UserSlot FOREIGN KEY (user_slot_id)
-        REFERENCES user_slot (user_slot_id)
-	ON UPDATE CASCADE
-	ON DELETE CASCADE
+    is_present BIT NULL,
+    interview_rounds INT NOT NULL,
+    feedback_id INT NULL UNIQUE,
+    PRIMARY KEY (candidate_id, user_slot_id),
+    CONSTRAINT FK_candidate_map_candidate FOREIGN KEY (candidate_id) REFERENCES candidate(candidate_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT FK_candidate_map_user_slot FOREIGN KEY (user_slot_id) REFERENCES user_slot(user_slot_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT FK_candidate_map_feedback FOREIGN KEY (feedback_id) REFERENCES feedback(feedback_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+-- REASSIGN TABLE
+CREATE TABLE reassign (
+    reassign_id INT IDENTITY(1,1) PRIMARY KEY,
+    candidate_id INT NOT NULL,
+    old_userslot_id INT NOT NULL,
+    new_userslot_id INT NOT NULL,
+    reason VARCHAR(50) NOT NULL,
+    additional_notes VARCHAR(MAX) NULL,
+
+    CONSTRAINT FK_reassign_candidate FOREIGN KEY (candidate_id)
+        REFERENCES candidate(candidate_id) ON UPDATE CASCADE ON DELETE CASCADE,
+
+    CONSTRAINT FK_reassign_old_userslot FOREIGN KEY (old_userslot_id)
+        REFERENCES user_slot(user_slot_id),
+
+    CONSTRAINT FK_reassign_new_userslot FOREIGN KEY (new_userslot_id)
+        REFERENCES user_slot(user_slot_id),
+    CONSTRAINT UQ_reassign_candidate_slots UNIQUE (candidate_id, old_userslot_id, new_userslot_id)
+
+);
+
+
+-- Dummy Records to insert
+-- USERS
+INSERT INTO [user] (user_name, email_id, role, phone_number, is_active, password_hash)
+VALUES
+('Alice Admin', 'alice.admin@example.com', 'Admin', '9000000001', 1, 'hash_admin'),
+('Henry HR', 'henry.hr@example.com', 'HR', '9000000002', 1, 'hash_hr'),
+('Mona Mentor', 'mona.mentor@example.com', 'Mentor', '9000000003', 1, 'hash_mentor'),
+('Paul Panel1', 'paul.panel1@example.com', 'Panel', '9000000004', 1, 'hash_panel1'),
+('Peter Panel2', 'peter.panel2@example.com', 'Panel', '9000000005', 1, 'hash_panel2'),
+('Priya Panel3', 'priya.panel3@example.com', 'Panel', '9000000006', 1, 'hash_panel3'),
+('Pooja Panel4', 'pooja.panel4@example.com', 'Panel', '9000000007', 1, 'hash_panel4'),
+('Prakash Panel5', 'prakash.panel5@example.com', 'Panel', '9000000008', 1, 'hash_panel5');
+
+
+-- SLOTS
+INSERT INTO slot (slot_date, start_time, end_time)
+VALUES
+('2025-12-01', '10:00', '11:00'), -- past
+('2025-12-02', '14:00', '15:00'), -- past
+('2025-12-15', '09:00', '10:00'), -- future
+('2025-12-16', '11:00', '12:00'), -- future
+('2025-12-20', '15:00', '16:00'), -- future
+('2025-11-25', '10:00', '11:00'), -- past
+('2025-11-26', '14:00', '15:00'), -- past
+('2025-12-22', '09:00', '10:00'), -- future
+('2025-12-23', '11:00', '12:00'), -- future
+('2025-12-24', '15:00', '16:00'); -- future
+
+
+-- USER_SLOT
+INSERT INTO user_slot (user_id, slot_id, is_locked)
+VALUES
+(4, 1, 0), -- Paul past slot
+(5, 2, 0), -- Peter past slot
+(6, 3, 0), -- Priya future slot
+(7, 4, 0), -- Pooja future slot
+(8, 5, 0), -- Prakash future slot
+(4, 6, 0), -- Paul past slot
+(5, 7, 0), -- Peter past slot
+(6, 8, 0), -- Priya future slot
+(7, 9, 0), -- Pooja future slot
+(8, 10, 0); -- Prakash future slot
+
+
+-- CANDIDATES
+INSERT INTO candidate (candidate_name, email_id, phone_number, candidate_exp, current_position, resume_url)
+VALUES
+('John Doe', 'john.doe@example.com', '9111111111', 5, 'Software Engineer', 'resume_john.pdf'),
+('Jane Smith', 'jane.smith@example.com', '9222222222', 3, 'Data Analyst', 'resume_jane.pdf'),
+('Sam Wilson', 'sam.wilson@example.com', '9333333333', 7, 'Tech Lead', 'resume_sam.pdf'),
+('Ravi Kumar', 'ravi.kumar@example.com', '9444444444', 4, 'Backend Developer', 'resume_ravi.pdf'),
+('Sneha Reddy', 'sneha.reddy@example.com', '9555555555', 2, 'Business Analyst', 'resume_sneha.pdf'),
+('Arjun Mehta', 'arjun.mehta@example.com', '9666666666', 6, 'DevOps Engineer', 'resume_arjun.pdf'),
+('Neha Sharma', 'neha.sharma@example.com', '9777777777', 8, 'Project Manager', 'resume_neha.pdf'),
+('Karan Patel', 'karan.patel@example.com', '9888888888', 1, 'Intern', 'resume_karan.pdf');
+
+
+-- FEEDBACK
+INSERT INTO feedback (star_rating, technical_skills, communication_skills, problem_solving_ability, overall_feedback, recommendation)
+VALUES
+(4, 'Strong in Java', 'Good communication', 'Excellent problem solving', 'Solid candidate', 'Hire'),
+(3, 'Average SQL', 'Needs improvement', 'Fair problem solving', 'Could be better', 'Hold'),
+(5, 'Expert in Python', 'Great communicator', 'Outstanding problem solving', 'Excellent candidate', 'Hire'),
+(4, 'Good backend knowledge', 'Clear communicator', 'Strong logical thinking', 'Promising candidate', 'Hire'),
+(2, 'Basic analytics', 'Average communication', 'Needs improvement', 'Not ready yet', 'Reject'),
+(5, 'Excellent DevOps skills', 'Strong collaboration', 'Great problem solving', 'Highly recommended', 'Hire'),
+(3, 'Solid project management', 'Good leadership', 'Average technical depth', 'Decent candidate', 'Hold'),
+(3, 'Basic coding skills', 'Eager learner', 'Developing problem solving', 'Entry-level candidate', 'Hold');
+
+
+-- CANDIDATE_MAP
+INSERT INTO candidate_map (candidate_id, user_slot_id, scheduled_time, is_present, interview_rounds, feedback_id)
+VALUES
+(1, 1, '10:00', 1, 1, 1), -- John with Paul
+(2, 2, '14:00', 1, 1, 2), -- Jane with Peter
+(3, 3, '09:00', 0, 2, 3), -- Sam with Priya
+(4, 6, '10:00', 1, 1, 4), -- Ravi with Paul
+(5, 7, '14:00', 1, 1, 5), -- Sneha with Peter
+(6, 8, '09:00', 1, 2, 6), -- Arjun with Priya
+(7, 9, '11:00', 0, 2, 7), -- Neha with Pooja
+(8, 10, '15:00', 1, 1, 8); -- Karan with Prakash
+
+
+-- REASSIGN
+INSERT INTO reassign (candidate_id, old_userslot_id, new_userslot_id, reason, additional_notes)
+VALUES
+(1, 1, 4, 'Panel unavailable', 'Rescheduled from Paul to Pooja'),
+(2, 2, 5, 'Conflict', 'Shifted from Peter to Prakash'),
+(4, 6, 8, 'Panel conflict', 'Ravi moved from Paul to Priya'),
+(6, 8, 9, 'Round 2', 'Arjun scheduled for second round with Pooja'),
+(7, 9, 10, 'Availability issue', 'Neha shifted from Pooja to Prakash');
 
 

@@ -148,4 +148,14 @@ public class UserService
 
         return response;
     }
+
+    // Assign Candidate -> For Hr
+
+    // Reassign Candidate -> For Panel and mentor
+
+    // Get Available Panel for Assign and Reassign -> For Hr, Panel and Mentor
+
+    // Mark Candidate Present or Absent or Pending -> For Mentor
+
+    // Get methods for Hr, Panel and Mentor if needed
 }

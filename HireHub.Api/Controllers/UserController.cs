@@ -63,7 +63,7 @@ public class UserController : ControllerBase
     }
 
     [RequireAuth([Role.Panel])]
-    [HttpGet("current/info/all")]
+    [HttpGet("panel/current/info/all")]
     [ProducesResponseType<UserResponse<UserCompleteDetailsDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
@@ -91,7 +91,7 @@ public class UserController : ControllerBase
     }
 
     [RequireAuth([Role.Panel])]
-    [HttpPost("current/availability/set")]
+    [HttpPost("panel/current/availability/set")]
     [ProducesResponseType<UserResponse<List<UserSlotDetailsDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
@@ -146,4 +146,59 @@ public class UserController : ControllerBase
             });
         }
     }
+
+    //[RequireAuth([Role.Panel])]
+    //[HttpPost("panel/feedback/set")]
+    //[ProducesResponseType<UserResponse<FeedbackDTO>>(200)]
+    //[ProducesResponseType<BaseResponse>(400)]
+    //[ProducesResponseType<ErrorResponse>(500)]
+    //public async Task<IActionResult> SetFeedbackForPanel([FromBody] SetFeedbackRequest request)
+    //{
+    //    _logger.LogInformation(LogMessage.StartMethod, nameof(SetFeedbackForPanel));
+
+    //    try
+    //    {
+    //        using (_transactionRepository.BeginTransaction())
+    //        {
+    //            var baseResponse = new BaseResponse();
+
+    //            var validator = await new
+    //                SetFeedbackRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
+    //                .ValidateAsync(request);
+
+    //            if (!validator.IsValid)
+    //            {
+    //                validator.Errors.ForEach(e =>
+    //                    baseResponse.Errors.Add(new ValidationError
+    //                    {
+    //                        PropertyName = e.PropertyName,
+    //                        ErrorMessage = e.ErrorMessage
+    //                    })
+    //                );
+    //                return Ok(baseResponse);
+    //            }
+
+    //            var response = await _userService.SetFeedback(request);
+
+    //            baseResponse.Warnings.ForEach(response.Warnings.Add);
+
+    //            _transactionRepository.CommitTransaction();
+
+    //            _logger.LogInformation(LogMessage.EndMethod, nameof(SetFeedbackForPanel));
+
+    //            return Ok(response);
+    //        }
+    //    }
+    //    catch (CommonException ex)
+    //    {
+    //        _logger.LogWarning(LogMessage.EndMethodException, nameof(SetFeedbackForPanel), ex.Message);
+    //        _transactionRepository.RollbackTransaction();
+    //        return BadRequest(new BaseResponse()
+    //        {
+    //            Errors = [
+    //                new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
+    //            ]
+    //        });
+    //    }
+    //}
 }
