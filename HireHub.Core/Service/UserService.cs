@@ -89,6 +89,8 @@ public class UserService
                 candidateDetails.FeedbackId = candidateMap.FeedbackId;
                 candidateDetails.Feedback = candidateMap.Feedback != null ?
                     Helper.Map<Feedback, FeedbackDTO>(candidateMap.Feedback) : null;
+                candidateDetails.IsSelected = candidateMap.IsSelected;
+
                 userSlotDetail.Candidates.Add(candidateDetails);
             });
             userSlotDetails.Add(userSlotDetail);
