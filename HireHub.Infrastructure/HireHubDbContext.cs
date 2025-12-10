@@ -236,6 +236,11 @@ public class HireHubDbContext : DbContext
                 .HasColumnType("int")
                 .IsRequired(false);
 
+            b.Property(e => e.IsSelected)
+                .HasColumnName("is_selected")
+                .HasColumnType("BIT")
+                .IsRequired(false);
+
             // Relationship: CandidateMap → Candidate
             b.HasOne(cm => cm.Candidate)
                 .WithMany(c => c.CandidateMaps)
@@ -255,7 +260,7 @@ public class HireHubDbContext : DbContext
                 .WithOne(f => f.CandidateMap)
                 .HasPrincipalKey<Feedback>(f => f.Id)
                 .HasForeignKey<CandidateMap>(cm => cm.FeedbackId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Reassign>(b =>

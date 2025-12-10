@@ -7,18 +7,12 @@ public static class LogMessage
     public const string EndMethodException = "End - {Method} - {Exception}";
     public const string UserNotFoundOnLogin = "Login failed: user not found: {Username}";
     public const string InvalidPassword = "Login failed: invalid password for {EmpId}";
-    //public const string UserNotFoundOnReset = "Reset failed: user not found: {Email}";
-    //public const string ResetTokenNotGeneratedOrInvalid = "Reset failed: Reset token not generated or invalid";
-    //public const string ResetTokenExpired = "Reset failed: Reset token expired";
-    //public const string ResetTokenLog = "Generated Reset token {Token}";
-    //public const string UserNotFound = "User not found";
 }
 
 public static class ExceptionMessage
 {
     public const string JwtNotConfigured = "JWT settings not configured";
     public const string ConnectionStringNotConfigured = "ConnectionString not configured";
-    //public const string EmailNotConfigured = "Email config not configured";
     public const string AzureLogicAppNotConfigured = "Azure Logic App not configured";
     public const string UserIdNotSetOnMiddleware = "Middlerware failed: User Id not set";
     public const string UserRoleNotSetOnMiddleware = "Middlerware failed: User Role not set";
@@ -26,17 +20,6 @@ public static class ExceptionMessage
 
 public static class ResponseMessage
 {
-    //public const string InvalidCredentials = "Invalid credentials";
-    //public const string LoginCredentialsRequired = "Username and password are required";
-    //public const string EmailRequired = "Email is required";
-    //public const string EmailNotRegistered = "Email not registered";
-    //public const string OtpSendToEmail = "Otp send to the email:{0}";
-    //public const string PasswordRequired = "Password is Required";
-    //public const string PasswordResetSuccess = "Password reset successfully";
-    //public const string ResetTokenSent = "Token for reset password sent to {0}";
-    //public const string ResetTokenRequired = "Reset token is required";
-    //public const string InvalidUser = "Invalid user";
-    //public const string InvalidResetToken = "Invalid reset token";
     public const string UserNotFound = "User not found";
     public const string PasswordSetRequire = "Password require to be set";
     public const string PasswordReSetRequire = "Password require to be re-set";
@@ -44,6 +27,12 @@ public static class ResponseMessage
     public const string InvalidSlots = "Some slots are invalid";
     public const string PastSlotsInvalid = "Past slots can not be set";
     public const string SlotsAlreadySet = "Some slots are already registered";
+    public const string InvalidCandidate = "Invalid Candidate";
+    public const string InvalidPanel = "Invalid Panel";
+    public const string CandidateNotAssignedToPanel = "Candidate not assigned to this Panel";
+    public const string CanNotSetFeedbackForPastCandidate = "Can not set Feedback for Past Interviewed Candidate";
+    public const string UserDifferFromLoggedUser = "Provided user is differ from logged in user";
+    public const string CanNotChangeOrSetAttendanceForPastCandidate = "Can not change or set Attendance for Past Interviewed Candidate";
 }
 
 public static class FieldName
@@ -64,8 +53,6 @@ public static class AppSettingKey
 {
     public const string DefaultConnection = "DefaultConnection";
     public const string JwtSettings = "JwtSettings";
-    //public const string PasswordSettings = "PasswordSettings";
-    //public const string DarkwolfEmailConfig = "DarkwolfEmailConfig";
     public const string AzureLogicApp = "AzureLogicApp";
 }
 
@@ -87,4 +74,9 @@ public static class Role
     public const string Hr = "HR";
     public const string Panel = "Panel";
     public const string Admin = "Admin";
+}
+
+public static class Options
+{
+    public static string[] Recommendations => ["Strong Hire", "Hire", "May Be", "No Hire"];
 }

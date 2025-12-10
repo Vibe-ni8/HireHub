@@ -20,6 +20,6 @@ public class SlotRepository : GenericRepository<Slot>, ISlotRepository
         var currentTime = TimeOnly.FromDateTime(now);
 
         var slot = await GetByIdAsync(slotId, cancellationToken);
-        return slot == null || slot.SlotDate < today || slot.EndTime < currentTime;
+        return slot == null || slot.SlotDate < today || (slot.SlotDate == today && slot.EndTime < currentTime);
     }
 }

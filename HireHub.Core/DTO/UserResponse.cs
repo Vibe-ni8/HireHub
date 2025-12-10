@@ -51,6 +51,7 @@ public class CandidateDetailsDTO
     public int InterviewRounds { get; set; }
     public int? FeedbackId { get; set; }
     public FeedbackDTO? Feedback { get; set; } = null;
+    public bool? IsSelected { get; set; } = null!;
 }
 
 public class UserSlotDetailsDTO

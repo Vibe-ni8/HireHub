@@ -89,6 +89,8 @@ public class UserService
                 candidateDetails.FeedbackId = candidateMap.FeedbackId;
                 candidateDetails.Feedback = candidateMap.Feedback != null ?
                     Helper.Map<Feedback, FeedbackDTO>(candidateMap.Feedback) : null;
+                candidateDetails.IsSelected = candidateMap.IsSelected;
+
                 userSlotDetail.Candidates.Add(candidateDetails);
             });
             userSlotDetails.Add(userSlotDetail);
@@ -149,13 +151,34 @@ public class UserService
         return response;
     }
 
+    public async Task<AttendanceMarkResponse> MarkAttendance(AttendanceMarkRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(MarkAttendance));
+
+        var response = new AttendanceMarkResponse();
+
+        var candidateMap = await _candidateMapRepository
+            .GetByIdAsync(request.CandidateId, request.UserSlotId);
+
+        candidateMap!.IsPresent = request.IsPresent;
+
+        _candidateMapRepository.Update(candidateMap);
+        _saveRepository.SaveChanges();
+
+        response.Data = true;
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(MarkAttendance));
+
+        return response;
+    }
+
     // Assign Candidate -> For Hr
 
     // Reassign Candidate -> For Panel and mentor
 
     // Get Available Panel for Assign and Reassign -> For Hr, Panel and Mentor
 
-    // Mark Candidate Present or Absent or Pending -> For Mentor
+    // [Completed] Mark Candidate Present or Absent or Pending -> For Mentor
 
     // Get methods for Hr, Panel and Mentor if needed
 }

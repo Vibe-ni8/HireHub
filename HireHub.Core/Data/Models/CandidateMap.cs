@@ -17,6 +17,7 @@ public class CandidateMap : BaseEntity
     public int InterviewRounds { get; set; }
     public int? FeedbackId { get; set; }
     public Feedback? Feedback { get; set; } = null;
+    public bool? IsSelected { get; set; } = null!;
 
 }
 
