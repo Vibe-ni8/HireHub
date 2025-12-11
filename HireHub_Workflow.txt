@@ -33,6 +33,8 @@ CREATE NEW DRIVE PAGE
 
 	- Drive Name
 
+	- Drive Date
+
 	- Number of Techinical Rounds 	(Drop Down [1,2])
 
 	- Coordination Team
@@ -116,7 +118,8 @@ Requests (
     RequestId INT PK IDENTITY,
     RequestType VARCHAR(20)  -- Add Role, Add Action
     SubType VARCHAR(30) -- HR, Mentor, Panel, Drive-Add, Drive-View, Drive-Delete,
-    Status VARCHAR(20) DEFAULT 'Pending' -- Pending, Approved, Rejected 
+    Status VARCHAR(20) DEFAULT 'Pending' -- Pending, Approved, Rejected
+    ApprovedBy INT NULL FK → Users.UserId,
     ApprovedDate DATETIME NULL,
     RequestedBy INT NOT NULL FK → Users.UserId,
     RequestedDate DATETIME DEFAULT GETDATE(),
@@ -128,14 +131,15 @@ Requests (
 Drives (
     DriveId INT PK IDENTITY,
     DriveName VARCHAR(200) UNIQUE,
+    DriveDate DATETIME,
     TechnicalRounds INT NOT NULL,
-    CreatedBy INT FK → Users.UserId,
-    Status VARCHAR(20) DEFAULT 'Open',   -- Open, Paused, Closed
+    CreatedBy INT NOT NULL FK → Users.UserId,
+    Status VARCHAR(20) DEFAULT 'InProposal',   -- InProposal, Started, Halted, Completed
     CreatedDate DATETIME DEFAULT GETDATE()
 )
 
-DriveTeam (
-    DriveTeamId INT PK IDENTITY,
+DriveMembers (
+    DriveMemberId INT PK IDENTITY,
     DriveId INT FK → Drives.DriveId,
     UserId INT FK → Users.UserId,
     RoleId INT FK → Roles.RoleId
@@ -188,20 +192,20 @@ FeedbackConfiguration (
 
 Candidates (
     CandidateId INT PK IDENTITY,
-    FullName VARCHAR(100),
-    Phone VARCHAR(32),
-    Email VARCHAR(150),
-    ResumeUrl VARCHAR(500),
-    PreviousCompany VARCHAR(200),
-    College VARCHAR(200),
-    Address VARCHAR(500),
-    LinkedInUrl VARCHAR(500),
-    GitHubUrl VARCHAR(500),
+    FullName VARCHAR(100) NOT NULL,
+    Phone VARCHAR(32) NOT NULL UNIQUE,
+    Email VARCHAR(150) NOT NULL UNIQUE,
+    ResumeUrl VARCHAR(500) NULL,
+    PreviousCompany VARCHAR(200) NULL,
+    College VARCHAR(200) NULL,
+    Address VARCHAR(500) NULL,
+    LinkedInUrl VARCHAR(500) NULL,
+    GitHubUrl VARCHAR(500) NULL,
     CreatedDate DATETIME DEFAULT GETDATE()
 )
 
-CandidateDrive (
-    CandidateDriveId INT PK IDENTITY,
+DriveCandidates (
+    DriveCandidateId INT PK IDENTITY,
     CandidateId INT FK → Candidates.CandidateId,
     DriveId INT FK → Drives.DriveId,
     Status VARCHAR(20) DEFAULT 'Pending',  -- Pending, Selected, Rejected
@@ -211,8 +215,8 @@ CandidateDrive (
 
 Rounds (
     RoundId INT PK IDENTITY,
-    CandidateDriveId INT FK → CandidateDrive.CandidateDriveId,
-    PanelId INT FK → Users.UserId,
+    DriveCandidateId INT FK → DriveCandidates.DriveCandidateId,
+    InterviewerId INT FK → Users.UserId,
     RoundType VARCHAR(20),  -- Hr, Tech 1, Tech 2
     Status VARCHAR(20) DEFAULT 'Scheduled',  -- Scheduled, OnProcess, Completed, Skipped
     Result VARCHAR(20) DEFAULT 'Pending',  -- Pending, Selected, Rejected
@@ -220,11 +224,11 @@ Rounds (
 
 CandidateReassignments (
     ReassignId INT PK IDENTITY,
-    CandidateDriveId INT NOT NULL FK → CandidateDrive.CandidateDriveId,
+    DriveCandidateId INT NOT NULL FK → DriveCandidates.DriveCandidateId,
     PreviousUserId INT NOT NULL FK → Users.UserId,
     NewUserId INT NOT NULL FK → Users.UserId,
     RequestedBy INT NOT NULL FK → Users.UserId,
-    RequireApproval BIT,
+    RequireApproval BIT NOT NULL,
     ApprovedBy INT FK → Users.UserId NULL,
     ApprovedDate DATETIME NULL,
     RequestedDate DATETIME DEFAULT GETDATE()
@@ -234,20 +238,20 @@ CandidateReassignments (
 
 Interviews (
     InterviewId INT PK IDENTITY,
-    CandidateDriveId INT NOT NULL FK → CandidateDrive.CandidateDriveId,
-    PanelId INT NOT NULL FK → Users.UserId,
+    DriveCandidateId INT NOT NULL FK → DriveCandidates.DriveCandidateId,
+    InterviewerId INT NOT NULL FK → Users.UserId,
     InterviewDate DATETIME
 )
 
 Feedbacks (
     FeedbackId INT PK IDENTITY,
     InterviewId INT NOT NULL UNIQUE FK → Interviews.InterviewId,
-    OverallRating INT,
-    TechnicalSkill INT,
-    Communication INT,
-    ProblemSolving INT,
-    Recommendation VARCHAR(20), -- Hire, May be, No Hire
+    OverallRating INT NOT NULL,
+    TechnicalSkill VARCHAR(500),
+    Communication VARCHAR(500),
+    ProblemSolving VARCHAR(500),
     OverallFeedback TEXT,
+    Recommendation VARCHAR(20) NOT NULL, -- Hire, May be, No Hire
     SubmittedDate DATETIME DEFAULT GETDATE()
 )
 

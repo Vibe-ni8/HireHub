@@ -68,7 +68,7 @@ public static class Key
     public const string Role = "Role";
 }
 
-public static class Role
+public static class RoleName
 {
     public const string Mentor = "Mentor";
     public const string Hr = "HR";

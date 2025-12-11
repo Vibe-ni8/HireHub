@@ -2,21 +2,30 @@
 
 namespace HireHub.Core.Data.Models;
 
+using System;
+using System.Collections.Generic;
+
 public class Candidate : BaseEntity
 {
-    public Candidate() : base("CANDIDATE")
+    public Candidate() : base("candidates")
     {
     }
 
-    public int Id { get; set; }
-    public string Name { get; set; } = null!;
+    public int CandidateId { get; set; }
+    public string FullName { get; set; } = null!;
+    public string Phone { get; set; } = null!;
     public string Email { get; set; } = null!;
-    public string PhoneNumber { get; set; } = null!;
-    public int Experience { get; set; }
-    public string CurrentPosition { get; set; } = null!;
-    public string? ResumeUrl { get; set; } = null!;
-    public virtual ICollection<CandidateMap> CandidateMaps { get; set; } = [];
+    public string? ResumeUrl { get; set; }
+    public string? PreviousCompany { get; set; }
+    public string? College { get; set; }
+    public string? Address { get; set; }
+    public string? LinkedInUrl { get; set; }
+    public string? GitHubUrl { get; set; }
+    public DateTime CreatedDate { get; set; }
 
+    // Navigation
+    public ICollection<DriveCandidate> DriveCandidates { get; set; } = new List<DriveCandidate>();
+    public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
+    public ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+    public ICollection<Request> Requests { get; set; } = new List<Request>();
 }
-
-

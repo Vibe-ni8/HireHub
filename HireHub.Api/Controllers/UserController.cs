@@ -62,7 +62,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [RequireAuth([Role.Panel])]
+    [RequireAuth([RoleName.Panel])]
     [HttpGet("panel/current/info/all")]
     [ProducesResponseType<UserResponse<UserCompleteDetailsDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
@@ -90,7 +90,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [RequireAuth([Role.Panel])]
+    [RequireAuth([RoleName.Panel])]
     [HttpPost("panel/current/availability/set")]
     [ProducesResponseType<UserResponse<List<UserSlotDetailsDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
@@ -147,7 +147,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [RequireAuth([Role.Panel])]
+    [RequireAuth([RoleName.Panel])]
     [HttpPost("panel/feedback/set")]
     [ProducesResponseType<UserResponse<FeedbackDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
@@ -202,7 +202,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [RequireAuth([Role.Mentor])]
+    [RequireAuth([RoleName.Mentor])]
     [HttpPost("mentor/Attendance/set")]
     [ProducesResponseType<AttendanceMarkResponse>(200)]
     [ProducesResponseType<BaseResponse>(400)]

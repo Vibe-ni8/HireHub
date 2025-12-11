@@ -1,13 +1,25 @@
-﻿namespace HireHub.Core.Data.Models;
+﻿using HireHub.Shared.Common.Models;
 
-public class Feedback
+namespace HireHub.Core.Data.Models;
+
+using System;
+
+public class Feedback : BaseEntity
 {
-    public int Id { get; set; }
-    public int StarRating { get; set;}
-    public string TechnicalSkills { get; set; } = null!;
-    public string CommunicationSkill { get; set; } = null!;
-    public string ProblemSolvingAbility { get; set; } = null!;
-    public string OverallFeedback { get; set; } = null!;
-    public string Recommendation {  get; set; } = null!;
-    public CandidateMap CandidateMap { get; set; } = null!;
+    public Feedback() : base("feedbacks")
+    {
+    }
+
+    public int FeedbackId { get; set; }
+    public int InterviewId { get; set; }
+    public int? OverallRating { get; set; }
+    public int? TechnicalSkill { get; set; }
+    public int? Communication { get; set; }
+    public int? ProblemSolving { get; set; }
+    public string? OverallFeedback { get; set; }
+    public string Recommendation { get; set; } = null!;
+    public DateTime SubmittedDate { get; set; }
+
+    // Navigation
+    public Interview? Interview { get; set; }
 }
