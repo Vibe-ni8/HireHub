@@ -20,6 +20,7 @@ public class User : BaseEntity
     public bool IsActive { get; set; } = true;
     public DateTime CreatedDate { get; set; }
     public DateTime? UpdatedDate { get; set; }
+    public string? PasswordHash { get; set; }
 
     // Navigation
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();

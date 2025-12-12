@@ -79,6 +79,11 @@ public class HireHubDbContext : DbContext
             .HasColumnName("updated_date")
             .HasColumnType("DATETIME")
             .IsRequired(false);
+
+            b.Property(x => x.PasswordHash)
+            .HasColumnName("password_hash")
+            .HasColumnType("VARCHAR(MAX)")
+            .IsRequired(false);
         });
 
         // Roles

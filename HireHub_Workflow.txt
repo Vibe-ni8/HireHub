@@ -91,7 +91,8 @@ Users (
     Phone VARCHAR(32) UNIQUE,
     IsActive BIT DEFAULT 1,
     CreatedDate DATETIME DEFAULT GETDATE(),
-    UpdatedDate DATETIME
+    UpdatedDate DATETIME,
+    PasswordHash VARCHAR(MAX)
 )
 
 Roles (
