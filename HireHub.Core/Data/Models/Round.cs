@@ -11,11 +11,33 @@ public class Round : BaseEntity
     public int RoundId { get; set; }
     public int DriveCandidateId { get; set; }
     public int InterviewerId { get; set; }
-    public string RoundType { get; set; } = null!;
-    public string Status { get; set; } = null!;
-    public string Result { get; set; } = null!;
+    public RoundType RoundType { get; set; }
+    public RoundStatus Status { get; set; }
+    public RoundResult Result { get; set; }
 
     // Navigation
     public DriveCandidate? DriveCandidate { get; set; }
     public User? Interviewer { get; set; }
+}
+
+public enum RoundType
+{
+    Hr,
+    Tech1,
+    Tech2
+}
+
+public enum RoundStatus
+{
+    Scheduled,
+    OnProcess,
+    Completed,
+    Skipped
+}
+
+public enum RoundResult
+{
+    Pending,
+    Selected,
+    Rejected
 }

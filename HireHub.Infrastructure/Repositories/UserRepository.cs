@@ -1,4 +1,5 @@
-﻿using HireHub.Core.Data.Interface;
+﻿using System;
+using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Shared.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -17,5 +18,18 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     public async Task<User?> GetByEmailAsync(string emailId, CancellationToken cancellationToken = default)
     {
         return await _context.Users.FirstOrDefaultAsync(e => e.Email == emailId, cancellationToken);
+    }
+
+    public async Task<int> CountUsersAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Users.CountAsync(cancellationToken);
+    }
+
+    public async Task<int> CountUsersByRoleAsync(string roleName, CancellationToken cancellationToken = default)
+    {
+        return await _context.Roles
+            .Where(r => r.RoleName.ToString() == roleName)
+            .Join(_context.Users, r => r.RoleId, u => u.RoleId, (r, u) => u)
+            .CountAsync(cancellationToken);
     }
 }

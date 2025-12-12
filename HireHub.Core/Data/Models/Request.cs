@@ -11,9 +11,9 @@ public class Request : BaseEntity
     }
 
     public int RequestId { get; set; }
-    public string RequestType { get; set; } = null!;
-    public string SubType { get; set; } = null!;
-    public string Status { get; set; } = null!;
+    public RequestType RequestType { get; set; }
+    public RequestSubType SubType { get; set; }
+    public RequestStatus Status { get; set; }
     public int? ApprovedBy { get; set; }
     public DateTime? ApprovedDate { get; set; }
     public int RequestedBy { get; set; }
@@ -23,3 +23,25 @@ public class Request : BaseEntity
     public User? Approver { get; set; }
     public User? Requester { get; set; }
 }
+
+public enum RequestType
+{
+    AddAction
+}
+
+public enum RequestSubType
+{
+    ViewDrive,
+    AddDrive,
+    UpdateDrive,
+    DeleteDrive
+}
+
+public enum RequestStatus
+{
+    Pending,
+    Approved,
+    Rejected
+}
+
+

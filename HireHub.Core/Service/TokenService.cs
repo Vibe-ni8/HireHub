@@ -79,7 +79,7 @@ public class TokenService
 
         var role = await _roleRepository.GetByIdAsync(user.RoleId);
 
-        var token = _jwtTokenService.GenerateToken(user.UserId.ToString(), role!.RoleName);
+        var token = _jwtTokenService.GenerateToken(user.UserId.ToString(), role!.RoleName.ToString());
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GenerateToken));
 

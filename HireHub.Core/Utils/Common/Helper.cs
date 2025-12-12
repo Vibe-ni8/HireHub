@@ -109,7 +109,7 @@ public static class Helper
 
     public static readonly ValueConverter<TimeOnly, string> TimeConverter = new
     (
-        v => v.ToString("HH:mm", CultureInfo.InvariantCulture), // TimeOnly → string
+        v => v.ToString("HH:mm", CultureInfo.InvariantCulture),           // TimeOnly → string
         v => TimeOnly.ParseExact(v, new string[] { "HH:mm", "hh:mm tt" }) // string → TimeOnly
     );
 
@@ -117,10 +117,16 @@ public static class Helper
     (
         v => v == null || v.Count == 0
             ? null
-            : string.Join(",", v), // List → comma-separated string
+            : string.Join(",", v),                           // List → comma-separated string
         v => string.IsNullOrEmpty(v)
             ? new List<string>()
             : v.Split(',', StringSplitOptions.None).ToList() // string → List<string>
+    );
+
+    public static ValueConverter<T, string> EnumConverter<T>() where T : Enum => new
+    (
+        v => v.ToString(),                // Enum → string
+        v => (T)Enum.Parse(typeof(T), v)  // string → Enum
     );
 
 }

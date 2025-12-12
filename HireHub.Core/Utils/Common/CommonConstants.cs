@@ -21,20 +21,9 @@ public static class ExceptionMessage
 
 public static class ResponseMessage
 {
-    public const string UserNotFound = "User not found";
     public const string NotActiveUser = "You are not a Active User";
     public const string PasswordSetRequire = "Password require to be set";
     public const string PasswordReSetRequire = "Password require to be re-set";
-    public const string NoSlotsProvided = "No slots provided";
-    public const string InvalidSlots = "Some slots are invalid";
-    public const string PastSlotsInvalid = "Past slots can not be set";
-    public const string SlotsAlreadySet = "Some slots are already registered";
-    public const string InvalidCandidate = "Invalid Candidate";
-    public const string InvalidPanel = "Invalid Panel";
-    public const string CandidateNotAssignedToPanel = "Candidate not assigned to this Panel";
-    public const string CanNotSetFeedbackForPastCandidate = "Can not set Feedback for Past Interviewed Candidate";
-    public const string UserDifferFromLoggedUser = "Provided user is differ from logged in user";
-    public const string CanNotChangeOrSetAttendanceForPastCandidate = "Can not change or set Attendance for Past Interviewed Candidate";
 }
 
 public static class FieldName
@@ -78,7 +67,15 @@ public static class RoleName
     public const string Admin = "Admin";
 }
 
-public static class Options
+public static class UserAction
 {
-    public static string[] Recommendations => ["Strong Hire", "Hire", "May Be", "No Hire"];
+    public const string Drive = "Drive";
+}
+
+public static class ActionType
+{
+    public const string View = "View";
+    public const string Add = "Add";
+    public const string Update = "Update";
+    public const string Delete = "Delete";
 }

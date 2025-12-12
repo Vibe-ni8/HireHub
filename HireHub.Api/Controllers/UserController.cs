@@ -35,6 +35,20 @@ public class UserController : ControllerBase
         _logger = logger;
     }
 
+    #region Get API's
+
+
+
+    #endregion
+
+    #region Post API's
+
+
+
+    #endregion
+
+    #region Commented API's
+
     //[HttpGet("current/info")]
     //[ProducesResponseType<UserResponse<UserDetailsDTO>>(200)]
     //[ProducesResponseType<BaseResponse>(400)]
@@ -145,4 +159,5 @@ public class UserController : ControllerBase
     //    }
     //}
 
+    #endregion
 }

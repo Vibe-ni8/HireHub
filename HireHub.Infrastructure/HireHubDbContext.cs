@@ -19,7 +19,7 @@ public class HireHubDbContext : DbContext
     public DbSet<NotificationSettings> NotificationSettings => Set<NotificationSettings>();
     public DbSet<FeedbackConfiguration> FeedbackConfigurations => Set<FeedbackConfiguration>();
     public DbSet<Candidate> Candidates => Set<Candidate>();
-    public DbSet<DriveCandidate> CandidateDrives => Set<DriveCandidate>();
+    public DbSet<DriveCandidate> DriveCandidates => Set<DriveCandidate>();
     public DbSet<Round> Rounds => Set<Round>();
     public DbSet<CandidateReassignment> CandidateReassignments => Set<CandidateReassignment>();
     public DbSet<Interview> Interviews => Set<Interview>();
@@ -109,6 +109,7 @@ public class HireHubDbContext : DbContext
             .HasColumnName("role_name")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
+            .HasConversion(Helper.EnumConverter<UserRole>())
             .IsRequired();
 
             b.HasIndex(x => x.RoleName).IsUnique();
@@ -171,19 +172,22 @@ public class HireHubDbContext : DbContext
             .HasColumnName("request_type")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
+            .HasConversion(Helper.EnumConverter<RequestType>())
             .IsRequired();
 
             b.Property(x => x.SubType)
              .HasColumnName("sub_type")
              .HasColumnType("VARCHAR(30)")
              .HasMaxLength(30)
+             .HasConversion(Helper.EnumConverter<RequestSubType>())
              .IsRequired();
 
             b.Property(x => x.Status)
             .HasColumnName("status")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
-            .HasDefaultValue("Pending")
+            .HasDefaultValue(RequestStatus.Pending)
+            .HasConversion(Helper.EnumConverter<RequestStatus>())
             .IsRequired();
 
             b.Property(x => x.ApprovedBy)
@@ -249,13 +253,14 @@ public class HireHubDbContext : DbContext
             .HasColumnName("status")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
-            .HasDefaultValue("InProposal")
+            .HasDefaultValue(DriveStatus.InProposal)
+            .HasConversion(Helper.EnumConverter<DriveStatus>())
             .IsRequired();
 
             b.Property(x => x.CreatedBy)
             .HasColumnName("created_by")
             .HasColumnType("INT")
-            .IsRequired(false);
+            .IsRequired();
 
             b.Property(x => x.CreatedDate)
             .HasColumnName("created_date")
@@ -586,6 +591,7 @@ public class HireHubDbContext : DbContext
             .HasColumnName("experience_level")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
+            .HasConversion(Helper.EnumConverter<CandidateExperienceLevel>())
             .IsRequired();
 
             b.Property(x => x.TechStack)
@@ -646,7 +652,8 @@ public class HireHubDbContext : DbContext
             .HasColumnName("status")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
-            .HasDefaultValue("Pending")
+            .HasDefaultValue(CandidateStatus.Pending)
+            .HasConversion(Helper.EnumConverter<CandidateStatus>())
             .IsRequired();
 
             b.Property(x => x.CreatedDate)
@@ -695,20 +702,23 @@ public class HireHubDbContext : DbContext
             .HasColumnName("round_type")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
+            .HasConversion(Helper.EnumConverter<RoundType>())
             .IsRequired();
 
             b.Property(x => x.Status)
             .HasColumnName("status")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
-            .HasDefaultValue("Scheduled")
+            .HasDefaultValue(RoundStatus.Scheduled)
+            .HasConversion(Helper.EnumConverter<RoundStatus>())
             .IsRequired();
 
             b.Property(x => x.Result)
             .HasColumnName("result")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
-            .HasDefaultValue("Pending")
+            .HasDefaultValue(RoundResult.Pending)
+            .HasConversion(Helper.EnumConverter<RoundResult>())
             .IsRequired();
 
             b.HasOne(x => x.DriveCandidate).WithMany(x => x.Rounds)
@@ -880,6 +890,7 @@ public class HireHubDbContext : DbContext
             .HasColumnName("recommendation")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
+            .HasConversion(Helper.EnumConverter<Recommendation>())
             .IsRequired();
 
             b.Property(x => x.SubmittedDate)

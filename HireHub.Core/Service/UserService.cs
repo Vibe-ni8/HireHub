@@ -21,6 +21,20 @@ public class UserService
         _saveRepository = saveRepository;
     }
 
+    #region Query Services
+
+
+
+    #endregion
+
+    #region Command Services
+
+
+
+    #endregion
+
+    #region Commented Services
+
     //public async Task<UserResponse<UserDetailsDTO>> GetUserDetails(int userId)
     //{
     //    _logger.LogInformation(LogMessage.StartMethod, nameof(GetUserDetails));
@@ -95,4 +109,5 @@ public class UserService
     //    });
     //}
 
+    #endregion
 }

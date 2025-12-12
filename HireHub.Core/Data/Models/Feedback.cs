@@ -17,9 +17,17 @@ public class Feedback : BaseEntity
     public int? Communication { get; set; }
     public int? ProblemSolving { get; set; }
     public string? OverallFeedback { get; set; }
-    public string Recommendation { get; set; } = null!;
+    public Recommendation Recommendation { get; set; }
     public DateTime SubmittedDate { get; set; }
 
     // Navigation
     public Interview? Interview { get; set; }
 }
+
+public enum Recommendation
+{
+    Hire,
+    Maybe,
+    NoHire
+}
+

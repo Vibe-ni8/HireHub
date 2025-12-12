@@ -18,7 +18,7 @@ public class Candidate : BaseEntity
     public string? Address { get; set; }
     public string? College { get; set; }
     public string? PreviousCompany { get; set; }
-    public string ExperienceLevel { get; set; } = null!;
+    public CandidateExperienceLevel ExperienceLevel { get; set; }
     public List<string> TechStack { get; set; } = [];
     public string? ResumeUrl { get; set; }
     public string? LinkedInUrl { get; set; }
@@ -30,4 +30,11 @@ public class Candidate : BaseEntity
     public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
     public ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
     public ICollection<Request> Requests { get; set; } = new List<Request>();
+}
+
+public enum CandidateExperienceLevel
+{
+    Fresher,
+    Intermediate,
+    Experienced
 }

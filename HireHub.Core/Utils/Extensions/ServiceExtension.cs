@@ -28,6 +28,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<RepoService>();
         services.AddScoped<TokenService>();
         services.AddScoped<UserService>();
+        services.AddScoped<AdminService>();
 
         return services;
     }

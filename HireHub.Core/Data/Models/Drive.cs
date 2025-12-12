@@ -15,7 +15,7 @@ public class Drive : BaseEntity
     public string DriveName { get; set; } = null!;
     public DateTime DriveDate { get; set; }
     public int TechnicalRounds { get; set; }
-    public string Status { get; set; } = null!;
+    public DriveStatus Status { get; set; }
     public int CreatedBy { get; set; }
     public DateTime CreatedDate { get; set; }
 
@@ -29,4 +29,12 @@ public class Drive : BaseEntity
     public ICollection<DriveCandidate> CandidateDrives { get; set; } = new List<DriveCandidate>();
     public ICollection<Round> Rounds { get; set; } = new List<Round>();
     public ICollection<Request> Requests { get; set; } = new List<Request>();
+}
+
+public enum DriveStatus
+{
+    InProposal,
+    Started,
+    Halted,
+    Completed
 }

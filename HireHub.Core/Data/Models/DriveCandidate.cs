@@ -14,7 +14,7 @@ public class DriveCandidate : BaseEntity
     public int DriveCandidateId { get; set; }
     public int CandidateId { get; set; }
     public int DriveId { get; set; }
-    public string Status { get; set; } = null!;
+    public CandidateStatus Status { get; set; }
     public int? StatusSetBy { get; set; }
     public DateTime CreatedDate { get; set; }
 
@@ -25,4 +25,11 @@ public class DriveCandidate : BaseEntity
     public ICollection<Round> Rounds { get; set; } = new List<Round>();
     public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
     public ICollection<CandidateReassignment> CandidateReassignments { get; set; } = new List<CandidateReassignment>();
+}
+
+public enum CandidateStatus
+{
+    Pending,
+    Selected,
+    Rejected
 }
