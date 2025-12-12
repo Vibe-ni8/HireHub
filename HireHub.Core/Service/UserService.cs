@@ -1,7 +1,6 @@
 ﻿using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
-using HireHub.Core.DTO.Base;
 using HireHub.Core.Utils.Common;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +22,27 @@ public class UserService
 
     #region Query Services
 
+    public async Task<Response<List<UserDTO>>> GetAllUsers(int pageNumber, int pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllUsers));
 
+        var users = await _userRepository.GetAllWithRoleAsync(pageNumber, pageSize, CancellationToken.None);
+
+        var userDTOs = new List<UserDTO>();
+        users.ForEach(user =>
+        {
+            var userDTO = Helper.Map<User, UserDTO>(user);
+            userDTO.Role = user.Role!.RoleName;
+            userDTOs.Add(userDTO);
+        });
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllUsers));
+
+        return new Response<List<UserDTO>>
+        {
+            Data = userDTOs
+        };
+    }
 
     #endregion
 

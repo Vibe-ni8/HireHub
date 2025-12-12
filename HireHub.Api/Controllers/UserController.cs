@@ -4,7 +4,6 @@ using HireHub.Core.DTO.Base;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
 using HireHub.Core.Utils.UserProgram.Interface;
-using HireHub.Core.Validators;
 using HireHub.Shared.Authentication.Filters;
 using HireHub.Shared.Common.Exceptions;
 using HireHub.Shared.Common.Models;
@@ -37,7 +36,34 @@ public class UserController : ControllerBase
 
     #region Get API's
 
+    [RequireAuth([RoleName.Admin])]
+    [HttpGet("all")]
+    [ProducesResponseType<Response<List<UserDTO>>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetAllUsers([FromQuery] int pageNumber, [FromQuery] int pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllUsers));
 
+        try
+        {
+            var response = await _userService.GetAllUsers(pageNumber, pageSize);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllUsers));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetAllUsers), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
 
     #endregion
 

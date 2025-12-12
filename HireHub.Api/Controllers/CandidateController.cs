@@ -12,22 +12,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HireHub.Api.Controllers;
 
-[RequireAuth([RoleName.Admin])]
+[RequireAuth]
 [Route("api/[controller]")]
 [ApiController]
-public class AdminController : ControllerBase
+public class CandidateController : ControllerBase
 {
-    private readonly AdminService _adminService;
+    private readonly CandidateService _candidateService;
     private readonly IUserProvider _userProvider;
     private readonly RepoService _repoService;
     private readonly ITransactionRepository _transactionRepository;
-    private readonly ILogger<AdminController> _logger;
+    private readonly ILogger<CandidateController> _logger;
 
-    public AdminController(AdminService adminService, IUserProvider userProvider,
+    public CandidateController(CandidateService candidateService, IUserProvider userProvider,
         RepoService repoService, ITransactionRepository transactionRepository,
-        ILogger<AdminController> logger)
+        ILogger<CandidateController> logger)
     {
-        _adminService = adminService;
+        _candidateService = candidateService;
         _userProvider = userProvider;
         _repoService = repoService;
         _transactionRepository = transactionRepository;
@@ -36,25 +36,26 @@ public class AdminController : ControllerBase
 
     #region Get API's
 
-    [HttpGet("dashboard/details")]
-    [ProducesResponseType<Response<AdminDashboardDetails>>(200)]
+    [RequireAuth([RoleName.Admin])]
+    [HttpGet("all")]
+    [ProducesResponseType<Response<List<CandidateDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
-    public async Task<IActionResult> GetDashboardDetails()
+    public async Task<IActionResult> GetAllCandidates([FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetDashboardDetails));
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllCandidates));
 
         try
         {
-            var response = await _adminService.GetDashboardDetails();
+            var response = await _candidateService.GetAllCandidates(pageNumber, pageSize);
 
-            _logger.LogInformation(LogMessage.EndMethod, nameof(GetDashboardDetails));
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllCandidates));
 
             return Ok(response);
         }
         catch (CommonException ex)
         {
-            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetDashboardDetails), ex.Message);
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetAllCandidates), ex.Message);
             return BadRequest(new BaseResponse()
             {
                 Errors = [

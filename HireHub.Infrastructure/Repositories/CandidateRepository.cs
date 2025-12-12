@@ -20,10 +20,18 @@ public class CandidateRepository : GenericRepository<Candidate>,  ICandidateRepo
         return await _context.Candidates.CountAsync(cancellationToken);
     }
 
-    public async Task<int> CountByDriveStatusAsync(string status, CancellationToken cancellationToken = default)
+    public async Task<int> CountByDriveStatusAsync(CandidateStatus status, CancellationToken cancellationToken = default)
     {
         return await _context.DriveCandidates
             .Where(dc => dc.Status == status)
             .CountAsync(cancellationToken);
+    }
+
+    public async Task<List<Candidate>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        return await _context.Candidates
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
     }
 }

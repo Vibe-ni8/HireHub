@@ -1,7 +1,7 @@
 ﻿using HireHub.Core.Data.Interface;
+using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
-using HireHub.Shared.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace HireHub.Core.Service;
@@ -35,12 +35,12 @@ public class AdminService
         {
             TotalUsers = await _userRepository.CountUsersAsync(),
             TotalCandidates = await _candidateRepository.CountCandidatesAsync(),
-            TotalPanelMembers = await _userRepository.CountUsersByRoleAsync(RoleName.Panel),
-            TotalMentors = await _userRepository.CountUsersByRoleAsync(RoleName.Mentor),
-            TotalHrs = await _userRepository.CountUsersByRoleAsync(RoleName.Hr),
+            TotalPanelMembers = await _userRepository.CountUsersByRoleAsync(UserRole.Panel),
+            TotalMentors = await _userRepository.CountUsersByRoleAsync(UserRole.Mentor),
+            TotalHrs = await _userRepository.CountUsersByRoleAsync(UserRole.HR),
             TotalInterviews = await _interviewRepository.CountInterviewsAsync(),
-            TotalCandidatesHired = await _candidateRepository.CountByDriveStatusAsync("Selected"),
-            TotalCandidatesRejected = await _candidateRepository.CountByDriveStatusAsync("Rejected")
+            TotalCandidatesHired = await _candidateRepository.CountByDriveStatusAsync(CandidateStatus.Selected),
+            TotalCandidatesRejected = await _candidateRepository.CountByDriveStatusAsync(CandidateStatus.Rejected)
         };
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetDashboardDetails));

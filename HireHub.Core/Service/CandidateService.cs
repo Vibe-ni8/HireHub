@@ -1,0 +1,53 @@
+﻿using HireHub.Core.Data.Interface;
+using HireHub.Core.Data.Models;
+using HireHub.Core.DTO;
+using HireHub.Core.Utils.Common;
+using Microsoft.Extensions.Logging;
+
+namespace HireHub.Core.Service;
+
+public class CandidateService
+{
+    private readonly ICandidateRepository _candidateRepository;
+    private readonly ISaveRepository _saveRepository;
+    private readonly ILogger<CandidateService> _logger;
+
+    public CandidateService(ICandidateRepository candidateRepository,
+        ISaveRepository saveRepository, ILogger<CandidateService> logger)
+    {
+        _candidateRepository = candidateRepository;
+        _saveRepository = saveRepository;
+        _logger = logger;
+    }
+
+    #region Query Services
+
+    public async Task<Response<List<CandidateDTO>>> GetAllCandidates(int pageNumber, int pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllCandidates));
+
+        var candidates = await _candidateRepository.GetAllAsync(pageNumber, pageSize, CancellationToken.None);
+
+        var candidateDTOs = new List<CandidateDTO>();
+        candidates.ForEach(candidate =>
+        {
+            var candidateDTO = Helper.Map<Candidate, CandidateDTO>(candidate);
+            candidateDTOs.Add(candidateDTO);
+        });
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllCandidates));
+
+        return new Response<List<CandidateDTO>>
+        {
+            Data = candidateDTOs
+        };
+    }
+
+    #endregion
+
+    #region Command Services
+
+
+
+    #endregion
+}

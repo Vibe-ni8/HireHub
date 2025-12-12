@@ -19,3 +19,33 @@ public class AdminDashboardDetails
     public int TotalCandidatesHired { get; set; }
     public int TotalCandidatesRejected { get; set; }
 }
+
+public class UserDTO
+{
+    public int UserId { get; set; }
+    public string FullName { get; set; } = null!;
+    public string Email { get; set; } = null!;
+    public string Phone { get; set; } = null!;
+    public bool IsActive { get; set; } = true;
+    public UserRole Role { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime? UpdatedDate { get; set; }
+    public string? PasswordHash { get; set; }
+}
+
+public class CandidateDTO
+{
+    public int CandidateId { get; set; }
+    public string FullName { get; set; } = null!;
+    public string Email { get; set; } = null!;
+    public string Phone { get; set; } = null!;
+    public string? Address { get; set; }
+    public string? College { get; set; }
+    public string? PreviousCompany { get; set; }
+    public CandidateExperienceLevel ExperienceLevel { get; set; }
+    public List<string> TechStack { get; set; } = [];
+    public string? ResumeUrl { get; set; }
+    public string? LinkedInUrl { get; set; }
+    public string? GitHubUrl { get; set; }
+    public DateTime CreatedDate { get; set; }
+}
