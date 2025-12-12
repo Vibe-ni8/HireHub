@@ -26,7 +26,6 @@ public class User : BaseEntity
     // Navigation
 
     public Role? Role { get; set; }
-    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     public ICollection<UserPermission> UserPermissions { get; set; } = new List<UserPermission>();
     public ICollection<Drive> CreatedDrives { get; set; } = new List<Drive>();
     public ICollection<DriveMember> DriveMembers { get; set; } = new List<DriveMember>();

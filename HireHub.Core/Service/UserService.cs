@@ -56,7 +56,7 @@ public class UserService
         if (user != null)
         {
             response.Data.User = Helper.Map<User, UserDetailsDTO>(user);
-            await SetUserSlots(response.Data.UserSlots, user.Id);
+            await SetUserSlots(response.Data.UserSlots, user.UserId);
         }
         else
         {
@@ -95,88 +95,4 @@ public class UserService
         });
     }
 
-    public async Task<UserResponse<List<UserSlotDetailsDTO>>> SetAvailability(int userId, List<int> slotIds)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(SetAvailability));
-
-        var response = new UserResponse<List<UserSlotDetailsDTO>>();
-
-        var finalSlotIds = new List<int>();
-        slotIds.ForEach(slotId =>
-        {
-            var isRegistered = _userRepository.IsUserRegisterForTheSlot(userId, slotId);
-            if (!isRegistered.WaitAsync(CancellationToken.None).Result)
-                finalSlotIds.Add(slotId);
-        });
-
-        if (finalSlotIds.Count == 0)
-        {
-            response.Data = [];
-            return response;
-        }
-
-        var userSlotIds = await _userRepository.RegisterUserToSlots(userId, finalSlotIds);
-
-        var userSlotDetails = new List<UserSlotDetailsDTO>();
-        await SetUserSlots(userSlotDetails, userId);
-
-        response.Data = userSlotDetails.Where(e => userSlotIds.Contains(e.Id)).ToList();
-
-        _logger.LogInformation(LogMessage.EndMethod, nameof(SetAvailability));
-
-        return response;
-    }
-
-    public async Task<UserResponse<FeedbackDTO>> SetFeedback(SetFeedbackRequest request)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(SetFeedback));
-
-        var response = new UserResponse<FeedbackDTO>();
-
-        var candidateMap = await _candidateMapRepository
-            .GetByIdAsync(request.CandidateId, request.UserSlotId);
-
-        if (candidateMap != null)
-        {
-            candidateMap.Feedback = Helper.Map<SetFeedbackRequest, Feedback>(request);
-            _candidateMapRepository.Update(candidateMap);
-            _saveRepository.SaveChanges();
-            response.Data = Helper.Map<Feedback, FeedbackDTO>(candidateMap.Feedback);
-        }
-
-        _logger.LogInformation(LogMessage.EndMethod, nameof(SetFeedback));
-
-        return response;
-    }
-
-    public async Task<AttendanceMarkResponse> MarkAttendance(AttendanceMarkRequest request)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(MarkAttendance));
-
-        var response = new AttendanceMarkResponse();
-
-        var candidateMap = await _candidateMapRepository
-            .GetByIdAsync(request.CandidateId, request.UserSlotId);
-
-        candidateMap!.IsPresent = request.IsPresent;
-
-        _candidateMapRepository.Update(candidateMap);
-        _saveRepository.SaveChanges();
-
-        response.Data = true;
-
-        _logger.LogInformation(LogMessage.EndMethod, nameof(MarkAttendance));
-
-        return response;
-    }
-
-    // Assign Candidate -> For Hr
-
-    // Reassign Candidate -> For Panel and mentor
-
-    // Get Available Panel for Assign and Reassign -> For Hr, Panel and Mentor
-
-    // [Completed] Mark Candidate Present or Absent or Pending -> For Mentor
-
-    // Get methods for Hr, Panel and Mentor if needed
 }

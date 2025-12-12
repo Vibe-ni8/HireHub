@@ -112,4 +112,15 @@ public static class Helper
         v => v.ToString("HH:mm", CultureInfo.InvariantCulture), // TimeOnly → string
         v => TimeOnly.ParseExact(v, new string[] { "HH:mm", "hh:mm tt" }) // string → TimeOnly
     );
+
+    public static readonly ValueConverter<List<string>, string?> ListConverter = new
+    (
+        v => v == null || v.Count == 0
+            ? null
+            : string.Join(",", v), // List → comma-separated string
+        v => string.IsNullOrEmpty(v)
+            ? new List<string>()
+            : v.Split(',', StringSplitOptions.None).ToList() // string → List<string>
+    );
+
 }

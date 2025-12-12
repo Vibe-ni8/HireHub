@@ -548,14 +548,6 @@ public class HireHubDbContext : DbContext
             .HasMaxLength(100)
             .IsRequired();
 
-            b.Property(x => x.Phone)
-            .HasColumnName("phone")
-            .HasColumnType("VARCHAR(32)")
-            .HasMaxLength(32)
-            .IsRequired();
-
-            b.HasIndex(x => x.Phone).IsUnique();
-
             b.Property(x => x.Email)
             .HasColumnName("email")
             .HasColumnType("VARCHAR(150)")
@@ -564,16 +556,18 @@ public class HireHubDbContext : DbContext
 
             b.HasIndex(x => x.Email).IsUnique();
 
-            b.Property(x => x.ResumeUrl)
-            .HasColumnName("resume_url")
+            b.Property(x => x.Phone)
+            .HasColumnName("phone")
+            .HasColumnType("VARCHAR(32)")
+            .HasMaxLength(32)
+            .IsRequired();
+
+            b.HasIndex(x => x.Phone).IsUnique();
+
+            b.Property(x => x.Address)
+            .HasColumnName("address")
             .HasColumnType("VARCHAR(500)")
             .HasMaxLength(500)
-            .IsRequired(false);
-
-            b.Property(x => x.PreviousCompany)
-            .HasColumnName("previous_company")
-            .HasColumnType("VARCHAR(200)")
-            .HasMaxLength(200)
             .IsRequired(false);
 
             b.Property(x => x.College)
@@ -582,8 +576,26 @@ public class HireHubDbContext : DbContext
             .HasMaxLength(200)
             .IsRequired(false);
 
-            b.Property(x => x.Address)
-            .HasColumnName("address")
+            b.Property(x => x.PreviousCompany)
+            .HasColumnName("previous_company")
+            .HasColumnType("VARCHAR(200)")
+            .HasMaxLength(200)
+            .IsRequired(false);
+
+            b.Property(x => x.ExperienceLevel)
+            .HasColumnName("experience_level")
+            .HasColumnType("VARCHAR(20)")
+            .HasMaxLength(20)
+            .IsRequired();
+
+            b.Property(x => x.TechStack)
+            .HasColumnName("tech_stack")
+            .HasColumnType("VARCHAR(MAX)")
+            .HasConversion(Helper.ListConverter)
+            .IsRequired(false);
+
+            b.Property(x => x.ResumeUrl)
+            .HasColumnName("resume_url")
             .HasColumnType("VARCHAR(500)")
             .HasMaxLength(500)
             .IsRequired(false);

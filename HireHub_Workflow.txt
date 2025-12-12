@@ -195,12 +195,14 @@ FeedbackConfiguration (
 Candidates (
     CandidateId INT PK IDENTITY,
     FullName VARCHAR(100) NOT NULL,
-    Phone VARCHAR(32) NOT NULL UNIQUE,
     Email VARCHAR(150) NOT NULL UNIQUE,
-    ResumeUrl VARCHAR(500) NULL,
-    PreviousCompany VARCHAR(200) NULL,
-    College VARCHAR(200) NULL,
+    Phone VARCHAR(32) NOT NULL UNIQUE,
     Address VARCHAR(500) NULL,
+    College VARCHAR(200) NULL,
+    PreviousCompany VARCHAR(200) NULL,
+    ExperienceLevel VARCHAR(20) NOT NULL,
+    TechStack VARCHAR(MAX) NULL,
+    ResumeUrl VARCHAR(500) NULL,
     LinkedInUrl VARCHAR(500) NULL,
     GitHubUrl VARCHAR(500) NULL,
     CreatedDate DATETIME DEFAULT GETDATE()

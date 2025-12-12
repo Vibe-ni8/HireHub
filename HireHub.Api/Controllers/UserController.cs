@@ -91,63 +91,6 @@ public class UserController : ControllerBase
     }
 
     [RequireAuth([RoleName.Panel])]
-    [HttpPost("panel/current/availability/set")]
-    [ProducesResponseType<UserResponse<List<UserSlotDetailsDTO>>>(200)]
-    [ProducesResponseType<BaseResponse>(400)]
-    [ProducesResponseType<ErrorResponse>(500)]
-    public async Task<IActionResult> SetAvailability([FromBody] List<string> request)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(SetAvailability));
-
-        try
-        {
-            using (_transactionRepository.BeginTransaction())
-            {
-                var baseResponse = new BaseResponse();
-
-                var validator = await new
-                    SetAvailabilityRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
-                    .ValidateAsync(request);
-
-                if (!validator.IsValid)
-                {
-                    validator.Errors.ForEach( e =>
-                        baseResponse.Errors.Add(new ValidationError
-                        {
-                            PropertyName = e.PropertyName,
-                            ErrorMessage = e.ErrorMessage
-                        })
-                    );
-                    return Ok(baseResponse);
-                }
-
-                var userId = int.Parse(_userProvider.CurrentUserId);
-                var slotIds = request.Select(int.Parse).ToList();
-
-                var response = await _userService.SetAvailability(userId, slotIds);
-
-                baseResponse.Warnings.ForEach(response.Warnings.Add);
-
-                _transactionRepository.CommitTransaction();
-
-                _logger.LogInformation(LogMessage.EndMethod, nameof(SetAvailability));
-
-                return Ok(response);
-            }
-        }
-        catch (CommonException ex)
-        {
-            _logger.LogWarning(LogMessage.EndMethodException, nameof(SetAvailability), ex.Message);
-            _transactionRepository.RollbackTransaction();
-            return BadRequest( new BaseResponse() { 
-                Errors = [
-                    new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
-                ] 
-            });
-        }
-    }
-
-    [RequireAuth([RoleName.Panel])]
     [HttpPost("panel/feedback/set")]
     [ProducesResponseType<UserResponse<FeedbackDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
@@ -168,7 +111,7 @@ public class UserController : ControllerBase
 
                 if (!validator.IsValid)
                 {
-                    validator.Errors.ForEach( e =>
+                    validator.Errors.ForEach(e =>
                         baseResponse.Errors.Add(new ValidationError
                         {
                             PropertyName = e.PropertyName,
@@ -202,113 +145,4 @@ public class UserController : ControllerBase
         }
     }
 
-    [RequireAuth([RoleName.Mentor])]
-    [HttpPost("mentor/Attendance/set")]
-    [ProducesResponseType<AttendanceMarkResponse>(200)]
-    [ProducesResponseType<BaseResponse>(400)]
-    [ProducesResponseType<ErrorResponse>(500)]
-    public async Task<IActionResult> MarkAttendance([FromBody] AttendanceMarkRequest request)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(MarkAttendance));
-
-        try
-        {
-            using (_transactionRepository.BeginTransaction())
-            {
-                var baseResponse = new BaseResponse();
-
-                var validator = await new
-                    AttendanceMarkRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
-                    .ValidateAsync(request);
-
-                if (!validator.IsValid)
-                {
-                    validator.Errors.ForEach( e =>
-                        baseResponse.Errors.Add(new ValidationError
-                        {
-                            PropertyName = e.PropertyName,
-                            ErrorMessage = e.ErrorMessage
-                        })
-                    );
-                    return Ok(baseResponse);
-                }
-
-                var response = await _userService.MarkAttendance(request);
-
-                baseResponse.Warnings.ForEach(response.Warnings.Add);
-
-                _transactionRepository.CommitTransaction();
-
-                _logger.LogInformation(LogMessage.EndMethod, nameof(MarkAttendance));
-
-                return Ok(response);
-            }
-        }
-        catch (CommonException ex)
-        {
-            _logger.LogWarning(LogMessage.EndMethodException, nameof(MarkAttendance), ex.Message);
-            _transactionRepository.RollbackTransaction();
-            return BadRequest(new BaseResponse()
-            {
-                Errors = [
-                    new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
-                ]
-            });
-        }
-    }
-
-    //[RequireAuth([Role.Hr])]
-    //[HttpPost("hr/Candidate/assign")]
-    //[ProducesResponseType<UserResponse<CandidateDetailsDTO>>(200)]
-    //[ProducesResponseType<BaseResponse>(400)]
-    //[ProducesResponseType<ErrorResponse>(500)]
-    //public async Task<IActionResult> AssignCandidate([FromBody] AssignCandidateRequest request)
-    //{
-    //    _logger.LogInformation(LogMessage.StartMethod, nameof(AssignCandidate));
-
-    //    try
-    //    {
-    //        using (_transactionRepository.BeginTransaction())
-    //        {
-    //            var baseResponse = new BaseResponse();
-
-    //            var validator = await new
-    //                AssignCandidateRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
-    //                .ValidateAsync(request);
-
-    //            if (!validator.IsValid)
-    //            {
-    //                validator.Errors.ForEach(e =>
-    //                    baseResponse.Errors.Add(new ValidationError
-    //                    {
-    //                        PropertyName = e.PropertyName,
-    //                        ErrorMessage = e.ErrorMessage
-    //                    })
-    //                );
-    //                return Ok(baseResponse);
-    //            }
-
-    //            var response = await _userService.AssignCandidate(request);
-
-    //            baseResponse.Warnings.ForEach(response.Warnings.Add);
-
-    //            _transactionRepository.CommitTransaction();
-
-    //            _logger.LogInformation(LogMessage.EndMethod, nameof(AssignCandidate));
-
-    //            return Ok(response);
-    //        }
-    //    }
-    //    catch (CommonException ex)
-    //    {
-    //        _logger.LogWarning(LogMessage.EndMethodException, nameof(AssignCandidate), ex.Message);
-    //        _transactionRepository.RollbackTransaction();
-    //        return BadRequest(new BaseResponse()
-    //        {
-    //            Errors = [
-    //                new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
-    //            ]
-    //        });
-    //    }
-    //}
 }
