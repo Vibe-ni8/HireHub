@@ -4,13 +4,12 @@ using HireHub.Shared.Persistence.Repositories;
 
 namespace HireHub.Infrastructure.Repositories;
 
-public class UserSlotRepository : GenericRepository<UserSlot>, IUserSlotRepository
+public class RoleRepository : GenericRepository<Role>, IRoleRepository
 {
     private new readonly HireHubDbContext _context;
 
-    public UserSlotRepository(HireHubDbContext context) : base(context)
+    public RoleRepository(HireHubDbContext context) : base(context)
     {
         _context = context;
     }
-
 }

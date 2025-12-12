@@ -90,6 +90,7 @@ Users (
     Email VARCHAR(150) UNIQUE,
     Phone VARCHAR(32) UNIQUE,
     IsActive BIT DEFAULT 1,
+    RoleId INT FK → Roles.RoleId,
     CreatedDate DATETIME DEFAULT GETDATE(),
     UpdatedDate DATETIME,
     PasswordHash VARCHAR(MAX)
@@ -100,11 +101,11 @@ Roles (
     RoleName VARCHAR(20) UNIQUE  -- SuperAdmin, HR, Mentor, Panel
 )
 
-UserRoles (
-    UserRoleId INT PK IDENTITY,
-    UserId INT FK → Users.UserId,
-    RoleId INT FK → Roles.RoleId
-)
+//UserRoles (
+//    UserRoleId INT PK IDENTITY,
+//    UserId INT FK → Users.UserId,
+//    RoleId INT FK → Roles.RoleId
+//)
 
 UserPermissions (
     UserId INT FK → Users.UserId,

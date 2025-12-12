@@ -10,7 +10,6 @@ public class HireHubDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Role> Roles => Set<Role>();
-    public DbSet<UserRole> UserRoles => Set<UserRole>();
     public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
     public DbSet<Request> Requests => Set<Request>();
     public DbSet<Drive> Drives => Set<Drive>();
@@ -69,6 +68,11 @@ public class HireHubDbContext : DbContext
             .HasDefaultValue(true)
             .IsRequired();
 
+            b.Property(x => x.RoleId)
+            .HasColumnName("role_id")
+            .HasColumnType("INT")
+            .IsRequired();
+
             b.Property(x => x.CreatedDate)
             .HasColumnName("created_date")
             .HasColumnType("DATETIME")
@@ -84,6 +88,10 @@ public class HireHubDbContext : DbContext
             .HasColumnName("password_hash")
             .HasColumnType("VARCHAR(MAX)")
             .IsRequired(false);
+
+            b.HasOne(x => x.Role).WithMany(x => x.Users)
+            .HasPrincipalKey(x => x.RoleId).HasForeignKey(x => x.RoleId)
+            .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Roles
@@ -104,37 +112,6 @@ public class HireHubDbContext : DbContext
             .IsRequired();
 
             b.HasIndex(x => x.RoleName).IsUnique();
-        });
-
-        // UserRoles
-        modelBuilder.Entity<UserRole>(b =>
-        {
-            b.ToTable("user_roles");
-            b.HasKey(x => x.UserRoleId);
-
-            b.Property(x => x.UserRoleId)
-            .HasColumnName("user_role_id")
-            .HasColumnType("INT")
-            .IsRequired();
-
-            b.Property(x => x.UserId)
-            .HasColumnName("user_id")
-            .HasColumnType("INT")
-            .IsRequired();
-
-            b.Property(x => x.RoleId)
-            .HasColumnName("role_id")
-            .HasColumnType("INT")
-            .IsRequired();
-
-            b.HasIndex(x => new { x.UserId, x.RoleId }).IsUnique().HasDatabaseName("UQ_UserId_RoleId");
-
-            b.HasOne(x => x.User).WithMany(x => x.UserRoles)
-            .HasPrincipalKey(x => x.UserId).HasForeignKey(x => x.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-            b.HasOne(x => x.Role).WithMany(x => x.UserRoles).HasForeignKey(x => x.RoleId)
-            .OnDelete(DeleteBehavior.Cascade);
         });
 
         // UserPermissions

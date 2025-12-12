@@ -7,6 +7,7 @@ public static class LogMessage
     public const string EndMethodException = "End - {Method} - {Exception}";
     public const string UserNotFoundOnLogin = "Login failed: user not found: {Username}";
     public const string InvalidPassword = "Login failed: invalid password for {EmpId}";
+    public const string NotActiveUser = "Login failed: {EmpId} is not a Active User";
 }
 
 public static class ExceptionMessage
@@ -21,6 +22,7 @@ public static class ExceptionMessage
 public static class ResponseMessage
 {
     public const string UserNotFound = "User not found";
+    public const string NotActiveUser = "You are not a Active User";
     public const string PasswordSetRequire = "Password require to be set";
     public const string PasswordReSetRequire = "Password require to be re-set";
     public const string NoSlotsProvided = "No slots provided";

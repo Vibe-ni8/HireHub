@@ -10,9 +10,11 @@ CREATE TABLE users (
     email VARCHAR(150) UNIQUE,
     phone VARCHAR(32) UNIQUE,
     is_active BIT NOT NULL DEFAULT 1,
+    role_id INT NOT NULL,
     created_date DATETIME DEFAULT GETDATE(),
     updated_date DATETIME NULL,
     password_hash VARCHAR(MAX) NULL
+    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE NO ACTION,
 );
 
 CREATE TABLE roles (
@@ -20,14 +22,14 @@ CREATE TABLE roles (
     role_name VARCHAR(20) UNIQUE -- SuperAdmin, HR, Mentor, Panel
 );
 
-CREATE TABLE user_roles (
-    user_role_id INT IDENTITY(1,1) PRIMARY KEY,
-    user_id INT NOT NULL,
-    role_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT UQ_UserId_RoleId UNIQUE (user_id, role_id)
-);
+--CREATE TABLE user_roles (
+--    user_role_id INT IDENTITY(1,1) PRIMARY KEY,
+--    user_id INT NOT NULL,
+--    role_id INT NOT NULL,
+--    FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+--    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE CASCADE,
+--    CONSTRAINT UQ_UserId_RoleId UNIQUE (user_id, role_id)
+--);
 
 CREATE TABLE user_permissions (
     user_id INT NOT NULL,

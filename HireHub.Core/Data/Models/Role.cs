@@ -14,7 +14,7 @@ public class Role : BaseEntity
     public string RoleName { get; set; } = null!;
 
     // Navigation
-    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<User> Users { get; set; } = new List<User>();
     public ICollection<DriveRoleConfiguration> DriveRoleConfigurations { get; set; } = new List<DriveRoleConfiguration>();
     public ICollection<DriveMember> DriveMembers { get; set; } = new List<DriveMember>();
 }

@@ -13,13 +13,15 @@ namespace HireHub.Core.Service;
 public class TokenService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IRoleRepository _roleRepository;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly ILogger<TokenService> _logger;
 
-    public TokenService(IUserRepository userRepository, 
+    public TokenService(IUserRepository userRepository, IRoleRepository roleRepository, 
         IJwtTokenService jwtTokenService,ILogger<TokenService> logger)
     {
         _userRepository = userRepository;
+        _roleRepository = roleRepository;
         _jwtTokenService = jwtTokenService;
         _logger = logger;
     }
@@ -43,6 +45,20 @@ public class TokenService
             };
         }
 
+        if (!user.IsActive)
+        {
+            _logger.LogWarning(LogMessage.NotActiveUser, user.UserId);
+            return new()
+            {
+                Errors = [
+                    new ValidationError {
+                        PropertyName = PropertyName.Main,
+                        ErrorMessage = ResponseMessage.NotActiveUser
+                    }
+                ]
+            };
+        }
+
         if (string.IsNullOrEmpty(user.PasswordHash))
         {
             return new() { Warnings = [ResponseMessage.PasswordSetRequire] };
@@ -50,7 +66,7 @@ public class TokenService
 
         if (!VerifyPassword(user, user.PasswordHash, request.Password))
         {
-            _logger.LogWarning(LogMessage.InvalidPassword, user.Id);
+            _logger.LogWarning(LogMessage.InvalidPassword, user.UserId);
             return new() { 
                 Errors = [
                     new ValidationError { 
@@ -61,7 +77,9 @@ public class TokenService
             };
         }
 
-        var token = _jwtTokenService.GenerateToken(user.Id.ToString(), user.Role);
+        var role = await _roleRepository.GetByIdAsync(user.RoleId);
+
+        var token = _jwtTokenService.GenerateToken(user.UserId.ToString(), role!.RoleName);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GenerateToken));
 

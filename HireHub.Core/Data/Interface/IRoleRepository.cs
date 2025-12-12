@@ -3,6 +3,6 @@ using HireHub.Shared.Persistence.Interface;
 
 namespace HireHub.Core.Data.Interface;
 
-public interface IUserSlotRepository : IGenericRepository<UserSlot>
-{
+public interface IRoleRepository : IGenericRepository<Role>
+{ 
 }

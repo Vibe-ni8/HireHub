@@ -12,15 +12,13 @@ public class UserService
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserService> _logger;
     private readonly ISaveRepository _saveRepository;
-    private readonly ICandidateMapRepository _candidateMapRepository;
 
     public UserService(IUserRepository userRepository, ILogger<UserService> logger,
-        ISaveRepository saveRepository, ICandidateMapRepository candidateMapRepository)
+        ISaveRepository saveRepository)
     {
         _userRepository = userRepository;
         _logger = logger;
         _saveRepository = saveRepository;
-        _candidateMapRepository = candidateMapRepository;
     }
 
     public async Task<UserResponse<UserDetailsDTO>> GetUserDetails(int userId)

@@ -10,7 +10,7 @@ public class UserResponse<T> : BaseResponse where T : class
 
 public class UserDetailsDTO
 {
-    public int Id { get; set; }
+    public int UserId { get; set; }
     public string Name { get; set; } = null!;
     public string EmailId { get; set; } = null!;
     public string Role { get; set; } = null!;
