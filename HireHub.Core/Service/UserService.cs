@@ -21,78 +21,78 @@ public class UserService
         _saveRepository = saveRepository;
     }
 
-    public async Task<UserResponse<UserDetailsDTO>> GetUserDetails(int userId)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetUserDetails));
+    //public async Task<UserResponse<UserDetailsDTO>> GetUserDetails(int userId)
+    //{
+    //    _logger.LogInformation(LogMessage.StartMethod, nameof(GetUserDetails));
 
-        var response = new UserResponse<UserDetailsDTO>();
+    //    var response = new UserResponse<UserDetailsDTO>();
 
-        var user = await _userRepository.GetByIdAsync(userId);
+    //    var user = await _userRepository.GetByIdAsync(userId);
 
-        if (user == null)
-        {
-            response.Errors.Add(new ValidationError {
-                PropertyName = PropertyName.Main,
-                ErrorMessage = ResponseMessage.UserNotFound
-            });
-        }
+    //    if (user == null)
+    //    {
+    //        response.Errors.Add(new ValidationError {
+    //            PropertyName = PropertyName.Main,
+    //            ErrorMessage = ResponseMessage.UserNotFound
+    //        });
+    //    }
 
-        response.Data = (user != null) ? Helper.Map<User, UserDetailsDTO>(user) : null;
+    //    response.Data = (user != null) ? Helper.Map<User, UserDetailsDTO>(user) : null;
 
-        _logger.LogInformation(LogMessage.EndMethod, nameof(GetUserDetails));
+    //    _logger.LogInformation(LogMessage.EndMethod, nameof(GetUserDetails));
 
-        return response;
-    }
+    //    return response;
+    //}
 
-    public async Task<UserResponse<UserCompleteDetailsDTO>> GetUserCompleteDetails(int userId)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetUserCompleteDetails));
+    //public async Task<UserResponse<UserCompleteDetailsDTO>> GetUserCompleteDetails(int userId)
+    //{
+    //    _logger.LogInformation(LogMessage.StartMethod, nameof(GetUserCompleteDetails));
 
-        var response = new UserResponse<UserCompleteDetailsDTO>();
-        response.Data = new UserCompleteDetailsDTO();
+    //    var response = new UserResponse<UserCompleteDetailsDTO>();
+    //    response.Data = new UserCompleteDetailsDTO();
 
-        var user = await _userRepository.GetByIdAsync(userId);
+    //    var user = await _userRepository.GetByIdAsync(userId);
 
-        if (user != null)
-        {
-            response.Data.User = Helper.Map<User, UserDetailsDTO>(user);
-            await SetUserSlots(response.Data.UserSlots, user.UserId);
-        }
-        else
-        {
-            response.Errors.Add(new ValidationError {
-                PropertyName = PropertyName.Main,
-                ErrorMessage = ResponseMessage.UserNotFound
-            });
-        }
+    //    if (user != null)
+    //    {
+    //        response.Data.User = Helper.Map<User, UserDetailsDTO>(user);
+    //        await SetUserSlots(response.Data.UserSlots, user.UserId);
+    //    }
+    //    else
+    //    {
+    //        response.Errors.Add(new ValidationError {
+    //            PropertyName = PropertyName.Main,
+    //            ErrorMessage = ResponseMessage.UserNotFound
+    //        });
+    //    }
 
-        _logger.LogInformation(LogMessage.EndMethod, nameof(GetUserCompleteDetails));
+    //    _logger.LogInformation(LogMessage.EndMethod, nameof(GetUserCompleteDetails));
 
-        return response;
-    }
+    //    return response;
+    //}
 
-    private async Task SetUserSlots(List<UserSlotDetailsDTO> userSlotDetails, int userId)
-    {
-        var userSlots = await _userRepository.GetUserSlotsWithSlotDetailsForUser(userId);
-        userSlots.ForEach(userSlot =>
-        {
-            var userSlotDetail = Helper.Map<UserSlot, UserSlotDetailsDTO>(userSlot);
-            var candidateMaps = _userRepository.GetCandidatesAssignedForUserOnSlot(userSlot.Id);
-            candidateMaps.ForEach(candidateMap =>
-            {
-                var candidateDetails = Helper.Map<Candidate, CandidateDetailsDTO>(candidateMap.Candidate);
-                candidateDetails.ScheduledTime = candidateMap.ScheduledTime;
-                candidateDetails.IsPresent = candidateMap.IsPresent;
-                candidateDetails.InterviewRounds = candidateMap.InterviewRounds;
-                candidateDetails.FeedbackId = candidateMap.FeedbackId;
-                candidateDetails.Feedback = candidateMap.Feedback != null ?
-                    Helper.Map<Feedback, FeedbackDTO>(candidateMap.Feedback) : null;
-                candidateDetails.IsSelected = candidateMap.IsSelected;
+    //private async Task SetUserSlots(List<UserSlotDetailsDTO> userSlotDetails, int userId)
+    //{
+    //    var userSlots = await _userRepository.GetUserSlotsWithSlotDetailsForUser(userId);
+    //    userSlots.ForEach(userSlot =>
+    //    {
+    //        var userSlotDetail = Helper.Map<UserSlot, UserSlotDetailsDTO>(userSlot);
+    //        var candidateMaps = _userRepository.GetCandidatesAssignedForUserOnSlot(userSlot.Id);
+    //        candidateMaps.ForEach(candidateMap =>
+    //        {
+    //            var candidateDetails = Helper.Map<Candidate, CandidateDetailsDTO>(candidateMap.Candidate);
+    //            candidateDetails.ScheduledTime = candidateMap.ScheduledTime;
+    //            candidateDetails.IsPresent = candidateMap.IsPresent;
+    //            candidateDetails.InterviewRounds = candidateMap.InterviewRounds;
+    //            candidateDetails.FeedbackId = candidateMap.FeedbackId;
+    //            candidateDetails.Feedback = candidateMap.Feedback != null ?
+    //                Helper.Map<Feedback, FeedbackDTO>(candidateMap.Feedback) : null;
+    //            candidateDetails.IsSelected = candidateMap.IsSelected;
 
-                userSlotDetail.Candidates.Add(candidateDetails);
-            });
-            userSlotDetails.Add(userSlotDetail);
-        });
-    }
+    //            userSlotDetail.Candidates.Add(candidateDetails);
+    //        });
+    //        userSlotDetails.Add(userSlotDetail);
+    //    });
+    //}
 
 }
