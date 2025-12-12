@@ -31,10 +31,10 @@ CREATE TABLE user_roles (
 CREATE TABLE user_permissions (
     user_id INT NOT NULL,
     action VARCHAR(20) NOT NULL,
-    view BIT NOT NULL,
-    add BIT NOT NULL,
-    update BIT NOT NULL,
-    delete BIT NOT NULL,
+    [view] BIT NOT NULL,
+    [add] BIT NOT NULL,
+    [update] BIT NOT NULL,
+    [delete] BIT NOT NULL,
     CONSTRAINT PK_UserId_Action PRIMARY KEY (user_id, action),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -48,8 +48,8 @@ CREATE TABLE requests (
     approved_date DATETIME NULL,
     requested_by INT NOT NULL,
     requested_date DATETIME NOT NULL DEFAULT GETDATE(),
-    FOREIGN KEY (approved_by) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE SET NULL,
-    FOREIGN KEY (requested_by) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (approved_by) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE SET NULL,
+    FOREIGN KEY (requested_by) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
 );
 
 CREATE TABLE drives (
@@ -60,7 +60,7 @@ CREATE TABLE drives (
     status VARCHAR(20) NOT NULL DEFAULT 'InProposal', -- InProposal, Started, Halted, Completed
     created_by INT NOT NULL,
     created_date DATETIME NOT NULL DEFAULT GETDATE(),
-    FOREIGN KEY (created_by) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    FOREIGN KEY (created_by) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
 CREATE TABLE drive_members (
@@ -69,8 +69,8 @@ CREATE TABLE drive_members (
     user_id INT NOT NULL,
     role_id INT NOT NULL,
     FOREIGN KEY (drive_id) REFERENCES drives(drive_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE NO ACTION,
     CONSTRAINT UQ_DriveId_UserId UNIQUE (drive_id, user_id)
 );
 
@@ -84,7 +84,7 @@ CREATE TABLE drive_role_configuration (
     can_edit_submitted_feedback BIT NOT NULL DEFAULT 0,
     require_approval_for_reassignment BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (drive_id) REFERENCES drives(drive_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE NO ACTION,
     CONSTRAINT UQ_DriveId_RoleId UNIQUE (drive_id, role_id)
 );
 
@@ -142,9 +142,9 @@ CREATE TABLE drive_candidates (
     status VARCHAR(20) NOT NULL DEFAULT 'Pending',  -- Pending, Selected, Rejected
     status_set_by INT NULL,
     created_date DATETIME NOT NULL DEFAULT GETDATE(),
-    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id) ON UPDATE CASCADE ON DELETE NO ACTION,
     FOREIGN KEY (drive_id) REFERENCES drives(drive_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (status_set_by) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (status_set_by) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
     CONSTRAINT UQ_CandidateId_DriveId UNIQUE (candidate_id, drive_id)
 );
 
@@ -155,8 +155,8 @@ CREATE TABLE rounds (
     round_type VARCHAR(20), -- Hr, Tech 1, Tech 2
     status VARCHAR(20) DEFAULT 'Scheduled', -- Scheduled, OnProcess, Completed, Skipped
     result VARCHAR(20) DEFAULT 'Pending', -- Pending, Selected, Rejected
-    FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (interviewer_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE NO ACTION,
+    FOREIGN KEY (interviewer_id) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
     CONSTRAINT UQ_DriveCandidateId_PanelId UNIQUE (drive_candidate_id, interviewer_id)
 );
 
@@ -171,10 +171,10 @@ CREATE TABLE candidate_reassignments (
     requested_by INT NOT NULL,
     requested_date DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (previous_user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (new_user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (requested_by) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (approved_by) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    FOREIGN KEY (previous_user_id) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY (new_user_id) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY (requested_by) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY (approved_by) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE TABLE interviews (
@@ -182,8 +182,8 @@ CREATE TABLE interviews (
     drive_candidate_id INT NOT NULL,
     interviewer_id INT NOT NULL,
     interview_date DATETIME NOT NULL,
-    FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (interviewer_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE NO ACTION,
+    FOREIGN KEY (interviewer_id) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
     CONSTRAINT UQ_DriveCandidateId_InterviewerId UNIQUE (drive_candidate_id, interviewer_id)
 );
 

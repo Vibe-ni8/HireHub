@@ -231,7 +231,7 @@ public class HireHubDbContext : DbContext
 
             b.HasOne(x => x.Requester).WithMany()
             .HasForeignKey(x => x.RequestedBy)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Drives
