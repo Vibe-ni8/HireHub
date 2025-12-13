@@ -15,9 +15,9 @@ public class Drive : BaseEntity
     public string DriveName { get; set; } = null!;
     public DateTime DriveDate { get; set; }
     public int TechnicalRounds { get; set; }
-    public DriveStatus Status { get; set; }
+    public DriveStatus Status { get; set; } = DriveStatus.InProposal;
     public int CreatedBy { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
 
     // Navigation
     public User? Creator { get; set; }

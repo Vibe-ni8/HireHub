@@ -18,12 +18,12 @@ public class Candidate : BaseEntity
     public string? Address { get; set; }
     public string? College { get; set; }
     public string? PreviousCompany { get; set; }
-    public CandidateExperienceLevel ExperienceLevel { get; set; }
+    public CandidateExperienceLevel ExperienceLevel { get; set; } = CandidateExperienceLevel.Fresher;
     public List<string> TechStack { get; set; } = [];
     public string? ResumeUrl { get; set; }
     public string? LinkedInUrl { get; set; }
     public string? GitHubUrl { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
 
     // Navigation
     public ICollection<DriveCandidate> DriveCandidates { get; set; } = new List<DriveCandidate>();

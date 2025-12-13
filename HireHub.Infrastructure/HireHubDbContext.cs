@@ -397,49 +397,49 @@ public class HireHubDbContext : DbContext
             b.Property(x => x.ShowPhone)
             .HasColumnName("show_phone")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.ShowEmail)
             .HasColumnName("show_email")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.ShowPreviousCompany)
             .HasColumnName("show_previous_company")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.ShowResume)
             .HasColumnName("show_resume")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.ShowCollege)
             .HasColumnName("show_college")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.ShowAddress)
             .HasColumnName("show_address")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.ShowLinkedIn)
             .HasColumnName("show_linkedin")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.ShowGitHub)
             .HasColumnName("show_github")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.HasOne(x => x.Drive).WithOne(x => x.PanelVisibilitySettings)
@@ -469,7 +469,7 @@ public class HireHubDbContext : DbContext
             b.Property(x => x.EmailNotificationEnabled)
             .HasColumnName("email_notification_enabled")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.HasOne(x => x.Drive).WithOne(x => x.NotificationSettings)
@@ -498,37 +498,37 @@ public class HireHubDbContext : DbContext
             b.Property(x => x.OverallRatingRequired)
             .HasColumnName("overall_rating_required")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.TechnicalSkillRequired)
             .HasColumnName("technical_skill_required")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.CommunicationRequired)
             .HasColumnName("communication_required")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.ProblemSolvingRequired)
             .HasColumnName("problem_solving_required")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.RecommendationRequired)
             .HasColumnName("recommendation_required")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.Property(x => x.OverallFeedbackRequired)
             .HasColumnName("overall_feedback_required")
             .HasColumnType("BIT")
-            .HasDefaultValue(false)
+            .HasDefaultValue(true)
             .IsRequired();
 
             b.HasOne(x => x.Drive).WithOne(x => x.FeedbackConfiguration)
@@ -591,6 +591,7 @@ public class HireHubDbContext : DbContext
             .HasColumnName("experience_level")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
+            .HasDefaultValue(CandidateExperienceLevel.Fresher)
             .HasConversion(Helper.EnumConverter<CandidateExperienceLevel>())
             .IsRequired();
 
@@ -702,6 +703,7 @@ public class HireHubDbContext : DbContext
             .HasColumnName("round_type")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
+            .HasDefaultValue(RoundType.Tech1)
             .HasConversion(Helper.EnumConverter<RoundType>())
             .IsRequired();
 
@@ -890,6 +892,7 @@ public class HireHubDbContext : DbContext
             .HasColumnName("recommendation")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
+            .HasDefaultValue(Recommendation.Hire)
             .HasConversion(Helper.EnumConverter<Recommendation>())
             .IsRequired();
 

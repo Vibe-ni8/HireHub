@@ -10,14 +10,14 @@ public class PanelVisibilitySettings : BaseEntity
 
     public int VisibilityId { get; set; }
     public int DriveId { get; set; }
-    public bool ShowPhone { get; set; }
-    public bool ShowEmail { get; set; }
-    public bool ShowPreviousCompany { get; set; }
-    public bool ShowResume { get; set; }
-    public bool ShowCollege { get; set; }
-    public bool ShowAddress { get; set; }
-    public bool ShowLinkedIn { get; set; }
-    public bool ShowGitHub { get; set; }
+    public bool ShowPhone { get; set; } = true;
+    public bool ShowEmail { get; set; } = true;
+    public bool ShowPreviousCompany { get; set; } = true;
+    public bool ShowResume { get; set; } = true;
+    public bool ShowCollege { get; set; } = true;
+    public bool ShowAddress { get; set; } = true;
+    public bool ShowLinkedIn { get; set; } = true;
+    public bool ShowGitHub { get; set; } = true;
 
     // Navigation
     public Drive? Drive { get; set; }

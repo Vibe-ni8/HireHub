@@ -19,7 +19,7 @@ public class User : BaseEntity
     public string Phone { get; set; } = null!;
     public bool IsActive { get; set; } = true;
     public int RoleId { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
     public DateTime? UpdatedDate { get; set; }
     public string? PasswordHash { get; set; }
 

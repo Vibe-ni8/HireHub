@@ -11,9 +11,9 @@ public class Round : BaseEntity
     public int RoundId { get; set; }
     public int DriveCandidateId { get; set; }
     public int InterviewerId { get; set; }
-    public RoundType RoundType { get; set; }
-    public RoundStatus Status { get; set; }
-    public RoundResult Result { get; set; }
+    public RoundType RoundType { get; set; } = RoundType.Tech1;
+    public RoundStatus Status { get; set; } = RoundStatus.Scheduled;
+    public RoundResult Result { get; set; } = RoundResult.Pending;
 
     // Navigation
     public DriveCandidate? DriveCandidate { get; set; }

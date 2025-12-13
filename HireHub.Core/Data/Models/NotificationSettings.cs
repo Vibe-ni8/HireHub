@@ -10,7 +10,7 @@ public class NotificationSettings : BaseEntity
 
     public int NotificationId { get; set; }
     public int DriveId { get; set; }
-    public bool EmailNotificationEnabled { get; set; }
+    public bool EmailNotificationEnabled { get; set; } = true;
 
     // Navigation
     public Drive? Drive { get; set; }

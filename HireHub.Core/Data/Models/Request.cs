@@ -13,11 +13,11 @@ public class Request : BaseEntity
     public int RequestId { get; set; }
     public RequestType RequestType { get; set; }
     public RequestSubType SubType { get; set; }
-    public RequestStatus Status { get; set; }
+    public RequestStatus Status { get; set; } = RequestStatus.Pending;
     public int? ApprovedBy { get; set; }
     public DateTime? ApprovedDate { get; set; }
     public int RequestedBy { get; set; }
-    public DateTime RequestedDate { get; set; }
+    public DateTime RequestedDate { get; set; } = DateTime.Now;
 
     // Navigation
     public User? Approver { get; set; }

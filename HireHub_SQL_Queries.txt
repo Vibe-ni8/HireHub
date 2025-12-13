@@ -94,33 +94,33 @@ CREATE TABLE drive_role_configuration (
 CREATE TABLE panel_visibility_settings (
     visibility_id INT IDENTITY(1,1) PRIMARY KEY,
     drive_id INT NOT NULL UNIQUE,
-    show_phone BIT NOT NULL DEFAULT 0,
-    show_email BIT NOT NULL DEFAULT 0,
-    show_previous_company BIT NOT NULL DEFAULT 0,
-    show_resume BIT NOT NULL DEFAULT 0,
-    show_college BIT NOT NULL DEFAULT 0,
-    show_address BIT NOT NULL DEFAULT 0,
-    show_linkedin BIT NOT NULL DEFAULT 0,
-    show_github BIT NOT NULL DEFAULT 0,
+    show_phone BIT NOT NULL DEFAULT 1,
+    show_email BIT NOT NULL DEFAULT 1,
+    show_previous_company BIT NOT NULL DEFAULT 1,
+    show_resume BIT NOT NULL DEFAULT 1,
+    show_college BIT NOT NULL DEFAULT 1,
+    show_address BIT NOT NULL DEFAULT 1,
+    show_linkedin BIT NOT NULL DEFAULT 1,
+    show_github BIT NOT NULL DEFAULT 1,
     FOREIGN KEY (drive_id) REFERENCES drives(drive_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE notification_settings (
     notification_id INT IDENTITY(1,1) PRIMARY KEY,
     drive_id INT NOT NULL UNIQUE,
-    email_notification_enabled BIT NOT NULL DEFAULT 0,
+    email_notification_enabled BIT NOT NULL DEFAULT 1,
     FOREIGN KEY (drive_id) REFERENCES drives(drive_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE feedback_configuration (
     feedback_config_id INT IDENTITY(1,1) PRIMARY KEY,
     drive_id INT NOT NULL UNIQUE,
-    overall_rating_required BIT NOT NULL DEFAULT 0,
-    technical_skill_required BIT NOT NULL DEFAULT 0,
-    communication_required BIT NOT NULL DEFAULT 0,
-    problem_solving_required BIT NOT NULL DEFAULT 0,
-    recommendation_required BIT NOT NULL DEFAULT 0,
-    overallFeedbackRequired BIT NOT NULL DEFAULT 0,
+    overall_rating_required BIT NOT NULL DEFAULT 1,
+    technical_skill_required BIT NOT NULL DEFAULT 1,
+    communication_required BIT NOT NULL DEFAULT 1,
+    problem_solving_required BIT NOT NULL DEFAULT 1,
+    recommendation_required BIT NOT NULL DEFAULT 1,
+    overallFeedbackRequired BIT NOT NULL DEFAULT 1,
     FOREIGN KEY (drive_id) REFERENCES drives(drive_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -132,7 +132,7 @@ CREATE TABLE candidates (
     address VARCHAR(500) NULL,
     college VARCHAR(200) NULL,
     previous_company VARCHAR(200) NULL,
-    experience_level VARCHAR(20) NOT NULL,
+    experience_level VARCHAR(20) NOT NULL DEFAULT 'Fresher', -- Fresher, Intermediate, Experienced
     tech_stack VARCHAR(MAX) NULL,
     resume_url VARCHAR(500) NULL,
     linkedin_url VARCHAR(500) NULL,
@@ -157,7 +157,7 @@ CREATE TABLE rounds (
     round_id INT IDENTITY(1,1) PRIMARY KEY,
     drive_candidate_id INT NOT NULL,
     interviewer_id INT NOT NULL,
-    round_type VARCHAR(20), -- Hr, Tech 1, Tech 2
+    round_type VARCHAR(20) DEFAULT 'Tech1', -- Hr, Tech1, Tech2
     status VARCHAR(20) DEFAULT 'Scheduled', -- Scheduled, OnProcess, Completed, Skipped
     result VARCHAR(20) DEFAULT 'Pending', -- Pending, Selected, Rejected
     FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE NO ACTION,
@@ -200,7 +200,7 @@ CREATE TABLE feedbacks (
     communication INT NULL,
     problem_solving INT NULL,
     overall_feedback TEXT,
-    recommendation VARCHAR(20) NOT NULL, -- Hire, May be, No Hire
+    recommendation VARCHAR(20) NOT NULL DEFAULT 'Hire', -- Hire, May be, No Hire
     submitted_date DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (interview_id) REFERENCES interviews(interview_id) ON UPDATE CASCADE ON DELETE CASCADE
 );

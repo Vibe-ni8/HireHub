@@ -18,7 +18,7 @@ public class CandidateReassignment : BaseEntity
     public bool RequireApproval { get; set; }
     public int? ApprovedBy { get; set; }
     public DateTime? ApprovedDate { get; set; }
-    public DateTime RequestedDate { get; set; }
+    public DateTime RequestedDate { get; set; } = DateTime.Now;
 
     // Navigation
     public DriveCandidate? DriveCandidate { get; set; }
