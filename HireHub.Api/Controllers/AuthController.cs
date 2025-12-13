@@ -45,7 +45,7 @@ public class AuthController : ControllerBase
                         ErrorMessage = e.ErrorMessage 
                     }) 
                 );
-                return Ok(baseResponse);
+                return BadRequest(baseResponse);
             }
 
             var response = await _tokenService.GenerateToken(request);
@@ -59,9 +59,9 @@ public class AuthController : ControllerBase
         catch (CommonException ex)
         {
             _logger.LogWarning(LogMessage.EndMethodException, nameof(Token), ex.Message);
-            return BadRequest( new BaseResponse() { 
+            return BadRequest( new BaseResponse { 
                 Errors = [
-                    new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
                 ] 
             });
         }

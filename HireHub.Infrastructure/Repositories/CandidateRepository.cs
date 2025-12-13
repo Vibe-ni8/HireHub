@@ -1,4 +1,4 @@
-﻿using System;
+﻿using HireHub.Core.Data.Filters;
 using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Shared.Persistence.Repositories;
@@ -30,12 +30,36 @@ public class CandidateRepository : GenericRepository<Candidate>,  ICandidateRepo
             .CountAsync(cancellationToken);
     }
 
-    public async Task<List<Candidate>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<List<Candidate>> GetAllAsync(CandidateFilter filter, CancellationToken cancellationToken = default)
     {
-        return await _context.Candidates
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
+        var query = _context.Candidates.Select(u => u);
+
+        if (filter.ExperienceLevel != null)
+            query = query
+                .Where(c => c.ExperienceLevel == filter.ExperienceLevel);
+
+        if (filter.StartDate != null)
+            query = query
+                .Where(u => u.CreatedDate >= filter.StartDate);
+
+        if (filter.EndDate != null)
+            query = query
+                .Where(u => u.CreatedDate <= filter.EndDate);
+
+        if (filter.PageNumber != null && filter.PageSize != null)
+        {
+            var pageNumber = (int)filter.PageNumber;
+            var pageSize = (int)filter.PageSize;
+            query = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+        }
+
+        query = filter.IsLatestFirst ?
+            query.OrderByDescending(u => u.CreatedDate) :
+            query.OrderBy(u => u.CreatedDate);
+
+        return await query.ToListAsync(cancellationToken);
     }
 
     #endregion

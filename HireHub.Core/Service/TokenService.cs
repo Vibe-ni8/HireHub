@@ -1,10 +1,10 @@
 ﻿using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
-using HireHub.Core.DTO.Base;
 using HireHub.Core.Utils.Common;
 using HireHub.Shared.Authentication.Interface;
 using HireHub.Shared.Common;
+using HireHub.Shared.Common.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -35,28 +35,7 @@ public class TokenService
         if (user == null)
         {
             _logger.LogWarning(LogMessage.UserNotFoundOnLogin, request.Username);
-            return new() {
-                Errors = [
-                    new ValidationError { 
-                        PropertyName = PropertyName.Main, 
-                        ErrorMessage = CommonRS.Auth_InvalidCredentials_Format(request.Username) 
-                    }
-                ] 
-            };
-        }
-
-        if (!user.IsActive)
-        {
-            _logger.LogWarning(LogMessage.NotActiveUser, user.UserId);
-            return new()
-            {
-                Errors = [
-                    new ValidationError {
-                        PropertyName = PropertyName.Main,
-                        ErrorMessage = ResponseMessage.NotActiveUser
-                    }
-                ]
-            };
+            throw new CommonException(CommonRS.Auth_InvalidCredentials_Format(request.Username));
         }
 
         if (string.IsNullOrEmpty(user.PasswordHash))
@@ -67,14 +46,13 @@ public class TokenService
         if (!VerifyPassword(user, user.PasswordHash, request.Password))
         {
             _logger.LogWarning(LogMessage.InvalidPassword, user.UserId);
-            return new() { 
-                Errors = [
-                    new ValidationError { 
-                        PropertyName = PropertyName.Main, 
-                        ErrorMessage = CommonRS.Auth_InvalidCredentials_Format(request.Username) 
-                    }
-                ] 
-            };
+            throw new CommonException(CommonRS.Auth_InvalidCredentials_Format(request.Username));
+        }
+
+        if (!user.IsActive)
+        {
+            _logger.LogWarning(LogMessage.NotActiveUser, user.UserId);
+            return new() { Warnings = [ResponseMessage.NotActiveUser] };
         }
 
         var role = await _roleRepository.GetByIdAsync(user.RoleId);

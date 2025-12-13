@@ -1,8 +1,8 @@
-﻿using HireHub.Core.Data.Interface;
+﻿using HireHub.Core.Data.Filters;
+using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
-using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.Extensions.Logging;
 
 namespace HireHub.Core.Service;
@@ -24,17 +24,24 @@ public class CandidateService
 
     #region Query Services
 
-    public async Task<Response<List<CandidateDTO>>> GetAllCandidates(int pageNumber, int pageSize)
+    public async Task<Response<List<CandidateDTO>>> GetCandidates(CandidateExperienceLevel? experienceLevel,
+        bool isLatestFirst, DateTime? startDate, DateTime? endDate, int? pageNumber, int? pageSize)
     {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllCandidates));
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetCandidates));
 
-        var candidates = await _candidateRepository.GetAllAsync(pageNumber, pageSize, CancellationToken.None);
+        var filter = new CandidateFilter
+        {
+            ExperienceLevel = experienceLevel, IsLatestFirst = isLatestFirst,
+            StartDate = startDate, EndDate = endDate,
+            PageNumber = pageNumber, PageSize = pageSize
+        };
+        var candidates = await _candidateRepository.GetAllAsync(filter, CancellationToken.None);
 
         var candidateDTOs = ConverToDTO(candidates);
 
-        _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllCandidates));
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetCandidates));
 
-        return new Response<List<CandidateDTO>>
+        return new()
         {
             Data = candidateDTOs
         };

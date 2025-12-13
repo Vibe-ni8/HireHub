@@ -59,7 +59,7 @@ public class AdminController : ControllerBase
             return BadRequest(new BaseResponse()
             {
                 Errors = [
-                    new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
                 ]
             });
         }

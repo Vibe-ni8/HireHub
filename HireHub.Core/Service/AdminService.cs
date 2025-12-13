@@ -46,7 +46,7 @@ public class AdminService
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetDashboardDetails));
 
-        return new Response<AdminDashboardDetails>
+        return new()
         {
             Data = dashboard
         };

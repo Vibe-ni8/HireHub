@@ -1,4 +1,5 @@
-﻿using HireHub.Core.Data.Interface;
+﻿using HireHub.Core.Data.Filters;
+using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
@@ -23,63 +24,22 @@ public class UserService
 
     #region Query Services
 
-    public async Task<Response<List<UserDTO>>> GetAllUsers(int pageNumber, int pageSize)
+    public async Task<Response<List<UserDTO>>> GetUsers(UserRole? role, bool? isActive,
+        bool isLatestFirst, DateTime? startDate, DateTime? endDate, int? pageNumber, int? pageSize)
     {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllUsers));
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetUsers));
 
-        var users = await _userRepository.GetAllWithRoleAsync(pageNumber, pageSize, CancellationToken.None);
-
-        var userDTOs = ConverToDTO(users);
-
-        _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllUsers));
-
-        return new Response<List<UserDTO>>
+        var filter = new UserFilter
         {
-            Data = userDTOs
+            Role = role, IsActive = isActive, IsLatestFirst = isLatestFirst,
+            StartDate = startDate, EndDate = endDate,
+            PageNumber = pageNumber, PageSize = pageSize
         };
-    }
-
-    public async Task<Response<List<UserDTO>>> GetAllHrs(int pageNumber, int pageSize)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllHrs));
-
-        var users = await _userRepository.GetAllHrsAsync(pageNumber, pageSize, CancellationToken.None);
+        var users = await _userRepository.GetAllAsync(filter, CancellationToken.None);
 
         var userDTOs = ConverToDTO(users);
 
-        _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllHrs));
-
-        return new Response<List<UserDTO>>
-        {
-            Data = userDTOs
-        };
-    }
-
-    public async Task<Response<List<UserDTO>>> GetAllPanelMembers(int pageNumber, int pageSize)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllPanelMembers));
-
-        var users = await _userRepository.GetAllPanelMembersAsync(pageNumber, pageSize, CancellationToken.None);
-
-        var userDTOs = ConverToDTO(users);
-
-        _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllPanelMembers));
-
-        return new Response<List<UserDTO>>
-        {
-            Data = userDTOs
-        };
-    }
-
-    public async Task<Response<List<UserDTO>>> GetAllMentors(int pageNumber, int pageSize)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllMentors));
-
-        var users = await _userRepository.GetAllMentorsAsync(pageNumber, pageSize, CancellationToken.None);
-
-        var userDTOs = ConverToDTO(users);
-
-        _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllMentors));
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetUsers));
 
         return new Response<List<UserDTO>>
         {

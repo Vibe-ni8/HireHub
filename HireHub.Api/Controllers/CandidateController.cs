@@ -1,4 +1,5 @@
 ﻿using HireHub.Core.Data.Interface;
+using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.DTO.Base;
 using HireHub.Core.Service;
@@ -42,25 +43,33 @@ public class CandidateController : ControllerBase
     [ProducesResponseType<Response<List<CandidateDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
-    public async Task<IActionResult> GetAllCandidates([FromQuery] int pageNumber, [FromQuery] int pageSize)
+    public async Task<IActionResult> GetCandidates([FromQuery] string? experienceLevel,
+        [FromQuery] bool isLatestFirst, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate,
+        [FromQuery] int? pageNumber, [FromQuery] int? pageSize)
     {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllCandidates));
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetCandidates));
 
         try
         {
-            var response = await _candidateService.GetAllCandidates(pageNumber, pageSize);
+            object? expLevel = null;
+            if (experienceLevel != null && !Enum.TryParse(typeof(CandidateExperienceLevel), experienceLevel, true, out expLevel))
+                throw new CommonException(ResponseMessage.InvalidExperienceLevel);
 
-            _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllCandidates));
+            var response = await _candidateService.GetCandidates(
+                expLevel != null ? (CandidateExperienceLevel)expLevel : null, 
+                isLatestFirst, startDate, endDate, pageNumber, pageSize);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetCandidates));
 
             return Ok(response);
         }
         catch (CommonException ex)
         {
-            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetAllCandidates), ex.Message);
-            return BadRequest(new BaseResponse()
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetCandidates), ex.Message);
+            return BadRequest(new BaseResponse
             {
                 Errors = [
-                    new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
                 ]
             });
         }

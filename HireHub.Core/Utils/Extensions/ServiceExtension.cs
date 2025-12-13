@@ -29,6 +29,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<TokenService>();
         services.AddScoped<UserService>();
         services.AddScoped<AdminService>();
+        services.AddScoped<CandidateService>();
 
         return services;
     }

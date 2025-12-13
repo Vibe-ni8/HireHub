@@ -5,5 +5,15 @@ namespace HireHub.Core.Data.Interface;
 
 public interface IUserPermissionRepository : IGenericRepository<Role>
 {
+    #region DQL
+
     Task<UserPermission> GetUserPermissionAsync(int userId, string userAction);
+
+    #endregion
+
+    #region DML
+
+
+
+    #endregion
 }

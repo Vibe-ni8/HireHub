@@ -24,6 +24,7 @@ public static class ResponseMessage
     public const string NotActiveUser = "You are not a Active User";
     public const string PasswordSetRequire = "Password require to be set";
     public const string PasswordReSetRequire = "Password require to be re-set";
+    public const string InvalidExperienceLevel = "Provided Candidate Experience Level is Invalid";
 }
 
 public static class FieldName
@@ -36,7 +37,6 @@ public static class FieldName
 
 public static class PropertyName
 {
-    public const string Exception = "Exception";
     public const string Main = "Main";
 }
 
