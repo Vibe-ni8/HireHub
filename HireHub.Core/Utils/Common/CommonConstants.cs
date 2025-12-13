@@ -1,4 +1,6 @@
-﻿namespace HireHub.Core.Utils.Common;
+﻿using HireHub.Core.Data.Models;
+
+namespace HireHub.Core.Utils.Common;
 
 public static class LogMessage
 {
@@ -25,6 +27,7 @@ public static class ResponseMessage
     public const string PasswordSetRequire = "Password require to be set";
     public const string PasswordReSetRequire = "Password require to be re-set";
     public const string InvalidExperienceLevel = "Provided Candidate Experience Level is Invalid";
+    public const string EmailOrPhoneAlreadyExist = "Email or Phone number already exist";
 }
 
 public static class FieldName
@@ -61,10 +64,10 @@ public static class Key
 
 public static class RoleName
 {
-    public const string Mentor = "Mentor";
-    public const string Hr = "HR";
-    public const string Panel = "Panel";
-    public const string Admin = "Admin";
+    public const string Mentor = nameof(UserRole.Mentor);
+    public const string Hr = nameof(UserRole.HR);
+    public const string Panel = nameof(UserRole.Panel);
+    public const string Admin = nameof(UserRole.Admin);
 }
 
 public static class UserAction
@@ -78,4 +81,18 @@ public static class ActionType
     public const string Add = "Add";
     public const string Update = "Update";
     public const string Delete = "Delete";
+}
+
+public static class Options
+{
+    public static string[] Recommendations => [
+        nameof(Recommendation.NoHire),
+        nameof(Recommendation.Maybe),
+        nameof(Recommendation.Hire)
+    ];
+    public static string[] ExperienceLevels => [
+        nameof(CandidateExperienceLevel.Fresher),
+        nameof(CandidateExperienceLevel.Intermediate),
+         nameof(CandidateExperienceLevel.Experienced)
+    ];
 }

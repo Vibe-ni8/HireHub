@@ -5,6 +5,7 @@ using HireHub.Core.DTO.Base;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
 using HireHub.Core.Utils.UserProgram.Interface;
+using HireHub.Core.Validators;
 using HireHub.Shared.Authentication.Filters;
 using HireHub.Shared.Common.Exceptions;
 using HireHub.Shared.Common.Models;
@@ -79,7 +80,60 @@ public class CandidateController : ControllerBase
 
     #region Post API's
 
+    [RequireAuth([RoleName.Admin])]
+    [HttpPost("add")]
+    [ProducesResponseType<Response<CandidateDTO>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> AddCandidate([FromBody] AddCandidateRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(AddCandidate));
 
+        try
+        {
+            using (_transactionRepository.BeginTransaction())
+            {
+                var baseResponse = new BaseResponse();
+
+                var validator = await new
+                    AddCandidateRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
+                    .ValidateAsync(request);
+
+                if (!validator.IsValid)
+                {
+                    validator.Errors.ForEach(e =>
+                        baseResponse.Errors.Add(new ValidationError
+                        {
+                            PropertyName = e.PropertyName,
+                            ErrorMessage = e.ErrorMessage
+                        })
+                    );
+                    return BadRequest(baseResponse);
+                }
+
+                var response = await _candidateService.AddCandidate(request);
+
+                baseResponse.Warnings.ForEach(response.Warnings.Add);
+
+                _transactionRepository.CommitTransaction();
+
+                _logger.LogInformation(LogMessage.EndMethod, nameof(AddCandidate));
+
+                return Ok(response);
+            }
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(AddCandidate), ex.Message);
+            _transactionRepository.RollbackTransaction();
+            return BadRequest(new BaseResponse
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
 
     #endregion
 }

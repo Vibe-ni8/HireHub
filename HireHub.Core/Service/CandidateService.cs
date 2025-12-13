@@ -41,17 +41,28 @@ public class CandidateService
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetCandidates));
 
-        return new()
-        {
-            Data = candidateDTOs
-        };
+        return new() { Data = candidateDTOs };
     }
 
     #endregion
 
     #region Command Services
 
+    public async Task<Response<CandidateDTO>> AddCandidate(AddCandidateRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(AddCandidate));
 
+        var candidate = Helper.Map<AddCandidateRequest, Candidate>(request); 
+
+        await _candidateRepository.AddAsync(candidate, CancellationToken.None);
+        _saveRepository.SaveChanges();
+
+        var candidateDTO = Helper.Map<Candidate, CandidateDTO>(candidate);
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(AddCandidate));
+
+        return new() { Data = candidateDTO,};
+    }
 
     #endregion
 

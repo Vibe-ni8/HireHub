@@ -62,6 +62,11 @@ public class CandidateRepository : GenericRepository<Candidate>,  ICandidateRepo
         return await query.ToListAsync(cancellationToken);
     }
 
+    public async Task<bool> IsCandidateWithEmailOrPhoneExist(string email, string phone)
+    {
+        return await _context.Candidates.AnyAsync(e => e.Email == email || e.Phone == phone);
+    }
+
     #endregion
 
     #region DML

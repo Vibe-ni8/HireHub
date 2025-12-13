@@ -15,5 +15,4 @@ public class AddCandidateRequest
     public string? ResumeUrl { get; set; }
     public string? LinkedInUrl { get; set; }
     public string? GitHubUrl { get; set; }
-    public DateTime CreatedDate { get; set; }
 }

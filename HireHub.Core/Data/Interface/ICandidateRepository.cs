@@ -14,6 +14,8 @@ public interface ICandidateRepository : IGenericRepository<Candidate>
 
     Task<List<Candidate>> GetAllAsync(CandidateFilter filter, CancellationToken cancellationToken = default);
 
+    Task<bool> IsCandidateWithEmailOrPhoneExist(string email, string phone);
+
     #endregion
 
     #region DML
