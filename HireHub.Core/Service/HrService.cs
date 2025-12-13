@@ -7,10 +7,10 @@ public class HrService
 {
     private readonly IUserRepository _userRepository;
     private readonly ISaveRepository _saveRepository;
-    private readonly ILogger<CandidateService> _logger;
+    private readonly ILogger<HrService> _logger;
 
     public HrService(IUserRepository userRepository,
-        ISaveRepository saveRepository, ILogger<CandidateService> logger)
+        ISaveRepository saveRepository, ILogger<HrService> logger)
     {
         _userRepository = userRepository;
         _saveRepository = saveRepository;

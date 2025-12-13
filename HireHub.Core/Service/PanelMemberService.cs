@@ -7,10 +7,10 @@ public class PanelMemberService
 {
     private readonly IUserRepository _userRepository;
     private readonly ISaveRepository _saveRepository;
-    private readonly ILogger<CandidateService> _logger;
+    private readonly ILogger<PanelMemberService> _logger;
 
     public PanelMemberService(IUserRepository userRepository,
-        ISaveRepository saveRepository, ILogger<CandidateService> logger)
+        ISaveRepository saveRepository, ILogger<PanelMemberService> logger)
     {
         _userRepository = userRepository;
         _saveRepository = saveRepository;

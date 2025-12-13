@@ -30,6 +30,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UserService>();
         services.AddScoped<AdminService>();
         services.AddScoped<CandidateService>();
+        services.AddScoped<HrService>();
+        services.AddScoped<PanelMemberService>();
+        services.AddScoped<MentorService>();
 
         return services;
     }

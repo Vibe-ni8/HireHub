@@ -49,3 +49,14 @@ public class CandidateDTO
     public string? GitHubUrl { get; set; }
     public DateTime CreatedDate { get; set; }
 }
+
+public class DriveDTO
+{
+    public int DriveId { get; set; }
+    public string DriveName { get; set; } = null!;
+    public DateTime DriveDate { get; set; }
+    public int TechnicalRounds { get; set; }
+    public DriveStatus Status { get; set; }
+    public string CreatorName { get; set; } = null!;
+    public DateTime CreatedDate { get; set; }
+}

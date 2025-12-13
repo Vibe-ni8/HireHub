@@ -24,6 +24,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
         services.AddScoped<ICandidateRepository, CandidateRepository>();
         services.AddScoped<IInterviewRepository, InterviewRepository>();
+        services.AddScoped<IDriveRepository, DriveRepository>();
 
         return services;
     }

@@ -7,10 +7,10 @@ public class MentorService
 {
     private readonly IUserRepository _userRepository;
     private readonly ISaveRepository _saveRepository;
-    private readonly ILogger<CandidateService> _logger;
+    private readonly ILogger<MentorService> _logger;
 
     public MentorService(IUserRepository userRepository,
-        ISaveRepository saveRepository, ILogger<CandidateService> logger)
+        ISaveRepository saveRepository, ILogger<MentorService> logger)
     {
         _userRepository = userRepository;
         _saveRepository = saveRepository;

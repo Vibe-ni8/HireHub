@@ -1,21 +1,25 @@
 ﻿using HireHub.Core.Data.Interface;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.UserProgram.Interface;
+using HireHub.Shared.Authentication.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHub.Api.Controllers;
 
+[RequireAuth]
+[Route("api/[controller]")]
+[ApiController]
 public class PanelMemberController : ControllerBase
 {
     private readonly UserService _userService;
     private readonly IUserProvider _userProvider;
     private readonly RepoService _repoService;
     private readonly ITransactionRepository _transactionRepository;
-    private readonly ILogger<UserController> _logger;
+    private readonly ILogger<PanelMemberController> _logger;
 
     public PanelMemberController(UserService userService, IUserProvider userProvider,
         RepoService repoService, ITransactionRepository transactionRepository,
-        ILogger<UserController> logger)
+        ILogger<PanelMemberController> logger)
     {
         _userService = userService;
         _userProvider = userProvider;
