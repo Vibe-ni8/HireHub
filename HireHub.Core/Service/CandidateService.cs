@@ -2,6 +2,7 @@
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
+using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.Extensions.Logging;
 
 namespace HireHub.Core.Service;
@@ -20,6 +21,7 @@ public class CandidateService
         _logger = logger;
     }
 
+
     #region Query Services
 
     public async Task<Response<List<CandidateDTO>>> GetAllCandidates(int pageNumber, int pageSize)
@@ -28,12 +30,7 @@ public class CandidateService
 
         var candidates = await _candidateRepository.GetAllAsync(pageNumber, pageSize, CancellationToken.None);
 
-        var candidateDTOs = new List<CandidateDTO>();
-        candidates.ForEach(candidate =>
-        {
-            var candidateDTO = Helper.Map<Candidate, CandidateDTO>(candidate);
-            candidateDTOs.Add(candidateDTO);
-        });
+        var candidateDTOs = ConverToDTO(candidates);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllCandidates));
 
@@ -48,6 +45,21 @@ public class CandidateService
     #region Command Services
 
 
+
+    #endregion
+
+    #region Private Methods
+
+    private List<CandidateDTO> ConverToDTO(List<Candidate> candidates)
+    {
+        var candidateDTOs = new List<CandidateDTO>();
+        candidates.ForEach(candidate =>
+        {
+            var candidateDTO = Helper.Map<Candidate, CandidateDTO>(candidate);
+            candidateDTOs.Add(candidateDTO);
+        });
+        return candidateDTOs;
+    }
 
     #endregion
 }

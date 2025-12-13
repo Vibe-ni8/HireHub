@@ -34,6 +34,7 @@ public class AdminController : ControllerBase
         _logger = logger;
     }
 
+
     #region Get API's
 
     [HttpGet("dashboard/details")]

@@ -34,6 +34,7 @@ public class CandidateController : ControllerBase
         _logger = logger;
     }
 
+
     #region Get API's
 
     [RequireAuth([RoleName.Admin])]

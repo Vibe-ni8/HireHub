@@ -12,4 +12,23 @@ public class RoleRepository : GenericRepository<Role>, IRoleRepository
     {
         _context = context;
     }
+
+
+    #region DQL
+
+
+
+    #endregion
+
+    #region DML
+
+
+
+    #endregion
+
+    #region Private Methods
+
+
+
+    #endregion
 }

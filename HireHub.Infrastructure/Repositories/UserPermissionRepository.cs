@@ -14,9 +14,26 @@ public class UserPermissionRepository : GenericRepository<Role>, IUserPermission
         _context = context;
     }
 
+
+    #region DQL
+
     public async Task<UserPermission> GetUserPermissionAsync(int userId, string userAction)
     {
         return await _context.UserPermissions
             .FirstAsync(x => x.UserId == userId && x.Action == userAction);
     }
+
+    #endregion
+
+    #region DML
+
+
+
+    #endregion
+
+    #region Private Methods
+
+
+
+    #endregion
 }

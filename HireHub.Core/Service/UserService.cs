@@ -20,6 +20,7 @@ public class UserService
         _saveRepository = saveRepository;
     }
 
+
     #region Query Services
 
     public async Task<Response<List<UserDTO>>> GetAllUsers(int pageNumber, int pageSize)
@@ -28,15 +29,57 @@ public class UserService
 
         var users = await _userRepository.GetAllWithRoleAsync(pageNumber, pageSize, CancellationToken.None);
 
-        var userDTOs = new List<UserDTO>();
-        users.ForEach(user =>
-        {
-            var userDTO = Helper.Map<User, UserDTO>(user);
-            userDTO.Role = user.Role!.RoleName;
-            userDTOs.Add(userDTO);
-        });
+        var userDTOs = ConverToDTO(users);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllUsers));
+
+        return new Response<List<UserDTO>>
+        {
+            Data = userDTOs
+        };
+    }
+
+    public async Task<Response<List<UserDTO>>> GetAllHrs(int pageNumber, int pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllHrs));
+
+        var users = await _userRepository.GetAllHrsAsync(pageNumber, pageSize, CancellationToken.None);
+
+        var userDTOs = ConverToDTO(users);
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllHrs));
+
+        return new Response<List<UserDTO>>
+        {
+            Data = userDTOs
+        };
+    }
+
+    public async Task<Response<List<UserDTO>>> GetAllPanelMembers(int pageNumber, int pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllPanelMembers));
+
+        var users = await _userRepository.GetAllPanelMembersAsync(pageNumber, pageSize, CancellationToken.None);
+
+        var userDTOs = ConverToDTO(users);
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllPanelMembers));
+
+        return new Response<List<UserDTO>>
+        {
+            Data = userDTOs
+        };
+    }
+
+    public async Task<Response<List<UserDTO>>> GetAllMentors(int pageNumber, int pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllMentors));
+
+        var users = await _userRepository.GetAllMentorsAsync(pageNumber, pageSize, CancellationToken.None);
+
+        var userDTOs = ConverToDTO(users);
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllMentors));
 
         return new Response<List<UserDTO>>
         {
@@ -49,6 +92,22 @@ public class UserService
     #region Command Services
 
 
+
+    #endregion
+
+    #region Private Methods
+
+    private List<UserDTO> ConverToDTO(List<User> users)
+    {
+        var userDTOs = new List<UserDTO>();
+        users.ForEach(user =>
+        {
+            var userDTO = Helper.Map<User, UserDTO>(user);
+            userDTO.Role = user.Role!.RoleName;
+            userDTOs.Add(userDTO);
+        });
+        return userDTOs;
+    }
 
     #endregion
 

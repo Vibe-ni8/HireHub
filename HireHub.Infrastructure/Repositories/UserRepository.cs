@@ -16,6 +16,9 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         _context = context;
     }
 
+
+    #region DQL
+
     public async Task<User?> GetByEmailAsync(string emailId, CancellationToken cancellationToken = default)
     {
         return await _context.Users.FirstOrDefaultAsync(e => e.Email == emailId, cancellationToken);
@@ -43,16 +46,6 @@ public class UserRepository : GenericRepository<User>, IUserRepository
             .ToListAsync(cancellationToken);
     }
 
-    private async Task<List<User>> GetAllInRoleAsync(UserRole role, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
-    {
-        return await _context.Roles
-            .Where(r => r.RoleName == role)
-            .Join(_context.Users, r => r.RoleId, u => u.RoleId, (r, u) => u)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
-    }
-
     public async Task<List<User>> GetAllHrsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
         return await GetAllInRoleAsync(UserRole.HR, pageNumber, pageSize, cancellationToken);
@@ -68,4 +61,25 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         return await GetAllInRoleAsync(UserRole.Mentor, pageNumber, pageSize, cancellationToken);
     }
 
+    #endregion
+
+    #region DML
+
+
+
+    #endregion
+
+    #region Private Methods
+
+    private async Task<List<User>> GetAllInRoleAsync(UserRole role, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        return await _context.Roles
+            .Where(r => r.RoleName == role)
+            .Join(_context.Users, r => r.RoleId, u => u.RoleId, (r, u) => u)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+    }
+
+    #endregion
 }

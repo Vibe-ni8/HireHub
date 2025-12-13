@@ -25,6 +25,7 @@ public class AdminService
         _logger = logger;
     }
 
+
     #region Query Services
 
     public async Task<Response<AdminDashboardDetails>> GetDashboardDetails()
@@ -54,6 +55,12 @@ public class AdminService
     #endregion
 
     #region Command Services
+
+
+
+    #endregion
+
+    #region Private Methods
 
 
 

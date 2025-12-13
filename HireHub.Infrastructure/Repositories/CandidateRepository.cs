@@ -15,6 +15,9 @@ public class CandidateRepository : GenericRepository<Candidate>,  ICandidateRepo
         _context = context;
     }
 
+
+    #region DQL
+
     public async Task<int> CountCandidatesAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Candidates.CountAsync(cancellationToken);
@@ -34,4 +37,18 @@ public class CandidateRepository : GenericRepository<Candidate>,  ICandidateRepo
             .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
+
+    #endregion
+
+    #region DML
+
+
+
+    #endregion
+
+    #region Private Methods
+
+
+
+    #endregion
 }

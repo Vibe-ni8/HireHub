@@ -14,8 +14,25 @@ public class InterviewRepository : GenericRepository<Interview>, IInterviewRepos
         _context = context;
     }
 
+
+    #region DQL
+
     public async Task<int> CountInterviewsAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Interviews.CountAsync(cancellationToken);
     }
+
+    #endregion
+
+    #region DML
+
+
+
+    #endregion
+
+    #region Private Methods
+
+
+
+    #endregion
 }

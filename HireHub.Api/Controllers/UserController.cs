@@ -34,6 +34,7 @@ public class UserController : ControllerBase
         _logger = logger;
     }
 
+
     #region Get API's
 
     [RequireAuth([RoleName.Admin])]
@@ -56,6 +57,99 @@ public class UserController : ControllerBase
         catch (CommonException ex)
         {
             _logger.LogWarning(LogMessage.EndMethodException, nameof(GetAllUsers), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
+
+
+    [RequireAuth([RoleName.Admin])]
+    [HttpGet("hr/all")]
+    [ProducesResponseType<Response<List<UserDTO>>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetAllHrs([FromQuery] int pageNumber, [FromQuery] int pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllHrs));
+
+        try
+        {
+            var response = await _userService.GetAllHrs(pageNumber, pageSize);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllHrs));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetAllHrs), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
+
+
+    [RequireAuth([RoleName.Admin])]
+    [HttpGet("panelmember/all")]
+    [ProducesResponseType<Response<List<UserDTO>>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetAllPanelMembers([FromQuery] int pageNumber, [FromQuery] int pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllPanelMembers));
+
+        try
+        {
+            var response = await _userService.GetAllPanelMembers(pageNumber, pageSize);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllPanelMembers));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetAllPanelMembers), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Exception, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
+
+
+    [RequireAuth([RoleName.Admin])]
+    [HttpGet("mentor/all")]
+    [ProducesResponseType<Response<List<UserDTO>>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetAllMentors([FromQuery] int pageNumber, [FromQuery] int pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetAllMentors));
+
+        try
+        {
+            var response = await _userService.GetAllMentors(pageNumber, pageSize);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetAllMentors));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetAllMentors), ex.Message);
             return BadRequest(new BaseResponse()
             {
                 Errors = [
