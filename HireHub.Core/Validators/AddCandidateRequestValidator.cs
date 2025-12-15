@@ -14,7 +14,7 @@ public class AddCandidateRequestValidator : AbstractValidator<AddCandidateReques
         RuleFor(e => e.FullName).NotEmpty();
         RuleFor(e => e.Email).NotEmpty();
         RuleFor(e => e.Phone).NotEmpty();
-        RuleFor(e => e.ExperienceLevel)
+        RuleFor(e => e.ExperienceLevelName)
             .NotEmpty()
             .Must(e => Options.ExperienceLevels.Contains(e)).WithMessage(ResponseMessage.InvalidExperienceLevel);
 

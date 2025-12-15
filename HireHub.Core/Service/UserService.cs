@@ -71,7 +71,7 @@ public class UserService
         _saveRepository.SaveChanges();
 
         var userDTO = Helper.Map<User, UserDTO>(user);
-        userDTO.RoleName = role.RoleName;
+        userDTO.RoleName = role.RoleName.ToString();
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(AddUser));
 
@@ -88,7 +88,7 @@ public class UserService
         users.ForEach(user =>
         {
             var userDTO = Helper.Map<User, UserDTO>(user);
-            userDTO.RoleName = user.Role!.RoleName;
+            userDTO.RoleName = user.Role!.RoleName.ToString();
             userDTOs.Add(userDTO);
         });
         return userDTOs;

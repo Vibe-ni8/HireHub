@@ -27,7 +27,7 @@ public class UserDTO
     public string Email { get; set; } = null!;
     public string Phone { get; set; } = null!;
     public bool IsActive { get; set; } = true;
-    public UserRole RoleName { get; set; }
+    public string RoleName { get; set; } = null!;
     public DateTime CreatedDate { get; set; }
     public DateTime? UpdatedDate { get; set; }
 }
@@ -41,7 +41,7 @@ public class CandidateDTO
     public string? Address { get; set; }
     public string? College { get; set; }
     public string? PreviousCompany { get; set; }
-    public CandidateExperienceLevel ExperienceLevel { get; set; }
+    public string ExperienceLevelName { get; set; } = null!;
     public List<string> TechStack { get; set; } = [];
     public string? ResumeUrl { get; set; }
     public string? LinkedInUrl { get; set; }
@@ -55,7 +55,7 @@ public class DriveDTO
     public string DriveName { get; set; } = null!;
     public DateTime DriveDate { get; set; }
     public int TechnicalRounds { get; set; }
-    public DriveStatus Status { get; set; }
+    public string StatusName { get; set; } = null!;
     public string CreatorName { get; set; } = null!;
     public DateTime CreatedDate { get; set; }
 }

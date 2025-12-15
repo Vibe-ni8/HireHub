@@ -52,12 +52,14 @@ public class CandidateService
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(AddCandidate));
 
-        var candidate = Helper.Map<AddCandidateRequest, Candidate>(request); 
+        var candidate = Helper.Map<AddCandidateRequest, Candidate>(request);
+        candidate.ExperienceLevel = (CandidateExperienceLevel)Enum.Parse(typeof(CandidateExperienceLevel), request.ExperienceLevelName);
 
         await _candidateRepository.AddAsync(candidate, CancellationToken.None);
         _saveRepository.SaveChanges();
 
         var candidateDTO = Helper.Map<Candidate, CandidateDTO>(candidate);
+        candidateDTO.ExperienceLevelName = candidate.ExperienceLevel.ToString();
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(AddCandidate));
 
@@ -74,6 +76,7 @@ public class CandidateService
         candidates.ForEach(candidate =>
         {
             var candidateDTO = Helper.Map<Candidate, CandidateDTO>(candidate);
+            candidateDTO.ExperienceLevelName = candidate.ExperienceLevel.ToString();
             candidateDTOs.Add(candidateDTO);
         });
         return candidateDTOs;

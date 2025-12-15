@@ -8,7 +8,7 @@ public class AddCandidateRequest
     public string? Address { get; set; }
     public string? College { get; set; }
     public string? PreviousCompany { get; set; }
-    public string ExperienceLevel { get; set; } = null!;
+    public string ExperienceLevelName { get; set; } = null!;
     public List<string> TechStack { get; set; } = [];
     public string? ResumeUrl { get; set; }
     public string? LinkedInUrl { get; set; }
