@@ -72,6 +72,11 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         return await query.ToListAsync(cancellationToken);
     }
 
+    public async Task<bool> IsUserWithEmailOrPhoneExist(string email, string phone)
+    {
+        return await _context.Users.AnyAsync(e => e.Email == email || e.Phone == phone);
+    }
+
     #endregion
 
     #region DML

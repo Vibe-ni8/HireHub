@@ -1,6 +1,4 @@
-﻿using HireHub.Core.Data.Models;
-
-namespace HireHub.Core.DTO;
+﻿namespace HireHub.Core.DTO;
 
 public class AddCandidateRequest
 {

@@ -61,7 +61,7 @@ public class CandidateService
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(AddCandidate));
 
-        return new() { Data = candidateDTO,};
+        return new() { Data = candidateDTO };
     }
 
     #endregion

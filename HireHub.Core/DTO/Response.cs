@@ -27,10 +27,9 @@ public class UserDTO
     public string Email { get; set; } = null!;
     public string Phone { get; set; } = null!;
     public bool IsActive { get; set; } = true;
-    public UserRole Role { get; set; }
+    public UserRole RoleName { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime? UpdatedDate { get; set; }
-    public string? PasswordHash { get; set; }
 }
 
 public class CandidateDTO

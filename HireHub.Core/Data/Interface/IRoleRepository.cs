@@ -7,7 +7,7 @@ public interface IRoleRepository : IGenericRepository<Role>
 {
     #region DQL
 
-
+    Task<Role> GetByName(UserRole name);
 
     #endregion
 

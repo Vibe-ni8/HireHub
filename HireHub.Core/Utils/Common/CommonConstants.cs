@@ -28,6 +28,7 @@ public static class ResponseMessage
     public const string PasswordReSetRequire = "Password require to be re-set";
     public const string InvalidExperienceLevel = "Provided Candidate Experience Level is Invalid";
     public const string EmailOrPhoneAlreadyExist = "Email or Phone number already exist";
+    public const string InvalidRole = "Provided Role is Invalid";
 }
 
 public static class FieldName
@@ -93,6 +94,12 @@ public static class Options
     public static string[] ExperienceLevels => [
         nameof(CandidateExperienceLevel.Fresher),
         nameof(CandidateExperienceLevel.Intermediate),
-         nameof(CandidateExperienceLevel.Experienced)
+        nameof(CandidateExperienceLevel.Experienced)
+    ];
+    public static string[] RoleNames => [
+        nameof(UserRole.Mentor),
+        nameof(UserRole.HR),
+        nameof(UserRole.Panel),
+        nameof(UserRole.Admin)
     ];
 }

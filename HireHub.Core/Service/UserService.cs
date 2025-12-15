@@ -3,6 +3,7 @@ using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace HireHub.Core.Service;
@@ -10,13 +11,15 @@ namespace HireHub.Core.Service;
 public class UserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IRoleRepository _roleRepository;
     private readonly ILogger<UserService> _logger;
     private readonly ISaveRepository _saveRepository;
 
-    public UserService(IUserRepository userRepository, ILogger<UserService> logger,
-        ISaveRepository saveRepository)
+    public UserService(IUserRepository userRepository, IRoleRepository roleRepository,
+        ILogger<UserService> logger, ISaveRepository saveRepository)
     {
         _userRepository = userRepository;
+        _roleRepository = roleRepository;
         _logger = logger;
         _saveRepository = saveRepository;
     }
@@ -51,7 +54,29 @@ public class UserService
 
     #region Command Services
 
+    public async Task<Response<UserDTO>> AddUser(AddUserRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(AddUser));
 
+        var user = Helper.Map<AddUserRequest, User>(request);
+
+        var role = await _roleRepository
+            .GetByName((UserRole)Enum.Parse(typeof(UserRole), request.RoleName));
+        user.RoleId = role.RoleId;
+
+        var hasher = new PasswordHasher<User>();
+        user.PasswordHash = hasher.HashPassword(user, request.Password);
+
+        await _userRepository.AddAsync(user, CancellationToken.None);
+        _saveRepository.SaveChanges();
+
+        var userDTO = Helper.Map<User, UserDTO>(user);
+        userDTO.RoleName = role.RoleName;
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(AddUser));
+
+        return new() { Data = userDTO };
+    }
 
     #endregion
 
@@ -63,7 +88,7 @@ public class UserService
         users.ForEach(user =>
         {
             var userDTO = Helper.Map<User, UserDTO>(user);
-            userDTO.Role = user.Role!.RoleName;
+            userDTO.RoleName = user.Role!.RoleName;
             userDTOs.Add(userDTO);
         });
         return userDTOs;

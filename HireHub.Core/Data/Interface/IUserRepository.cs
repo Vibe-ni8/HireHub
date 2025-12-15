@@ -16,6 +16,8 @@ public interface IUserRepository : IGenericRepository<User>
 
     Task<List<User>> GetAllAsync(UserFilter filter, CancellationToken cancellationToken = default);
 
+    Task<bool> IsUserWithEmailOrPhoneExist(string email, string phone);
+
     #endregion
 
     #region DML
