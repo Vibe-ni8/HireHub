@@ -73,7 +73,7 @@ CREATE TABLE drive_members (
     role_id INT NOT NULL,
     FOREIGN KEY (drive_id) REFERENCES drives(drive_id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
-    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE NO ACTION,
+    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
     CONSTRAINT UQ_DriveId_UserId UNIQUE (drive_id, user_id)
 );
 
@@ -87,7 +87,7 @@ CREATE TABLE drive_role_configuration (
     can_edit_submitted_feedback BIT NOT NULL DEFAULT 0,
     require_approval_for_reassignment BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (drive_id) REFERENCES drives(drive_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE NO ACTION,
+    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
     CONSTRAINT UQ_DriveId_RoleId UNIQUE (drive_id, role_id)
 );
 
