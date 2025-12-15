@@ -39,7 +39,7 @@ public class DriveController : ControllerBase
     #region Get API's
 
     [RequireAuth([RoleName.Admin])]
-    [HttpGet("all")]
+    [HttpGet("fetch/all")]
     [ProducesResponseType<Response<List<DriveDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]

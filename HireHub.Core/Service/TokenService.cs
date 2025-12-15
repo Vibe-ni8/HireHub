@@ -15,14 +15,17 @@ public class TokenService
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly ISaveRepository _saveRepository;
     private readonly ILogger<TokenService> _logger;
 
     public TokenService(IUserRepository userRepository, IRoleRepository roleRepository, 
-        IJwtTokenService jwtTokenService,ILogger<TokenService> logger)
+        IJwtTokenService jwtTokenService, ISaveRepository saveRepository,
+        ILogger<TokenService> logger)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _jwtTokenService = jwtTokenService;
+        _saveRepository = saveRepository;
         _logger = logger;
     }
 
@@ -81,5 +84,85 @@ public class TokenService
         _logger.LogInformation(LogMessage.EndMethod, nameof(VerifyPassword));
 
         return result == PasswordVerificationResult.Success;
+    }
+
+    public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(ForgotPasswordAsync));
+
+        var user = await _userRepository.GetByEmailAsync(request.Email);
+
+        if (user == null)
+        {
+            _logger.LogWarning(LogMessage.UserNotFoundOnLogin, request.Email);
+            throw new CommonException(ResponseMessage.EmailNotFound);
+        }
+
+        var hasher = new PasswordHasher<User>();
+        user.PasswordHash = hasher.HashPassword(user, request.Password);
+
+        _userRepository.Update(user);
+        _saveRepository.SaveChanges();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(ForgotPasswordAsync));
+
+        return new() { Data = ResponseMessage.UpdatedSuccessfully };
+    }
+
+    public async Task<ChangePasswordResponse> ChangePasswordAsync(ChangePasswordRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(ChangePasswordAsync));
+
+        var user = await _userRepository.GetByEmailAsync(request.Email!);
+
+        if (user == null)
+        {
+            _logger.LogWarning(LogMessage.UserNotFoundOnLogin, request.Email);
+            throw new CommonException(ResponseMessage.EmailNotFound);
+        }
+
+        if (string.IsNullOrEmpty(user.PasswordHash))
+        {
+            return new() { Warnings = [ResponseMessage.PasswordSetRequire] };
+        }
+
+        if (!VerifyPassword(user, user.PasswordHash, request.OldPassword))
+        {
+            _logger.LogWarning(LogMessage.InvalidPassword, user.UserId);
+            throw new CommonException(CommonRS.Auth_InvalidCredentials_Format(request.Email));
+        }
+
+        if (!user.IsActive)
+        {
+            _logger.LogWarning(LogMessage.NotActiveUser, user.UserId);
+            return new() { Warnings = [ResponseMessage.NotActiveUser] };
+        }
+
+        var hasher = new PasswordHasher<User>();
+        user.PasswordHash = hasher.HashPassword(user, request.NewPassword);
+
+        _userRepository.Update(user);
+        _saveRepository.SaveChanges();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(ChangePasswordAsync));
+
+        return new() { Data = ResponseMessage.PasswordChangedSuccessfully };
+    }
+
+    public async Task<VerifyEmailResponse> CheckEmailExistsAync(VerifyEmailRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(CheckEmailExistsAync));
+
+        var user = await _userRepository.GetByEmailAsync(request.Email);
+
+        if (user == null)
+        {
+            _logger.LogWarning(LogMessage.UserNotFoundOnLogin, request.Email);
+            throw new CommonException(ResponseMessage.EmailNotFound);
+        }
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(CheckEmailExistsAync));
+
+        return new() { Data = ResponseMessage.EmailExists };
     }
 }

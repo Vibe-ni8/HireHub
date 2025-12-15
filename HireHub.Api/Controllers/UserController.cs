@@ -40,7 +40,7 @@ public class UserController : ControllerBase
     #region Get API's
 
     [RequireAuth([RoleName.Admin])]
-    [HttpGet("all")]
+    [HttpGet("fetch/all")]
     [ProducesResponseType<Response<List<UserDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
@@ -137,117 +137,4 @@ public class UserController : ControllerBase
 
     #endregion
 
-    #region Commented API's
-
-    //[HttpGet("current/info")]
-    //[ProducesResponseType<UserResponse<UserDetailsDTO>>(200)]
-    //[ProducesResponseType<BaseResponse>(400)]
-    //[ProducesResponseType<ErrorResponse>(500)]
-    //public async Task<IActionResult> GetCurrentUserInfo()
-    //{
-    //    _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUserInfo));
-
-    //    try
-    //    {
-    //        var response = await _userService.GetUserDetails(int.Parse(_userProvider.CurrentUserId));
-
-    //        _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserInfo));
-
-    //        return Ok(response);
-    //    }
-    //    catch (CommonException ex)
-    //    {
-    //        _logger.LogWarning(LogMessage.EndMethodException, nameof(GetCurrentUserInfo), ex.Message);
-    //        return BadRequest( new BaseResponse { 
-    //            Errors = [ 
-    //                new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
-    //            ] 
-    //        });
-    //    }
-    //}
-
-    //[RequireAuth([RoleName.Panel])]
-    //[HttpGet("panel/current/info/all")]
-    //[ProducesResponseType<UserResponse<UserCompleteDetailsDTO>>(200)]
-    //[ProducesResponseType<BaseResponse>(400)]
-    //[ProducesResponseType<ErrorResponse>(500)]
-    //public async Task<IActionResult> GetCurrentUserAllInfo()
-    //{
-    //    _logger.LogInformation(LogMessage.StartMethod, nameof(GetCurrentUserAllInfo));
-
-    //    try
-    //    {
-    //        var response = await _userService.GetUserCompleteDetails(int.Parse(_userProvider.CurrentUserId));
-
-    //        _logger.LogInformation(LogMessage.EndMethod, nameof(GetCurrentUserAllInfo));
-
-    //        return Ok(response);
-    //    }
-    //    catch (CommonException ex)
-    //    {
-    //        _logger.LogWarning(LogMessage.EndMethodException, nameof(GetCurrentUserAllInfo), ex.Message);
-    //        return BadRequest( new BaseResponse { 
-    //            Errors = [ 
-    //                new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
-    //            ] 
-    //        });
-    //    }
-    //}
-
-    //[RequireAuth([RoleName.Panel])]
-    //[HttpPost("panel/feedback/set")]
-    //[ProducesResponseType<UserResponse<FeedbackDTO>>(200)]
-    //[ProducesResponseType<BaseResponse>(400)]
-    //[ProducesResponseType<ErrorResponse>(500)]
-    //public async Task<IActionResult> SetFeedbackForPanel([FromBody] SetFeedbackRequest request)
-    //{
-    //    _logger.LogInformation(LogMessage.StartMethod, nameof(SetFeedbackForPanel));
-
-    //    try
-    //    {
-    //        using (_transactionRepository.BeginTransaction())
-    //        {
-    //            var baseResponse = new BaseResponse();
-
-    //            var validator = await new
-    //                SetFeedbackRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
-    //                .ValidateAsync(request);
-
-    //            if (!validator.IsValid)
-    //            {
-    //                validator.Errors.ForEach(e =>
-    //                    baseResponse.Errors.Add(new ValidationError
-    //                    {
-    //                        PropertyName = e.PropertyName,
-    //                        ErrorMessage = e.ErrorMessage
-    //                    })
-    //                );
-    //                return BadRequest(baseResponse);
-    //            }
-
-    //            var response = await _userService.SetFeedback(request);
-
-    //            baseResponse.Warnings.ForEach(response.Warnings.Add);
-
-    //            _transactionRepository.CommitTransaction();
-
-    //            _logger.LogInformation(LogMessage.EndMethod, nameof(SetFeedbackForPanel));
-
-    //            return Ok(response);
-    //        }
-    //    }
-    //    catch (CommonException ex)
-    //    {
-    //        _logger.LogWarning(LogMessage.EndMethodException, nameof(SetFeedbackForPanel), ex.Message);
-    //        _transactionRepository.RollbackTransaction();
-    //        return BadRequest(new BaseResponse
-    //        {
-    //            Errors = [
-    //                new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
-    //            ]
-    //        });
-    //    }
-    //}
-
-    #endregion
 }

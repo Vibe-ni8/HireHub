@@ -40,7 +40,7 @@ public class CandidateController : ControllerBase
     #region Get API's
 
     [RequireAuth([RoleName.Admin])]
-    [HttpGet("all")]
+    [HttpGet("fetch/all")]
     [ProducesResponseType<Response<List<CandidateDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]

@@ -2,7 +2,10 @@
 
 namespace HireHub.Core.DTO;
 
-public class LoginResponse : BaseResponse
-{
-    public string Data { get; set; } = null!;
-}
+public class LoginResponse : Response<string> {}
+
+public class ForgotPasswordResponse : Response<string> {}
+
+public class ChangePasswordResponse : Response<string> {}
+
+public class VerifyEmailResponse : Response<string> {}

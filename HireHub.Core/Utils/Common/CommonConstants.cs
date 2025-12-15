@@ -31,6 +31,10 @@ public static class ResponseMessage
     public const string InvalidRole = "Provided Role is Invalid";
     public const string ExcelFileEmpty = "Excel file is empty";
     public const string CellValueConvertionFailed = "Cell value convertion failed";
+    public const string UpdatedSuccessfully = "Updated Successfully";
+    public const string EmailNotFound = "Email not found";
+    public const string PasswordChangedSuccessfully = "Password Changed Successfully";
+    public const string EmailExists = "Email exists";
 }
 
 public static class FieldName
