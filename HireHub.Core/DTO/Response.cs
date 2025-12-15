@@ -1,5 +1,4 @@
-﻿using HireHub.Core.Data.Models;
-using HireHub.Shared.Common.Models;
+﻿using HireHub.Shared.Common.Models;
 
 namespace HireHub.Core.DTO;
 

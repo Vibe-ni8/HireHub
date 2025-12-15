@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json.Linq;
 
@@ -21,7 +22,7 @@ public static class Helper
 
     private static T Map<F, T>(F fromData, Type fromType, T toData, Type toType) where F : class where T : class
     {
-        foreach (var fromProperty in fromType.GetProperties())
+        foreach (var fromProperty in fromType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
             var toProperty = toType.GetProperty(fromProperty.Name);
             if (toProperty == null) continue;
@@ -126,7 +127,7 @@ public static class Helper
     public static ValueConverter<T, string> EnumConverter<T>() where T : Enum => new
     (
         v => v.ToString(),                // Enum → string
-        v => (T)Enum.Parse(typeof(T), v)  // string → Enum
+        v => (T)Enum.Parse(typeof(T), v, true)  // string → Enum
     );
 
 }

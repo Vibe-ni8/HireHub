@@ -71,7 +71,10 @@ public class CandidateRepository : GenericRepository<Candidate>,  ICandidateRepo
 
     #region DML
 
-
+    public async Task BulkInsertAsync(List<Candidate> candidates, CancellationToken cancellationToken = default)
+    {
+        await _context.Candidates.AddRangeAsync(candidates, cancellationToken);
+    }
 
     #endregion
 

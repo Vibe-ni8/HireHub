@@ -61,7 +61,7 @@ public class UserService
         var user = Helper.Map<AddUserRequest, User>(request);
 
         var role = await _roleRepository
-            .GetByName((UserRole)Enum.Parse(typeof(UserRole), request.RoleName));
+            .GetByName((UserRole)Enum.Parse(typeof(UserRole), request.RoleName, true));
         user.RoleId = role.RoleId;
 
         var hasher = new PasswordHasher<User>();

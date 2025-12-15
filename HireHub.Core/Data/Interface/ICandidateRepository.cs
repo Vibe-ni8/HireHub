@@ -20,7 +20,7 @@ public interface ICandidateRepository : IGenericRepository<Candidate>
 
     #region DML
 
-
+    Task BulkInsertAsync(List<Candidate> candidates, CancellationToken cancellationToken = default);
 
     #endregion
 }

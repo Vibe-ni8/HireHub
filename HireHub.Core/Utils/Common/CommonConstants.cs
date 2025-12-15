@@ -29,6 +29,8 @@ public static class ResponseMessage
     public const string InvalidExperienceLevel = "Provided Candidate Experience Level is Invalid";
     public const string EmailOrPhoneAlreadyExist = "Email or Phone number already exist";
     public const string InvalidRole = "Provided Role is Invalid";
+    public const string ExcelFileEmpty = "Excel file is empty";
+    public const string CellValueConvertionFailed = "Cell value convertion failed";
 }
 
 public static class FieldName

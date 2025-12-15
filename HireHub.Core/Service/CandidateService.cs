@@ -53,7 +53,8 @@ public class CandidateService
         _logger.LogInformation(LogMessage.StartMethod, nameof(AddCandidate));
 
         var candidate = Helper.Map<AddCandidateRequest, Candidate>(request);
-        candidate.ExperienceLevel = (CandidateExperienceLevel)Enum.Parse(typeof(CandidateExperienceLevel), request.ExperienceLevelName);
+        candidate.ExperienceLevel = (CandidateExperienceLevel)Enum
+            .Parse(typeof(CandidateExperienceLevel), request.ExperienceLevelName, true);
 
         await _candidateRepository.AddAsync(candidate, CancellationToken.None);
         _saveRepository.SaveChanges();
@@ -64,6 +65,30 @@ public class CandidateService
         _logger.LogInformation(LogMessage.EndMethod, nameof(AddCandidate));
 
         return new() { Data = candidateDTO };
+    }
+
+    public async Task<Response<List<int>>> BulkCandidateInsert(List<AddCandidateRequest> request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(BulkCandidateInsert));
+
+        var candidates = new List<Candidate>();
+        request.ForEach(req =>
+        {
+            var candidate = Helper.Map<AddCandidateRequest, Candidate>(req);
+            candidate.ExperienceLevel = (CandidateExperienceLevel)Enum
+                .Parse(typeof(CandidateExperienceLevel), req.ExperienceLevelName, true);
+            candidates.Add(candidate);
+        });
+
+        await _candidateRepository.BulkInsertAsync(candidates, CancellationToken.None);
+        _saveRepository.SaveChanges();
+
+        var ids = new List<int>();
+        candidates.ForEach(c => ids.Add(c.CandidateId));
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(BulkCandidateInsert));
+
+        return new() { Data = ids };
     }
 
     #endregion

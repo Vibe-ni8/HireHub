@@ -17,6 +17,7 @@ public class AddCandidateRequestValidator : AbstractValidator<AddCandidateReques
         RuleFor(e => e.ExperienceLevelName)
             .NotEmpty()
             .Must(e => Options.ExperienceLevels.Contains(e)).WithMessage(ResponseMessage.InvalidExperienceLevel);
+        RuleForEach(e => e.TechStack).NotEmpty();
 
         RuleFor(e => e).Custom( (request, context) =>
         {
@@ -27,5 +28,15 @@ public class AddCandidateRequestValidator : AbstractValidator<AddCandidateReques
             if (isEmailOrPhoneExist)
                 context.AddFailure(PropertyName.Main, ResponseMessage.EmailOrPhoneAlreadyExist);
         });
+    }
+}
+
+public class BulkCandidateInsertRequestValidator : AbstractValidator<List<AddCandidateRequest>>
+{
+    public BulkCandidateInsertRequestValidator(List<object> warnings, RepoService repoService,
+        IUserProvider userProvider)
+    {
+        RuleForEach(e => e)
+            .SetValidator(new AddCandidateRequestValidator(warnings, repoService, userProvider));
     }
 }
