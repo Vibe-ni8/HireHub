@@ -18,6 +18,7 @@ public class ForgotPasswordRequestValidator : AbstractValidator<ForgotPasswordRe
     {
         RuleFor(e => e.Email).NotEmpty();
         RuleFor(e => e.Password).NotEmpty();
+        RuleFor(e => e.Otp).NotEmpty();
     }
 }
 

@@ -5,6 +5,8 @@ using HireHub.Core.Utils.Common;
 using HireHub.Shared.Authentication.Interface;
 using HireHub.Shared.Common;
 using HireHub.Shared.Common.Exceptions;
+using HireHub.Shared.Infrastructure.Interface;
+using HireHub.Shared.Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -16,16 +18,23 @@ public class TokenService
     private readonly IRoleRepository _roleRepository;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly ISaveRepository _saveRepository;
+    private readonly IAzureEmailService _azureEmailService;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly OtpService _otpService;
     private readonly ILogger<TokenService> _logger;
 
     public TokenService(IUserRepository userRepository, IRoleRepository roleRepository, 
         IJwtTokenService jwtTokenService, ISaveRepository saveRepository,
-        ILogger<TokenService> logger)
+        IAzureEmailService azureEmailService, IHttpClientFactory httpClientFactory,
+        OtpService otpService, ILogger<TokenService> logger)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _jwtTokenService = jwtTokenService;
         _saveRepository = saveRepository;
+        _azureEmailService = azureEmailService;
+        _httpClientFactory = httpClientFactory;
+        _otpService = otpService;
         _logger = logger;
     }
 
@@ -90,11 +99,17 @@ public class TokenService
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(ForgotPasswordAsync));
 
+        if (!_otpService.ValidateOtp($"{Otp.Prefix}{request.Email}", request.Otp))
+        {
+            _logger.LogWarning(LogMessage.OtpValidationFailed, request.Email);
+            throw new CommonException(ResponseMessage.OtpValidationFailed);
+        }
+
         var user = await _userRepository.GetByEmailAsync(request.Email);
 
         if (user == null)
         {
-            _logger.LogWarning(LogMessage.UserNotFoundOnLogin, request.Email);
+            _logger.LogWarning(LogMessage.UserNotFound, request.Email);
             throw new CommonException(ResponseMessage.EmailNotFound);
         }
 
@@ -117,7 +132,7 @@ public class TokenService
 
         if (user == null)
         {
-            _logger.LogWarning(LogMessage.UserNotFoundOnLogin, request.Email);
+            _logger.LogWarning(LogMessage.UserNotFound, request.Email);
             throw new CommonException(ResponseMessage.EmailNotFound);
         }
 
@@ -157,12 +172,24 @@ public class TokenService
 
         if (user == null)
         {
-            _logger.LogWarning(LogMessage.UserNotFoundOnLogin, request.Email);
+            _logger.LogWarning(LogMessage.UserNotFound, request.Email);
             throw new CommonException(ResponseMessage.EmailNotFound);
         }
 
+        var otp = new Random().Next(100000, 999999).ToString();
+
+        var key = $"{Otp.Prefix}{user.Email}";
+        _otpService.StoreOtp(key, otp);
+
+        await _azureEmailService.SendEmailAsync(new Email 
+            { 
+                To = user.Email, 
+                Subject = EmailSubject.ForgotPasswordOTP, 
+                Body = string.Format(EmailBody.ForgotPasswordOTP, user.FullName, otp)
+            }, _httpClientFactory);
+
         _logger.LogInformation(LogMessage.EndMethod, nameof(CheckEmailExistsAync));
 
-        return new() { Data = ResponseMessage.EmailExists };
+        return new() { Data = otp };
     }
 }

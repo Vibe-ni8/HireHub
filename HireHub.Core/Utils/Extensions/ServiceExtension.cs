@@ -25,8 +25,11 @@ public static class ServiceCollectionExtensions
         );
 
         services.AddScoped<IUserProvider, UserProvider>();
+
         services.AddScoped<RepoService>();
         services.AddScoped<TokenService>();
+        services.AddScoped<OtpService>();
+
         services.AddScoped<UserService>();
         services.AddScoped<AdminService>();
         services.AddScoped<CandidateService>();

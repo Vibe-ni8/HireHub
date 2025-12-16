@@ -15,6 +15,7 @@ public class ForgotPasswordRequest
 {
     public string Email { get; set; } = null!;
     public string Password { get; set; } = null!;
+    public string Otp {  get; set; } = null!;
 }
 
 public class ChangePasswordRequest

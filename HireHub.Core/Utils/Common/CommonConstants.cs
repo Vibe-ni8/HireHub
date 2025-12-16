@@ -1,4 +1,5 @@
-﻿using HireHub.Core.Data.Models;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using HireHub.Core.Data.Models;
 
 namespace HireHub.Core.Utils.Common;
 
@@ -10,6 +11,8 @@ public static class LogMessage
     public const string UserNotFoundOnLogin = "Login failed: user not found: {Username}";
     public const string InvalidPassword = "Login failed: invalid password for {EmpId}";
     public const string NotActiveUser = "Login failed: {EmpId} is not a Active User";
+    public const string UserNotFound = "User not found: {Username}";
+    public const string OtpValidationFailed = "Otp validation failed for user: {Username}";
 }
 
 public static class ExceptionMessage
@@ -34,7 +37,7 @@ public static class ResponseMessage
     public const string UpdatedSuccessfully = "Updated Successfully";
     public const string EmailNotFound = "Email not found";
     public const string PasswordChangedSuccessfully = "Password Changed Successfully";
-    public const string EmailExists = "Email exists";
+    public const string OtpValidationFailed = "Otp validation failed";
 }
 
 public static class FieldName
@@ -108,4 +111,32 @@ public static class Options
         nameof(UserRole.Panel),
         nameof(UserRole.Admin)
     ];
+}
+
+public static class Otp
+{
+    public const string Prefix = "OTP_";
+}
+
+public static class EmailSubject
+{
+    public const string ForgotPasswordOTP = "Forgot Password OTP";
+}
+
+public static class EmailBody
+{
+    public const string ForgotPasswordOTP =
+@"Hello {0},
+
+We received a request to reset your password.
+
+Your One-Time Password (OTP) is: {1}
+
+This OTP is valid for 5 minutes.
+Please do not share this OTP with anyone.
+
+If you did not request a password reset, please ignore this email.
+
+Regards,
+Your Application Team";
 }
