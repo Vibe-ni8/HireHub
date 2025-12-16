@@ -1,4 +1,5 @@
-﻿using HireHub.Core.Data.Interface;
+﻿using ClosedXML.Excel;
+using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.DTO.Base;
@@ -14,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HireHub.Api.Controllers;
 
-[RequireAuth]
+//[RequireAuth]
 [Route("api/[controller]")]
 [ApiController]
 public class CandidateController : ControllerBase
@@ -74,6 +75,19 @@ public class CandidateController : ControllerBase
                 ]
             });
         }
+    }
+
+
+    [HttpGet("template/upload/bulk")]
+    [ProducesResponseType<FileContentResult>(200)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public IActionResult DownloadBulkUploadTemplate()
+    {
+        return File(
+            TemplateService.CandidateBulkUploadTemplate.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Candidate_Bulk_Upload_Template.xlsx"
+        );
     }
 
     #endregion
@@ -137,13 +151,13 @@ public class CandidateController : ControllerBase
 
 
     [RequireAuth([RoleName.Admin])]
-    [HttpPost("add/bulk")]
+    [HttpPost("upload/bulk")]
     [ProducesResponseType<Response<List<int>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
-    public async Task<IActionResult> BulkCandidateInsert(IFormFile file)
+    public async Task<IActionResult> CandidateBulkUpload(IFormFile file)
     {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(BulkCandidateInsert));
+        _logger.LogInformation(LogMessage.StartMethod, nameof(CandidateBulkUpload));
 
         try
         {
@@ -169,20 +183,20 @@ public class CandidateController : ControllerBase
                     return BadRequest(baseResponse);
                 }
 
-                var response = await _candidateService.BulkCandidateInsert(request);
+                var response = await _candidateService.InsertCandidatesBulk(request);
 
                 baseResponse.Warnings.ForEach(response.Warnings.Add);
 
                 _transactionRepository.CommitTransaction();
 
-                _logger.LogInformation(LogMessage.EndMethod, nameof(BulkCandidateInsert));
+                _logger.LogInformation(LogMessage.EndMethod, nameof(CandidateBulkUpload));
 
                 return Ok(response);
             }
         }
         catch (CommonException ex)
         {
-            _logger.LogWarning(LogMessage.EndMethodException, nameof(BulkCandidateInsert), ex.Message);
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(CandidateBulkUpload), ex.Message);
             _transactionRepository.RollbackTransaction();
             return BadRequest(new BaseResponse
             {

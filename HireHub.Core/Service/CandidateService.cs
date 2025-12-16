@@ -67,9 +67,9 @@ public class CandidateService
         return new() { Data = candidateDTO };
     }
 
-    public async Task<Response<List<int>>> BulkCandidateInsert(List<AddCandidateRequest> request)
+    public async Task<Response<List<int>>> InsertCandidatesBulk(List<AddCandidateRequest> request)
     {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(BulkCandidateInsert));
+        _logger.LogInformation(LogMessage.StartMethod, nameof(InsertCandidatesBulk));
 
         var candidates = new List<Candidate>();
         request.ForEach(req =>
@@ -86,7 +86,7 @@ public class CandidateService
         var ids = new List<int>();
         candidates.ForEach(c => ids.Add(c.CandidateId));
 
-        _logger.LogInformation(LogMessage.EndMethod, nameof(BulkCandidateInsert));
+        _logger.LogInformation(LogMessage.EndMethod, nameof(InsertCandidatesBulk));
 
         return new() { Data = ids };
     }
