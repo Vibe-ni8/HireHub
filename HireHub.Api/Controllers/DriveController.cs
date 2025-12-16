@@ -1,4 +1,5 @@
-﻿using HireHub.Core.Data.Interface;
+﻿using HireHub.Api.Utils.Filters;
+using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.DTO.Base;
@@ -39,12 +40,13 @@ public class DriveController : ControllerBase
     #region Get API's
 
     [RequireAuth([RoleName.Admin])]
+    [RequirePermission(UserAction.Drive, ActionType.View)]
     [HttpGet("fetch/all")]
     [ProducesResponseType<Response<List<DriveDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetDrives([FromQuery] string? driveStatus,
-        [FromQuery] string? creatorName, [FromQuery] int? technicalRounds, [FromQuery] bool isLatestFirst, 
+        [FromQuery] string? creatorEmail, [FromQuery] int? technicalRounds, [FromQuery] bool isLatestFirst, 
         [FromQuery] bool includePastDrives, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate,
         [FromQuery] int? pageNumber, [FromQuery] int? pageSize)
     {
@@ -58,7 +60,7 @@ public class DriveController : ControllerBase
 
             var response = await _driveService.GetDrives(
                 status != null ? (DriveStatus)status : null,
-                creatorName, technicalRounds, isLatestFirst, includePastDrives,
+                creatorEmail, technicalRounds, isLatestFirst, includePastDrives,
                 startDate, endDate, pageNumber, pageSize);
 
             _logger.LogInformation(LogMessage.EndMethod, nameof(GetDrives));

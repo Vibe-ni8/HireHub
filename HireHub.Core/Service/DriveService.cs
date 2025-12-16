@@ -25,7 +25,7 @@ public class DriveService
     #region Query Services
 
     public async Task<Response<List<DriveDTO>>> GetDrives(DriveStatus? status,
-        string? creatorName, int? technicalRounds, bool isLatestFirst, bool includePastDrives, 
+        string? creatorEmail, int? technicalRounds, bool isLatestFirst, bool includePastDrives, 
         DateTime? startDate, DateTime? endDate, int? pageNumber, int? pageSize)
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetDrives));
@@ -33,7 +33,7 @@ public class DriveService
         var filter = new DriveFilter
         {
             Status = status,
-            CreatorName = creatorName,
+            CreatorEmail = creatorEmail,
             TechnicalRounds = technicalRounds,
             IsLatestFirst = isLatestFirst,
             IncludePastDrives = includePastDrives,

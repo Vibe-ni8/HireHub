@@ -26,9 +26,9 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
             query = query
                 .Where(d => d.Status == filter.Status);
 
-        if (filter.CreatorName != null)
+        if (filter.CreatorEmail != null)
             query = query
-                .Where(d => d.Creator!.FullName == filter.CreatorName);
+                .Where(d => d.Creator!.Email == filter.CreatorEmail);
 
         if (filter.TechnicalRounds != null)
             query = query
