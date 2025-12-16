@@ -1,5 +1,4 @@
-﻿using ClosedXML.Excel;
-using HireHub.Core.Data.Interface;
+﻿using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.DTO.Base;
@@ -15,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HireHub.Api.Controllers;
 
-//[RequireAuth]
+[RequireAuth]
 [Route("api/[controller]")]
 [ApiController]
 public class CandidateController : ControllerBase
