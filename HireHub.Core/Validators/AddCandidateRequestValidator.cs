@@ -36,6 +36,13 @@ public class BulkCandidateInsertRequestValidator : AbstractValidator<List<AddCan
     public BulkCandidateInsertRequestValidator(List<object> warnings, RepoService repoService,
         IUserProvider userProvider)
     {
+        RuleFor(e => e).Custom((request, context) =>
+        {
+            var uniqueEmailCount = request.DistinctBy(e => e.Email).Count();
+            var uniquePhoneCount = request.DistinctBy(e => e.Phone).Count();
+            if (uniqueEmailCount != request.Count || uniquePhoneCount != request.Count)
+                context.AddFailure(PropertyName.Main, ResponseMessage.DuplicateRecordsFound);
+        });
         RuleForEach(e => e)
             .SetValidator(new AddCandidateRequestValidator(warnings, repoService, userProvider));
     }

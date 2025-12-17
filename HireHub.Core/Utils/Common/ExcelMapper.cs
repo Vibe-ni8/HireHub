@@ -89,7 +89,7 @@ public static class ExcelMapper
 
         if (underlyingType == typeof(List<string>))
         {
-            var raw = cell.GetString();
+            var raw = cell.GetString().Trim();
 
             return raw
                 .Split([ ',', ';', '\n' ], StringSplitOptions.RemoveEmptyEntries)
@@ -98,7 +98,7 @@ public static class ExcelMapper
                 .ToList();
         }
 
-        return Convert.ChangeType(cell.GetValue<string>(), underlyingType);
+        return Convert.ChangeType(cell.GetValue<string>().Trim(), underlyingType);
     }
 }
 

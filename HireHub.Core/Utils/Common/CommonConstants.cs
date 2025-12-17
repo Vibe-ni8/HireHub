@@ -38,6 +38,7 @@ public static class ResponseMessage
     public const string EmailNotFound = "Email not found";
     public const string PasswordChangedSuccessfully = "Password Changed Successfully";
     public const string OtpValidationFailed = "Otp validation failed";
+    public const string DuplicateRecordsFound = "Duplicate records found for email or phone";
 }
 
 public static class FieldName

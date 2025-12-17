@@ -77,7 +77,7 @@ public class CandidateController : ControllerBase
     }
 
 
-    [HttpGet("template/upload/bulk")]
+    [HttpGet("template/bulk-upload")]
     [ProducesResponseType<FileContentResult>(200)]
     [ProducesResponseType<ErrorResponse>(500)]
     public IActionResult DownloadBulkUploadTemplate()
