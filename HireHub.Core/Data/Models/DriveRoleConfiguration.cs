@@ -11,10 +11,10 @@ public class DriveRoleConfiguration : BaseEntity
     public int ConfigId { get; set; }
     public int DriveId { get; set; }
     public int RoleId { get; set; }
-    public bool AllowPanelReassign { get; set; } = false;
-    public bool CanViewFeedback { get; set; } = false;
     public bool AllowBulkUpload { get; set; } = false;
+    public bool CanViewFeedback { get; set; } = false;
     public bool CanEditSubmittedFeedback { get; set; } = false;
+    public bool AllowPanelReassign { get; set; } = false;
     public bool RequireApprovalForReassignment { get; set; } = false;
 
     // Navigation

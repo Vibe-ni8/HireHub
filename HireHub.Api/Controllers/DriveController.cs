@@ -6,6 +6,7 @@ using HireHub.Core.DTO.Base;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
 using HireHub.Core.Utils.UserProgram.Interface;
+using HireHub.Core.Validators;
 using HireHub.Shared.Authentication.Filters;
 using HireHub.Shared.Common.Exceptions;
 using HireHub.Shared.Common.Models;
@@ -83,7 +84,61 @@ public class DriveController : ControllerBase
 
     #region Post API's
 
+    [RequireAuth([RoleName.Admin])]
+    [RequirePermission(UserAction.Drive, ActionType.Add)]
+    [HttpPost("create")]
+    [ProducesResponseType<Response<DriveDTO>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> CreateDrive([FromBody] CreateDriveRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(CreateDrive));
 
+        try
+        {
+            using (_transactionRepository.BeginTransaction())
+            {
+                var baseResponse = new BaseResponse();
+
+                var validator = await new CreateDriveRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
+                    .ValidateAsync(request);
+
+                if (!validator.IsValid)
+                {
+                    validator.Errors.ForEach(e =>
+                        baseResponse.Errors.Add(new ValidationError
+                        {
+                            PropertyName = e.PropertyName,
+                            ErrorMessage = e.ErrorMessage
+                        })
+                    );
+                    return BadRequest(baseResponse);
+                }
+
+                var currentUserId = int.Parse(_userProvider.CurrentUserId);
+                var response = await _driveService.CreateDriveAsync(request, currentUserId);
+
+                baseResponse.Warnings.ForEach(response.Warnings.Add);
+
+                _transactionRepository.CommitTransaction();
+
+                _logger.LogInformation(LogMessage.EndMethod, nameof(CreateDrive));
+
+                return Ok(response);
+            }
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(CreateDrive), ex.Message);
+            _transactionRepository.RollbackTransaction();
+            return BadRequest(new BaseResponse
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
 
     #endregion
 }

@@ -62,6 +62,18 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
         return await query.ToListAsync(cancellationToken);
     }
 
+    public async Task<bool> IsUserAssignedInAnyActiveDriveOnDateAsync(int userId, DateTime driveDate, 
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.DriveTeams
+            .Where(dm => dm.UserId == userId)
+            .Include(dm => dm.Drive)
+            .AnyAsync(
+                dm => dm.Drive!.DriveDate.Date == driveDate.Date && dm.Drive.Status != DriveStatus.Completed,
+                cancellationToken
+            );
+    }
+
     #endregion
 
     #region DML

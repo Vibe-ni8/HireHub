@@ -39,6 +39,13 @@ public static class ResponseMessage
     public const string PasswordChangedSuccessfully = "Password Changed Successfully";
     public const string OtpValidationFailed = "Otp validation failed";
     public const string DuplicateRecordsFound = "Duplicate records found for email or phone";
+    public const string NoHrs = "Minimum one HR should be add";
+    public const string NoPanelMembers = "Minimum one Panel member should be add";
+    public const string NoMentors = "Minimum one Mentor should be add";
+    public const string SomeUserNotFound = "Some user not found";
+    public const string SomeInactiveUsersFound = "Some users are Inactive";
+    public const string SomeUserNotInSpecifiedRole = "Some user not in a Specified Role";
+    public const string SomeUsersAssignedToAnotherActiveDriveOnSameDate = "Some users are assigned to another active Drive on same Date";
 }
 
 public static class FieldName
