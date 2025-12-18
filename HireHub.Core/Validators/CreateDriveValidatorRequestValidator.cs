@@ -82,24 +82,22 @@ public class CreateDriveRequestValidator : AbstractValidator<CreateDriveRequest>
 
         RuleFor(x => x).Custom((request, context) =>
         {
-            void CheckDuplicates(List<int>? ids, string roleName)
+            void CheckDuplicates(List<int> userIds, string roleName)
             {
-                if (ids == null) return;
-                var duplicates = ids
+                var duplicates = userIds
                     .GroupBy(x => x)
                     .Where(g => g.Count() > 1)
                     .Select(g => g.Key);
-                foreach (var id in duplicates)
-                {
+
+                if (duplicates.Any())
                     context.AddFailure(PropertyName.Main, 
                         string.Format(ResponseMessage.SomeDuplicateUsersFoundIn, roleName)
                     );
-                }
             }
+
             CheckDuplicates(request.CoordinationTeam.Hrs, RoleName.Hr);
             CheckDuplicates(request.CoordinationTeam.Mentors, RoleName.Mentor);
             CheckDuplicates(request.CoordinationTeam.PanelMembers, RoleName.Panel);
-
         });
     }
 }
