@@ -608,7 +608,7 @@ public class HireHubDbContext : DbContext
             .IsRequired(false);
 
             b.Property(x => x.LinkedInUrl)
-            .HasColumnName("linked_url")
+            .HasColumnName("linkedin_url")
             .HasColumnType("VARCHAR(500)")
             .HasMaxLength(500)
             .IsRequired(false);
@@ -629,11 +629,11 @@ public class HireHubDbContext : DbContext
         // CandidateDrive
         modelBuilder.Entity<DriveCandidate>(b =>
         {
-            b.ToTable("candidate_drive");
+            b.ToTable("drive_candidate");
             b.HasKey(x => x.DriveCandidateId);
 
             b.Property(x => x.DriveCandidateId)
-            .HasColumnName("candidate_drive_id")
+            .HasColumnName("drive_candidate_id")
             .HasColumnType("INT")
             .IsRequired();
 

@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Newtonsoft.Json.Linq;
 
 namespace HireHub.Core.Utils.Common;
 
@@ -12,7 +11,7 @@ public static class Helper
         return Map(fromData, new T());
     }
 
-    public static T Map<F, T>(F fromData, T toData) where F : class where T : class
+    public static T Map<F, T>(F fromData, T toData) where F : class where T : class, new()
     {
         Type fromType = typeof(F);
         Type toType = typeof(T);
@@ -20,7 +19,7 @@ public static class Helper
         return Map(fromData, fromType, toData, toType);
     }
 
-    private static T Map<F, T>(F fromData, Type fromType, T toData, Type toType) where F : class where T : class
+    private static T Map<F, T>(F fromData, Type fromType, T toData, Type toType) where F : class where T : class, new()
     {
         foreach (var fromProperty in fromType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
@@ -70,7 +69,8 @@ public static class Helper
             for (int i = 0; i < fromArray.Length; i++)
             {
                 var fromElement = fromArray.GetValue(i);
-                var toElement = Activator.CreateInstance(elementType!);
+                var toElement = elementType != typeof(string) ?
+                    Activator.CreateInstance(elementType!) : fromElement;
 
                 var mappedElement = (fromElement != null && toElement != null)
                     ? Map(fromElement, fromElement.GetType(), toElement, elementType!)
@@ -92,7 +92,8 @@ public static class Helper
 
             foreach (var fromElement in fromCollection)
             {
-                var toElement = Activator.CreateInstance(elementType);
+                var toElement = elementType != typeof(string) ?
+                    Activator.CreateInstance(elementType!) : fromElement;
 
                 var mappedElement = (fromElement != null && toElement != null)
                     ? Map(fromElement, fromElement.GetType(), toElement, elementType)
