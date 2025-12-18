@@ -48,7 +48,7 @@ public class CreateDriveRequestValidator : AbstractValidator<CreateDriveRequest>
                         context.AddFailure(PropertyName.Main, ResponseMessage.SomeInactiveUsersFound);
                         return false;
                     }
-                    if (user.RoleId == roleId)
+                    if (user.RoleId != roleId)
                     {
                         context.AddFailure(PropertyName.Main, ResponseMessage.SomeUserNotInSpecifiedRole);
                         return false;
@@ -91,8 +91,8 @@ public class CreateDriveRequestValidator : AbstractValidator<CreateDriveRequest>
                     .Select(g => g.Key);
                 foreach (var id in duplicates)
                 {
-                    context.AddFailure(PropertyName.Main,
-                        $"User with ID {id} is duplicated in {roleName} list"
+                    context.AddFailure(PropertyName.Main, 
+                        string.Format(ResponseMessage.SomeDuplicateUsersFoundIn, roleName)
                     );
                 }
             }

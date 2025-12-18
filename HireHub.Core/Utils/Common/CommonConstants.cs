@@ -46,6 +46,7 @@ public static class ResponseMessage
     public const string SomeInactiveUsersFound = "Some users are Inactive";
     public const string SomeUserNotInSpecifiedRole = "Some user not in a Specified Role";
     public const string SomeUsersAssignedToAnotherActiveDriveOnSameDate = "Some users are assigned to another active Drive on same Date";
+    public const string SomeDuplicateUsersFoundIn = "Some duplicate users found in {0} list";
 }
 
 public static class FieldName
