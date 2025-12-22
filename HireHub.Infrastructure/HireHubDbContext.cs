@@ -629,7 +629,7 @@ public class HireHubDbContext : DbContext
         // CandidateDrive
         modelBuilder.Entity<DriveCandidate>(b =>
         {
-            b.ToTable("drive_candidate");
+            b.ToTable("drive_candidates");
             b.HasKey(x => x.DriveCandidateId);
 
             b.Property(x => x.DriveCandidateId)
@@ -655,6 +655,11 @@ public class HireHubDbContext : DbContext
             .HasMaxLength(20)
             .HasDefaultValue(CandidateStatus.Pending)
             .HasConversion(Helper.EnumConverter<CandidateStatus>())
+            .IsRequired();
+
+            b.Property(x => x.StatusSetBy)
+            .HasColumnName("status_set_by")
+            .HasColumnType("INT")
             .IsRequired();
 
             b.Property(x => x.CreatedDate)
