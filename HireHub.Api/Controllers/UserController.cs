@@ -76,6 +76,36 @@ public class UserController : ControllerBase
         }
     }
 
+
+    [RequireAuth([RoleName.Admin])]
+    [HttpGet("fetch/{userId:int}")]
+    [ProducesResponseType<Response<UserDTO>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetUser([FromRoute] int userId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetUser));
+
+        try
+        {
+            var response = await _userService.GetUser(userId);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetUser));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetUser), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
     #endregion
 
     #region Post API's

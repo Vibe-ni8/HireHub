@@ -34,9 +34,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AdminService>();
         services.AddScoped<CandidateService>();
         services.AddScoped<DriveService>();
-        services.AddScoped<HrService>();
-        services.AddScoped<PanelMemberService>();
-        services.AddScoped<MentorService>();
 
         return services;
     }

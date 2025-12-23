@@ -3,6 +3,7 @@ using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
+using HireHub.Shared.Common.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -44,10 +45,24 @@ public class UserService
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetUsers));
 
-        return new Response<List<UserDTO>>
-        {
-            Data = userDTOs
-        };
+        return new() { Data = userDTOs };
+    }
+
+
+    public async Task<Response<UserDTO>> GetUser(int userId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetUser));
+
+        var user = await _userRepository.GetByIdAsync(userId, CancellationToken.None) ??
+            throw new CommonException(ResponseMessage.UserNotFound);
+
+        var userDTO = Helper.Map<User, UserDTO>(user);
+        var role = await _roleRepository.GetByIdAsync(user.RoleId, CancellationToken.None);
+        userDTO.RoleName = role!.RoleName.ToString();
+
+       _logger.LogInformation(LogMessage.EndMethod, nameof(GetUser));
+
+        return new() { Data = userDTO };
     }
 
     #endregion
