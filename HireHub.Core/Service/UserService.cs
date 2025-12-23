@@ -13,14 +13,17 @@ public class UserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
+    private readonly IDriveRepository _driveRepository;
     private readonly ILogger<UserService> _logger;
     private readonly ISaveRepository _saveRepository;
 
     public UserService(IUserRepository userRepository, IRoleRepository roleRepository,
+        IDriveRepository driveRepository,
         ILogger<UserService> logger, ISaveRepository saveRepository)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
+        _driveRepository = driveRepository;
         _logger = logger;
         _saveRepository = saveRepository;
     }
@@ -63,6 +66,31 @@ public class UserService
        _logger.LogInformation(LogMessage.EndMethod, nameof(GetUser));
 
         return new() { Data = userDTO };
+    }
+
+
+    public async Task<Response<HrDTO>> GetHr(int hrId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetHr));
+
+        var hr = await _userRepository.GetHrByIdAsync(hrId) ??
+            throw new CommonException(ResponseMessage.UserNotFound);
+
+        var hrDTO = Helper.Map<User, HrDTO>(hr);
+
+        var role = await _roleRepository.GetByIdAsync(hr.RoleId);
+        hrDTO.RoleName = role!.RoleName.ToString();
+
+        foreach (var item in hr.DriveMembers)
+        {
+            var drive = await _driveRepository.GetByIdAsync(item.DriveId) ?? 
+                throw new CommonException(ResponseMessage.DriveNotFound);
+            hrDTO.ParticipatedDrives.Add(Helper.Map<Drive, DriveDTO>(drive));
+        }
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetHr));
+
+        return new() { Data = hrDTO };
     }
 
     #endregion

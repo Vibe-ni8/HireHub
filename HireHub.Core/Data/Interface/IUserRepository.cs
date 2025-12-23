@@ -18,6 +18,8 @@ public interface IUserRepository : IGenericRepository<User>
 
     Task<bool> IsUserWithEmailOrPhoneExist(string email, string phone);
 
+    Task<User?> GetHrByIdAsync(int hrId, CancellationToken cancellationToken = default);
+
     #endregion
 
     #region DML
