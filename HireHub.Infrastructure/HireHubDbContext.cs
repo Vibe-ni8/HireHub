@@ -211,12 +211,12 @@ public class HireHubDbContext : DbContext
             .HasDefaultValueSql("GETDATE()")
             .IsRequired();
 
-            b.HasOne(x => x.Approver).WithMany()
-            .HasForeignKey(x => x.RequestedBy)
+            b.HasOne(x => x.Approver).WithMany(e => e.ApprovedRequests)
+            .HasPrincipalKey(e => e.UserId).HasForeignKey(x => x.ApprovedBy)
             .OnDelete(DeleteBehavior.SetNull);
 
-            b.HasOne(x => x.Requester).WithMany()
-            .HasForeignKey(x => x.RequestedBy)
+            b.HasOne(x => x.Requester).WithMany(e => e.RaisedRequests)
+            .HasPrincipalKey(e => e.UserId).HasForeignKey(x => x.RequestedBy)
             .OnDelete(DeleteBehavior.Restrict);
         });
 

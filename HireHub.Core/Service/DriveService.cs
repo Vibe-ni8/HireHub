@@ -159,7 +159,7 @@ public class DriveService
         {
             var driveDTO = Helper.Map<Drive, DriveDTO>(drive);
             driveDTO.CreatorName = drive.Creator!.FullName;
-            driveDTO.StatusName = drive.Status.ToString();
+            driveDTO.DriveStatus = drive.Status.ToString();
             driveDTOs.Add(driveDTO);
         });
         return driveDTOs;

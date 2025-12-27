@@ -29,7 +29,6 @@ public class Candidate : BaseEntity
     public ICollection<DriveCandidate> DriveCandidates { get; set; } = new List<DriveCandidate>();
     public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
     public ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
-    public ICollection<Request> Requests { get; set; } = new List<Request>();
 }
 
 public enum CandidateExperienceLevel

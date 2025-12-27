@@ -62,9 +62,20 @@ public class CandidateRepository : GenericRepository<Candidate>,  ICandidateRepo
         return await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> IsCandidateWithEmailOrPhoneExist(string email, string phone)
+    public async Task<bool> IsCandidateWithEmailOrPhoneExist(string email, string phone, CancellationToken cancellationToken = default)
     {
-        return await _context.Candidates.AnyAsync(e => e.Email == email || e.Phone == phone);
+        return await _context.Candidates.AnyAsync(e => e.Email == email || e.Phone == phone, cancellationToken);
+    }
+
+    public async Task<Candidate?> GetCompleteDetailsByIdAsync(int candidateId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Candidates
+            .Include(c => c.DriveCandidates)
+                .ThenInclude(dc => dc.Drive)
+                    .ThenInclude(d => d!.Creator)
+            .Include(c => c.DriveCandidates)
+                .ThenInclude(dc => dc.Rounds)
+            .FirstOrDefaultAsync(c => c.CandidateId == candidateId, cancellationToken);
     }
 
     #endregion

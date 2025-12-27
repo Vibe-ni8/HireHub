@@ -89,6 +89,36 @@ public class CandidateController : ControllerBase
         );
     }
 
+
+    [RequireAuth([RoleName.Admin])]
+    [HttpGet("fetch/{candidateId:int}")]
+    [ProducesResponseType<Response<CandidateCompleteDetailsDTO>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetCandidate([FromRoute] int candidateId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetCandidate));
+
+        try
+        {
+            var response = await _candidateService.GetCandidate(candidateId);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetCandidate));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetCandidate), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
     #endregion
 
     #region Post API's

@@ -49,6 +49,7 @@ public static class ResponseMessage
     public const string SomeDuplicateUsersFoundIn = "Some duplicate users found in {0} list";
     public const string UserNotFound = "User not found";
     public const string DriveNotFound = "Drive not found";
+    public const string CandidateNotFound = "Candidate not found";
 }
 
 public static class FieldName
