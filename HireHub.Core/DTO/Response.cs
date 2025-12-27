@@ -65,7 +65,7 @@ public class DriveCandidateDTO
     public int DriveCandidateId { get; set; }
     public int CandidateId { get; set; }
     public int DriveId { get; set; }
-    public string FinalStatus { get; set; } = null!;
+    public string CandidateStatus { get; set; } = null!;
     public int? StatusSetBy { get; set; }
 }
 
