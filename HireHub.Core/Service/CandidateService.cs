@@ -50,45 +50,15 @@ public class CandidateService
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetCandidate));
 
-        var candidate = await _candidateRepository.GetCompleteDetailsByIdAsync(candidateId) ??
+        var candidate = await _candidateRepository.GetByIdAsync(candidateId) ??
             throw new CommonException(ResponseMessage.CandidateNotFound);
 
-        var candidateCompleteDetailsDTO = Helper.Map<Candidate, CandidateCompleteDetailsDTO>(candidate);
-        candidateCompleteDetailsDTO.CandidateExperienceLevel = candidate.ExperienceLevel.ToString();
-
-        foreach (var item in candidate.DriveCandidates.GroupBy(dc => dc.DriveId))
-        {
-            var driveCandidate = item.First(); // drive do not have duplicate candidate
-
-            var driveDTO = new DriveDTOForCandidate();
-
-            driveDTO.DriveId = item.Key;
-            driveDTO.DriveName = driveCandidate.Drive!.DriveName;
-            driveDTO.DriveDate = driveCandidate.Drive!.DriveDate;
-            driveDTO.TechnicalRounds = driveCandidate.Drive!.TechnicalRounds;
-            driveDTO.DriveStatus = driveCandidate.Drive!.Status.ToString();
-            driveDTO.CreatorName = driveCandidate.Drive!.Creator!.FullName;
-            driveDTO.CreatedDate = driveCandidate.Drive!.CreatedDate;
-            foreach (var round in driveCandidate.Rounds)
-            {
-                driveDTO.Rounds.Add(new RoundDTO 
-                {
-                    RoundId = round.RoundId,
-                    DriveCandidateId = round.DriveCandidateId,
-                    InterviewerId = round.InterviewerId,
-                    Type = round.RoundType.ToString(),
-                    RoundStatus = round.Status.ToString(),
-                    RoundResult = round.Result.ToString()
-                });
-            }
-            driveDTO.CandidateStatus = driveCandidate.Status.ToString();
-
-            candidateCompleteDetailsDTO.Drives.Add(driveDTO);
-        }
+        var candidateDTO = Helper.Map<Candidate, CandidateCompleteDetailsDTO>(candidate);
+        candidateDTO.CandidateExperienceLevel = candidate.ExperienceLevel.ToString();
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetCandidate));
 
-        return new() { Data = candidateCompleteDetailsDTO };
+        return new() { Data = candidateDTO };
     }
 
     #endregion

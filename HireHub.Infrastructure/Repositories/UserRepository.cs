@@ -77,16 +77,6 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         return await _context.Users.AnyAsync(e => e.Email == email || e.Phone == phone);
     }
 
-    public async Task<User?> GetHrByIdAsync(int hrId, CancellationToken cancellationToken = default)
-    {
-        return await _context.Users
-            .Where(u => u.UserId == hrId)
-            .Include(u => u.CreatedDrives)
-            .Include(u => u.DriveMembers)
-            .Include(u => u.RecruitedCandidates)
-            .FirstOrDefaultAsync(cancellationToken);
-    }
-
     #endregion
 
     #region DML

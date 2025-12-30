@@ -68,51 +68,6 @@ public class UserService
         return new() { Data = userDTO };
     }
 
-
-    public async Task<Response<HrDTO>> GetHr(int hrId)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetHr));
-
-        var hr = await _userRepository.GetHrByIdAsync(hrId) ??
-            throw new CommonException(ResponseMessage.UserNotFound);
-
-        var hrDTO = Helper.Map<User, HrDTO>(hr);
-
-        var role = await _roleRepository.GetByIdAsync(hr.RoleId);
-        hrDTO.RoleName = role!.RoleName.ToString();
-
-        if (role.RoleName != UserRole.HR)
-            throw new CommonException(ResponseMessage.UserNotInSpecifiedRole);
-
-        hrDTO.CreatedDrives.ForEach(e =>
-        {
-            e.DriveStatus = hr.CreatedDrives.First(d => d.DriveId == e.DriveId)
-                .Status.ToString();
-            e.CreatorName = hr.FullName;
-        });
-
-        foreach (var item in hr.DriveMembers)
-        {
-            var drive = await _driveRepository.GetByIdAsync(item.DriveId) ?? 
-                throw new CommonException(ResponseMessage.SomeDriveNotFound);
-            var driveDTO = Helper.Map<Drive, DriveDTO>(drive);
-            driveDTO.DriveStatus = drive.Status.ToString();
-            driveDTO.CreatorName = (await _userRepository.GetByIdAsync(drive.CreatedBy))?.FullName!;
-            hrDTO.ParticipatedDrives.Add(driveDTO);
-        }
-
-        hrDTO.RecruitedCandidates.ForEach(e =>
-        {
-            e.CandidateStatus = hr.RecruitedCandidates
-                .First(c => c.DriveCandidateId == e.DriveCandidateId)
-                .Status.ToString();
-        });
-
-        _logger.LogInformation(LogMessage.EndMethod, nameof(GetHr));
-
-        return new() { Data = hrDTO };
-    }
-
     #endregion
 
     #region Command Services

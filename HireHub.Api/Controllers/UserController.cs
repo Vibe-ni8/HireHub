@@ -106,36 +106,6 @@ public class UserController : ControllerBase
         }
     }
 
-
-    [RequireAuth([RoleName.Admin])]
-    [HttpGet("hr/fetch/{hrId:int}")]
-    [ProducesResponseType<Response<HrDTO>>(200)]
-    [ProducesResponseType<BaseResponse>(400)]
-    [ProducesResponseType<ErrorResponse>(500)]
-    public async Task<IActionResult> GetHr([FromRoute] int hrId)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(GetHr));
-
-        try
-        {
-            var response = await _userService.GetHr(hrId);
-
-            _logger.LogInformation(LogMessage.EndMethod, nameof(GetHr));
-
-            return Ok(response);
-        }
-        catch (CommonException ex)
-        {
-            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetHr), ex.Message);
-            return BadRequest(new BaseResponse()
-            {
-                Errors = [
-                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
-                ]
-            });
-        }
-    }
-
     #endregion
 
     #region Post API's

@@ -92,7 +92,7 @@ public class CandidateController : ControllerBase
 
     [RequireAuth([RoleName.Admin])]
     [HttpGet("fetch/{candidateId:int}")]
-    [ProducesResponseType<Response<CandidateCompleteDetailsDTO>>(200)]
+    [ProducesResponseType<Response<CandidateDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetCandidate([FromRoute] int candidateId)
