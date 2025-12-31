@@ -44,7 +44,7 @@ public class UserController : ControllerBase
     [ProducesResponseType<Response<List<UserDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
-    public async Task<IActionResult> GetUsers([FromQuery] string role, [FromQuery] bool? isActive,
+    public async Task<IActionResult> GetUsers([FromQuery] string? role, [FromQuery] bool? isActive,
         [FromQuery] bool isLatestFirst, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate,
         [FromQuery] int? pageNumber, [FromQuery] int? pageSize)
     {
