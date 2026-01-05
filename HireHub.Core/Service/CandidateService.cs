@@ -46,14 +46,14 @@ public class CandidateService
     }
 
 
-    public async Task<Response<CandidateCompleteDetailsDTO>> GetCandidate(int candidateId)
+    public async Task<Response<CandidateDTO>> GetCandidate(int candidateId)
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetCandidate));
 
         var candidate = await _candidateRepository.GetByIdAsync(candidateId) ??
             throw new CommonException(ResponseMessage.CandidateNotFound);
 
-        var candidateDTO = Helper.Map<Candidate, CandidateCompleteDetailsDTO>(candidate);
+        var candidateDTO = Helper.Map<Candidate, CandidateDTO>(candidate);
         candidateDTO.CandidateExperienceLevel = candidate.ExperienceLevel.ToString();
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetCandidate));

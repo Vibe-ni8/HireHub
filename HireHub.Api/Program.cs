@@ -13,6 +13,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.RegisterSwaggerGen();
 builder.Services.RegisterServices(builder.Configuration);
+builder.Services.AddCors( options => 
+    options.AddPolicy( "AllowAll", b => b.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin() ) 
+);
 
 var app = builder.Build();
 
@@ -22,6 +25,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 app.UseHireHubRequestLogging();
 app.UseHireHubGlobalException();
