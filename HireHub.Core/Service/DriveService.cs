@@ -3,6 +3,7 @@ using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
+using HireHub.Shared.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace HireHub.Core.Service;
@@ -11,14 +12,17 @@ public class DriveService
 {
     private readonly IDriveRepository _driveRepository;
     private readonly IRoleRepository _roleRepository;
+    private readonly IUserRepository _userRepository;
     private readonly ISaveRepository _saveRepository;
     private readonly ILogger<DriveService> _logger;
 
     public DriveService(IDriveRepository driveRepository, IRoleRepository roleRepository,
+        IUserRepository userRepository,
         ISaveRepository saveRepository, ILogger<DriveService> logger)
     {
         _driveRepository = driveRepository;
         _roleRepository = roleRepository;
+        _userRepository = userRepository;
         _saveRepository = saveRepository;
         _logger = logger;
     }
@@ -54,6 +58,22 @@ public class DriveService
         {
             Data = driveDTOs
         };
+    }
+
+
+    public async Task<Response<DriveDTO>> GetDrive(int driveId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetDrive));
+
+        var drive = await _driveRepository.GetByIdAsync(driveId) ??
+            throw new CommonException(ResponseMessage.DriveNotFound);
+
+        var driveDTO = Helper.Map<Drive, DriveDTO>(drive);
+        driveDTO.CreatorName = (await _userRepository.GetByIdAsync(drive.CreatedBy))!.FullName;
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetDrive));
+
+        return new() { Data = driveDTO };
     }
 
     #endregion
