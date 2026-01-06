@@ -4,7 +4,9 @@ using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
 using HireHub.Shared.Common.Exceptions;
+using HireHub.Shared.Common.Models;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace HireHub.Core.Service;
 
@@ -106,6 +108,67 @@ public class CandidateService
         _logger.LogInformation(LogMessage.EndMethod, nameof(InsertCandidatesBulk));
 
         return new() { Data = ids };
+    }
+
+    public async Task<Response<CandidateDTO>> EditCandidate(JObject request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(EditCandidate));
+
+        var response = new BaseResponse();
+
+        int candidateId = request[JOPropertyName.CandidateId]!.ToObject<int>();
+
+        var candidate = await _candidateRepository.GetByIdAsync(candidateId);
+
+        if (candidate == null)
+            throw new CommonException(ResponseMessage.CandidateNotFound);
+
+        // ✅ Allowed updates only
+        if (request.ContainsKey(JOPropertyName.FullName))
+            candidate.FullName = request[JOPropertyName.FullName]!.ToString();
+
+        if (request.ContainsKey(JOPropertyName.Email))
+            candidate.Email = request[JOPropertyName.Email]!.ToString();
+
+        if (request.ContainsKey(JOPropertyName.Phone))
+            candidate.Phone = request[JOPropertyName.Phone]!.ToString();
+
+        if (request.ContainsKey(JOPropertyName.Address))
+            candidate.Address = request[JOPropertyName.Address]?.ToString();
+
+        if (request.ContainsKey(JOPropertyName.College))
+            candidate.College = request[JOPropertyName.College]?.ToString();
+
+        if (request.ContainsKey(JOPropertyName.PreviousCompany))
+            candidate.PreviousCompany = request[JOPropertyName.PreviousCompany]?.ToString();
+
+        if (request.ContainsKey(JOPropertyName.ExperienceLevel))
+        {
+            var experienceLevel = Enum.Parse(typeof(CandidateExperienceLevel), request[JOPropertyName.ExperienceLevel]!.ToString());
+            candidate.ExperienceLevel = (CandidateExperienceLevel)experienceLevel;
+        }
+
+        if (request.ContainsKey(JOPropertyName.TechStack))
+            candidate.TechStack = request[JOPropertyName.TechStack]!.ToObject<List<string>>() ?? candidate.TechStack;
+
+        if (request.ContainsKey(JOPropertyName.ResumeUrl))
+            candidate.ResumeUrl = request[JOPropertyName.ResumeUrl]?.ToString();
+
+        if (request.ContainsKey(JOPropertyName.LinkedInUrl))
+            candidate.LinkedInUrl = request[JOPropertyName.LinkedInUrl]?.ToString();
+
+        if (request.ContainsKey(JOPropertyName.GitHubUrl))
+            candidate.GitHubUrl = request[JOPropertyName.GitHubUrl]?.ToString();
+
+        _candidateRepository.Update(candidate);
+        _saveRepository.SaveChanges();
+
+        var candidateDTO = Helper.Map<Candidate, CandidateDTO>(candidate);
+        candidateDTO.CandidateExperienceLevel = candidate.ExperienceLevel.ToString();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(EditCandidate));
+
+        return new() { Data = candidateDTO };
     }
 
     #endregion

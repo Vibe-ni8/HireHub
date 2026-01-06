@@ -57,6 +57,9 @@ public static class ResponseMessage
     public const string PasswordCannotBeUpdated = "Password cannot be updated";
     public const string CreatedDateCannotBeUpdated = "CreatedDate cannot be updated";
     public const string UpdatedDateCannotBeUpdated = "UpdatedDate cannot be updated";
+    public const string TechStackShouldNotBeNull = "Tech stack is should not be null";
+    public const string TechStackMustBeList = "Tech stack must be List";
+    public const string InvalidCandidateId = "Invalid CandidateId";
 }
 
 public static class FieldName
@@ -83,6 +86,15 @@ public static class JOPropertyName
     public const string FullName = "fullName";
     public const string IsActive = "isActive";
     public const string RoleName = "roleName";
+    public const string CandidateId = "candidateId";
+    public const string Address= "address";
+    public const string College = "college";
+    public const string PreviousCompany = "previousCompany";
+    public const string ExperienceLevel = "experienceLevel";
+    public const string TechStack = "techStack";
+    public const string ResumeUrl = "resumeUrl";
+    public const string LinkedInUrl = "linkedInUrl";
+    public const string GitHubUrl = "gitHubUrl";
 }
 
 public static class AppSettingKey
