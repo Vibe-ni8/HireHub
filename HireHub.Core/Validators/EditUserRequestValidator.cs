@@ -45,7 +45,7 @@ public class EditUserRequestValidator : AbstractValidator<JObject>
                 }
 
                 var roleName = req[JOPropertyName.RoleName]?.ToString();
-                if (!Options.RoleNames.Contains(roleName))
+                if (roleName != null && !Options.RoleNames.Contains(roleName))
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.InvalidRole);
                     return;
