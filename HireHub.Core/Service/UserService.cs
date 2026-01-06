@@ -4,8 +4,10 @@ using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
 using HireHub.Shared.Common.Exceptions;
+using HireHub.Shared.Common.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace HireHub.Core.Service;
 
@@ -92,6 +94,53 @@ public class UserService
         userDTO.RoleName = role.RoleName.ToString();
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(AddUser));
+
+        return new() { Data = userDTO };
+    }
+
+
+    public async Task<Response<UserDTO>> EditUser(JObject request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(EditUser));
+
+        var response = new BaseResponse();
+
+        int userId = request[JOPropertyName.UserId]!.ToObject<int>();
+
+        var user = await _userRepository.GetByIdAsync(userId);
+
+        if (user == null)
+            throw new CommonException(ResponseMessage.UserNotFound);
+
+        // ✅ Allowed updates only
+        if (request.ContainsKey(JOPropertyName.FullName))
+            user.FullName = request[JOPropertyName.FullName]!.ToString();
+
+        if (request.ContainsKey(JOPropertyName.Email))
+            user.Email = request[JOPropertyName.Email]!.ToString();
+
+        if (request.ContainsKey(JOPropertyName.Phone))
+            user.Phone = request[JOPropertyName.Phone]!.ToString();
+
+        if (request.ContainsKey(JOPropertyName.IsActive))
+            user.IsActive = request[JOPropertyName.IsActive]!.ToObject<bool>();
+
+        if (request.ContainsKey(JOPropertyName.RoleName))
+        {
+            var roleName = (UserRole)Enum.Parse(typeof(UserRole), request[JOPropertyName.RoleName]!.ToString());
+            user.RoleId = (await _roleRepository.GetByName(roleName)).RoleId;
+        }
+
+        // ❌ NOT updating PasswordHash & CreatedDate
+        user.UpdatedDate = DateTime.Now;
+
+        _userRepository.Update(user);
+        _saveRepository.SaveChanges();
+
+        var userDTO = Helper.Map<User, UserDTO>(user);
+        userDTO.RoleName = (await _roleRepository.GetByIdAsync(user.RoleId))!.RoleName.ToString();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(EditUser));
 
         return new() { Data = userDTO };
     }

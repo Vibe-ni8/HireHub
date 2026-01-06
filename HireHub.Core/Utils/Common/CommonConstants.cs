@@ -52,6 +52,11 @@ public static class ResponseMessage
     public const string SomeDriveNotFound = "Some Drive not found";
     public const string CandidateNotFound = "Candidate not found";
     public const string UserNotInSpecifiedRole = "User not in a Specified Role";
+    public const string UserIdRequired = "UserId is required";
+    public const string InvalidUserId = "Invalid UserId";
+    public const string PasswordCannotBeUpdated = "Password cannot be updated";
+    public const string CreatedDateCannotBeUpdated = "CreatedDate cannot be updated";
+    public const string UpdatedDateCannotBeUpdated = "UpdatedDate cannot be updated";
 }
 
 public static class FieldName
@@ -65,6 +70,19 @@ public static class FieldName
 public static class PropertyName
 {
     public const string Main = "Main";
+}
+
+public static class JOPropertyName
+{
+    public const string UserId = "userId";
+    public const string PasswordHash = "passwordHash";
+    public const string CreatedDate = "createdDate";
+    public const string UpdatedDate = "updatedDate";
+    public const string Email = "email";
+    public const string Phone = "phone";
+    public const string FullName = "fullName";
+    public const string IsActive = "isActive";
+    public const string RoleName = "roleName";
 }
 
 public static class AppSettingKey

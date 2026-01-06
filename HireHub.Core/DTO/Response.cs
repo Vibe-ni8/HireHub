@@ -27,6 +27,7 @@ public class UserDTO
     public string Email { get; set; } = null!;
     public string Phone { get; set; } = null!;
     public bool IsActive { get; set; } = true;
+    public int RoleId { get; set; }
     public string RoleName { get; set; } = null!;
     public DateTime CreatedDate { get; set; }
     public DateTime? UpdatedDate { get; set; }
