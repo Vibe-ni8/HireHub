@@ -76,6 +76,39 @@ public class DriveService
         return new() { Data = driveDTO };
     }
 
+
+    public async Task<Response<DriveConfigDTO>> GetDriveConfig(int driveId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetDriveConfig));
+
+        var driveWithConfig = await _driveRepository.GetDriveWithConfigAsync(driveId) ??
+            throw new CommonException(ResponseMessage.DriveNotFound);
+
+        var roles = await _roleRepository.GetAllAsync(CancellationToken.None);
+        var hrRole = roles.First(e => e.RoleName == UserRole.HR);
+        var panelRole = roles.First(e => e.RoleName == UserRole.Panel);
+        var mentorRole = roles.First(e => e.RoleName == UserRole.Mentor);
+
+        var hrConfig = driveWithConfig.DriveRoleConfigurations.First(e => e.RoleId == hrRole.RoleId);
+        var panelConfig = driveWithConfig.DriveRoleConfigurations.First(e => e.RoleId == panelRole.RoleId);
+        var mentorConfig = driveWithConfig.DriveRoleConfigurations.First(e => e.RoleId == mentorRole.RoleId);
+
+        var driveConfigDTO = new DriveConfigDTO
+        {
+            DriveId = driveId,
+            HrConfiguration = Helper.Map<DriveRoleConfiguration, HrConfigurationDTO>(hrConfig),
+            PanelConfiguration = Helper.Map<DriveRoleConfiguration, PanelConfigurationDTO>(hrConfig),
+            MentorConfiguration = Helper.Map<DriveRoleConfiguration, MentorConfigurationDTO>(hrConfig),
+            PanelVisibilitySettings = Helper.Map<PanelVisibilitySettings, PanelVisibilitySettingsDTO>(driveWithConfig.PanelVisibilitySettings!),
+            NotificationSettings = Helper.Map<NotificationSettings, NotificationSettingsDTO>(driveWithConfig.NotificationSettings!),
+            FeedbackConfiguration = Helper.Map<FeedbackConfiguration, FeedbackConfigurationDTO>(driveWithConfig.FeedbackConfiguration!)
+        };
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetDriveConfig));
+
+        return new() { Data = driveConfigDTO };
+    }
+
     #endregion
 
     #region Command Services

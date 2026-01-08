@@ -62,6 +62,76 @@ public class DriveDTO
     public DateTime CreatedDate { get; set; }
 }
 
+public class HrConfigurationDTO
+{
+    public int ConfigId { get; set; }
+    public int DriveId { get; set; }
+    public bool AllowBulkUpload { get; set; }
+    public bool CanEditSubmittedFeedback { get; set; }
+    public bool AllowPanelReassign { get; set; }
+    public bool RequireApprovalForReassignment { get; set; }
+}
+public class PanelConfigurationDTO
+{
+    public int ConfigId { get; set; }
+    public int DriveId { get; set; }
+    public bool CanEditSubmittedFeedback { get; set; }
+    public bool AllowPanelReassign { get; set; }
+    public bool RequireApprovalForReassignment { get; set; }
+}
+public class MentorConfigurationDTO
+{
+    public int ConfigId { get; set; }
+    public int DriveId { get; set; }
+    public bool CanViewFeedback { get; set; }
+    public bool AllowPanelReassign { get; set; }
+    public bool RequireApprovalForReassignment { get; set; }
+}
+
+public class PanelVisibilitySettingsDTO
+{
+    public int VisibilityId { get; set; }
+    public int DriveId { get; set; }
+    public bool ShowPhone { get; set; }
+    public bool ShowEmail { get; set; }
+    public bool ShowPreviousCompany { get; set; }
+    public bool ShowResume { get; set; }
+    public bool ShowCollege { get; set; }
+    public bool ShowAddress { get; set; }
+    public bool ShowLinkedIn { get; set; }
+    public bool ShowGitHub { get; set; }
+}
+
+public class NotificationSettingsDTO
+{
+    public int NotificationId { get; set; }
+    public int DriveId { get; set; }
+    public bool EmailNotificationEnabled { get; set; }
+}
+
+public class FeedbackConfigurationDTO
+{
+    public int FeedbackConfigId { get; set; }
+    public int DriveId { get; set; }
+    public bool OverallRatingRequired { get; set; }
+    public bool TechnicalSkillRequired { get; set; }
+    public bool CommunicationRequired { get; set; }
+    public bool ProblemSolvingRequired { get; set; }
+    public bool RecommendationRequired { get; set; }
+    public bool OverallFeedbackRequired { get; set; }
+}
+
+public class DriveConfigDTO
+{
+    public int DriveId { get; set; }
+    public HrConfigurationDTO HrConfiguration { get; set; } = null!;
+    public PanelConfigurationDTO PanelConfiguration { get; set; } = null!;
+    public MentorConfigurationDTO MentorConfiguration { get; set; } = null!;
+    public PanelVisibilitySettingsDTO PanelVisibilitySettings { get; set; } = null!;
+    public NotificationSettingsDTO NotificationSettings { get; set; } = null!;
+    public FeedbackConfigurationDTO FeedbackConfiguration { get; set; } = null!;
+}
+
 public class DriveCandidateDTO
 {
     public int DriveCandidateId { get; set; }

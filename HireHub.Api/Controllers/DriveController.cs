@@ -110,6 +110,36 @@ public class DriveController : ControllerBase
         }
     }
 
+
+    [RequireAuth([RoleName.Admin])]
+    [HttpGet("config/fetch/{driveId:int}")]
+    [ProducesResponseType<Response<DriveConfigDTO>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetDriveConfig([FromRoute] int driveId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetDriveConfig));
+
+        try
+        {
+            var response = await _driveService.GetDriveConfig(driveId);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetDriveConfig));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetDriveConfig), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
     #endregion
 
     #region Post API's

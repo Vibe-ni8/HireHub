@@ -74,6 +74,17 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
             );
     }
 
+    public async Task<Drive?> GetDriveWithConfigAsync(int driveId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Drives
+            .Where(d => d.DriveId == driveId)
+            .Include(e => e.DriveRoleConfigurations)
+            .Include(e => e.PanelVisibilitySettings)
+            .Include(e => e.NotificationSettings)
+            .Include(e => e.FeedbackConfiguration)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     #endregion
 
     #region DML
