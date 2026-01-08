@@ -120,7 +120,7 @@ CREATE TABLE feedback_configuration (
     communication_required BIT NOT NULL DEFAULT 1,
     problem_solving_required BIT NOT NULL DEFAULT 1,
     recommendation_required BIT NOT NULL DEFAULT 1,
-    overallFeedbackRequired BIT NOT NULL DEFAULT 1,
+    overall_feedback_required BIT NOT NULL DEFAULT 1,
     FOREIGN KEY (drive_id) REFERENCES drives(drive_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
