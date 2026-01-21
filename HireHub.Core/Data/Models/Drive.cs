@@ -26,7 +26,7 @@ public class Drive : BaseEntity
     public PanelVisibilitySettings? PanelVisibilitySettings { get; set; }
     public NotificationSettings? NotificationSettings { get; set; }
     public FeedbackConfiguration? FeedbackConfiguration { get; set; }
-    public ICollection<DriveCandidate> CandidateDrives { get; set; } = new List<DriveCandidate>();
+    public ICollection<DriveCandidate> DriveCandidates { get; set; } = new List<DriveCandidate>();
     public ICollection<Round> Rounds { get; set; } = new List<Round>();
     public ICollection<Request> Requests { get; set; } = new List<Request>();
 }

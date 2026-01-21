@@ -672,7 +672,7 @@ public class HireHubDbContext : DbContext
             .HasPrincipalKey(x => x.CandidateId).HasForeignKey(x => x.CandidateId)
             .OnDelete(DeleteBehavior.Restrict);
 
-            b.HasOne(x => x.Drive).WithMany(x => x.CandidateDrives)
+            b.HasOne(x => x.Drive).WithMany(x => x.DriveCandidates)
             .HasPrincipalKey(x => x.DriveId).HasForeignKey(x => x.DriveId)
             .OnDelete(DeleteBehavior.Cascade);
 

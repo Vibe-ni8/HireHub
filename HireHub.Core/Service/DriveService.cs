@@ -201,6 +201,41 @@ public class DriveService
         return new() { Data = Helper.Map<Drive, DriveDTO>(drive) };
     }
 
+
+    public async Task<Response<List<DriveCandidateDTO>>> AddCandidatesToDriveAsync(AddCandidatesToDriveRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(AddCandidatesToDriveAsync));
+
+        var driveCandidateDTOs = new List<DriveCandidateDTO>();
+
+        var drive = await _driveRepository.GetByIdAsync(request.DriveId) ?? 
+                    throw new CommonException(ResponseMessage.DriveNotFound);
+
+        foreach(int candidateId in request.CandidateIds)
+        {
+            var driveCandidate = new DriveCandidate
+            {
+                DriveId = request.DriveId,
+                CandidateId = candidateId,
+                Status = CandidateStatus.Pending,
+                StatusSetBy = null,
+                CreatedDate = DateTime.Now
+            };
+            drive.DriveCandidates.Add(driveCandidate);
+
+            var driveCandidateDTO = Helper.Map<DriveCandidate, DriveCandidateDTO>(driveCandidate);
+            driveCandidateDTO.CandidateStatus = driveCandidate.Status.ToString();
+            driveCandidateDTOs.Add(driveCandidateDTO);
+        }
+
+        _driveRepository.Update(drive);
+        _saveRepository.SaveChanges();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(AddCandidatesToDriveAsync));
+
+        return new() { Data = driveCandidateDTOs };
+    }
+
     #endregion
 
     #region Private Methods
