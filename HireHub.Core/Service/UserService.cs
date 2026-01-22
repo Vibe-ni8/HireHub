@@ -87,6 +87,18 @@ public class UserService
         var hasher = new PasswordHasher<User>();
         user.PasswordHash = hasher.HashPassword(user, request.Password);
 
+        // Set Default Permissions for User
+        var permission = (role.RoleName == UserRole.Admin || role.RoleName == UserRole.HR) ?
+            new UserPermission {
+                Action = UserAction.Drive,
+                View = true, Add = true, Update = true, Delete = role.RoleName == UserRole.Admin
+            } :
+            new UserPermission {
+                Action = UserAction.Drive,
+                View = true, Add = false, Update = false, Delete = false
+            };
+        user.UserPermissions.Add(permission);
+
         await _userRepository.AddAsync(user, CancellationToken.None);
         _saveRepository.SaveChanges();
 
