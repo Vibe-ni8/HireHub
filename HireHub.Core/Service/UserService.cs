@@ -103,8 +103,6 @@ public class UserService
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(EditUser));
 
-        var response = new BaseResponse();
-
         int userId = request[JOPropertyName.UserId]!.ToObject<int>();
 
         var user = await _userRepository.GetByIdAsync(userId);

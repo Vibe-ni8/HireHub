@@ -4,7 +4,9 @@ using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
 using HireHub.Shared.Common.Exceptions;
+using HireHub.Shared.Common.Models;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace HireHub.Core.Service;
 
@@ -264,6 +266,43 @@ public class DriveService
         _logger.LogInformation(LogMessage.EndMethod, nameof(AddCandidatesToDriveAsync));
 
         return new() { Data = driveMemberDTO };
+    }
+
+
+    public async Task<Response<DriveDTO>> EditDrive(JObject request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(EditDrive));
+
+        int driveId = request[JOPropertyName.DriveId]!.ToObject<int>();
+
+        var drive = await _driveRepository.GetByIdAsync(driveId) ??
+            throw new CommonException(ResponseMessage.DriveNotFound);
+
+        // ✅ Allowed updates only
+        if (request.ContainsKey(JOPropertyName.DriveName))
+            drive.DriveName = request[JOPropertyName.DriveName]!.ToString();
+
+        if (request.ContainsKey(JOPropertyName.DriveDate))
+            drive.DriveDate = request[JOPropertyName.DriveDate]!.ToObject<DateTime>();
+
+        if (request.ContainsKey(JOPropertyName.TechnicalRounds))
+            drive.TechnicalRounds = request[JOPropertyName.TechnicalRounds]!.ToObject<int>();
+
+        if (request.ContainsKey(JOPropertyName.Status))
+            drive.Status = (DriveStatus)Enum.Parse(typeof(DriveStatus), request[JOPropertyName.Status]!.ToString());
+
+        // ❌ NOT updating CreatedBy & CreatedDate
+
+        _driveRepository.Update(drive);
+        _saveRepository.SaveChanges();
+
+        var driveDTO = Helper.Map<Drive, DriveDTO>(drive);
+        driveDTO.DriveStatus = drive.Status.ToString();
+        driveDTO.CreatorName = (await _userRepository.GetByIdAsync(drive.CreatedBy))!.FullName;
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(EditDrive));
+
+        return new() { Data = driveDTO };
     }
 
     #endregion

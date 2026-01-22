@@ -85,6 +85,11 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<bool> IsDriveWithNameExist(string driveName, CancellationToken cancellationToken = default)
+    {
+        return await _context.Drives.AnyAsync(e => e.DriveName == driveName, cancellationToken);
+    }
+
     #endregion
 
     #region DML

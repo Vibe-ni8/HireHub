@@ -62,6 +62,19 @@ public static class ResponseMessage
     public const string TechStackShouldNotBeNull = "Tech stack is should not be null";
     public const string TechStackMustBeList = "Tech stack must be List";
     public const string InvalidCandidateId = "Invalid CandidateId";
+    public const string DriveIdRequired = "DriveId is required";
+    public const string InvalidDriveId = "Invalid DriveId";
+    public const string CreatedByCannotBeUpdated = "CreatedBy cannot be updated";
+    public const string EditDriveAccessDenied = "Edit Drive Access Denied";
+    public const string DriveNameAlreadyExist = "Drive Name Already Exist";
+    public const string DriveNameCannotBeChange = "Drive Name cannot be change";
+    public const string DriveDateCannotBeChange = "Drive Date cannot be change";
+    public const string DriveTechnicalRoundsCannotBeChange = "Drive Technical Rounds cannot be change";
+    public const string DriveStatusCannotBeChange = "Drive Status cannot be change";
+    public const string FutureDateOnlyAllowed = "Future Date only allowed";
+    public const string TechRoundsShouldBe = "Technical Rounds should be 1 or 2";
+    public const string InvalidDriveStatus = "Invalid Drive Status";
+    public const string DriveStatusCannotChangeToInproposal = "DriveStatus cannot be change to InProposal";
 }
 
 public static class FieldName
@@ -97,6 +110,12 @@ public static class JOPropertyName
     public const string ResumeUrl = "resumeUrl";
     public const string LinkedInUrl = "linkedInUrl";
     public const string GitHubUrl = "gitHubUrl";
+    public const string DriveId = "driveId";
+    public const string DriveName = "driveName";
+    public const string DriveDate = "driveDate";
+    public const string TechnicalRounds = "technicalRounds";
+    public const string Status = "status";
+    public const string CreatedBy = "createdBy";
 }
 
 public static class AppSettingKey
@@ -141,6 +160,12 @@ public static class ActionType
 
 public static class Options
 {
+    public static string[] DriveStatuses => [
+        nameof(DriveStatus.InProposal),
+        nameof(DriveStatus.Started),
+        nameof(DriveStatus.Halted),
+        nameof(DriveStatus.Completed)
+    ];
     public static string[] Recommendations => [
         nameof(Recommendation.NoHire),
         nameof(Recommendation.Maybe),
