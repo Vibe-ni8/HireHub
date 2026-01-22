@@ -236,6 +236,36 @@ public class DriveService
         return new() { Data = driveCandidateDTOs };
     }
 
+
+    public async Task<Response<DriveMemberDTO>> AddMemberToDriveAsync(AddMemberToDriveRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(AddCandidatesToDriveAsync));
+
+        var drive = await _driveRepository.GetByIdAsync(request.DriveId) ??
+                    throw new CommonException(ResponseMessage.DriveNotFound);
+
+        var user = await _userRepository.GetByIdAsync(request.MemberId) ??
+                    throw new CommonException(ResponseMessage.UserNotFound);
+
+        var driveMember = new DriveMember
+        {
+            DriveId = request.DriveId,
+            UserId = request.MemberId,
+            RoleId = user.RoleId
+        };
+        drive.DriveMembers.Add(driveMember);
+
+        _driveRepository.Update(drive);
+        _saveRepository.SaveChanges();
+
+        var driveMemberDTO = Helper.Map<DriveMember, DriveMemberDTO>(driveMember);
+        driveMemberDTO.RoleName = (await _roleRepository.GetByIdAsync(user.RoleId))!.RoleName.ToString();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(AddCandidatesToDriveAsync));
+
+        return new() { Data = driveMemberDTO };
+    }
+
     #endregion
 
     #region Private Methods

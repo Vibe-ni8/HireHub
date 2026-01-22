@@ -141,6 +141,15 @@ public class DriveCandidateDTO
     public int? StatusSetBy { get; set; }
 }
 
+public class DriveMemberDTO
+{
+    public int DriveMemberId { get; set; }
+    public int DriveId { get; set; }
+    public int UserId { get; set; }
+    public int RoleId { get; set; }
+    public string RoleName { get; set; } = null!;
+}
+
 public class RoundDTO
 {
     public int RoundId { get; set; }

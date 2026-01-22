@@ -44,8 +44,10 @@ public static class ResponseMessage
     public const string NoMentors = "Minimum one Mentor should be add";
     public const string SomeUserNotFound = "Some user not found";
     public const string SomeInactiveUsersFound = "Some users are Inactive";
+    public const string InactiveUser = "Not a Active User";
     public const string SomeUserNotInSpecifiedRole = "Some user not in a Specified Role";
-    public const string SomeUsersAssignedToAnotherActiveDriveOnSameDate = "Some users are assigned to another active Drive on same Date";
+    public const string SomeUsersAssignedToAnotherActiveDriveOnSameDate = "Some user were assigned to another active Drive on same Date";
+    public const string UsersAssignedToAnotherActiveDriveOnSameDate = "User was assigned to another active Drive on same Date";
     public const string SomeDuplicateUsersFoundIn = "Some duplicate users found in {0} list";
     public const string UserNotFound = "User not found";
     public const string DriveNotFound = "Drive not found";
