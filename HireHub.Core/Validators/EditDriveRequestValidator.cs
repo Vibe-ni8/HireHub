@@ -40,7 +40,7 @@ public class EditDriveRequestValidator : AbstractValidator<JObject>
                 var currentUserRole = userProvider.CurrentUserRole;
                 if (currentUserRole != RoleName.Admin || currentUserId != drive.CreatedBy.ToString())
                 {
-                    context.AddFailure(PropertyName.Main, ResponseMessage.EditDriveAccessDenied);
+                    context.AddFailure(PropertyName.Main, ResponseMessage.AdminOrDriveOwnerCanEdit);
                     return;
                 }
 

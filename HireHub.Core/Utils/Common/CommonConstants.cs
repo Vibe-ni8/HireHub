@@ -65,7 +65,7 @@ public static class ResponseMessage
     public const string DriveIdRequired = "DriveId is required";
     public const string InvalidDriveId = "Invalid DriveId";
     public const string CreatedByCannotBeUpdated = "CreatedBy cannot be updated";
-    public const string EditDriveAccessDenied = "Edit Drive Access Denied";
+    public const string AdminOrDriveOwnerCanEdit = "Admin or Owner of the Drive can able to edit";
     public const string DriveNameAlreadyExist = "Drive Name Already Exist";
     public const string DriveNameCannotBeChange = "Drive Name cannot be change";
     public const string DriveDateCannotBeChange = "Drive Date cannot be change";
@@ -116,6 +116,43 @@ public static class JOPropertyName
     public const string TechnicalRounds = "technicalRounds";
     public const string Status = "status";
     public const string CreatedBy = "createdBy";
+
+    public const string PanelVisibilitySettings = "panelVisibilitySettings";
+    public const string PVS_ShowPhone = "panelVisibilitySettings.showPhone";
+    public const string PVS_ShowEmail = "panelVisibilitySettings.showEmail";
+    public const string PVS_ShowPreviousCompany = "panelVisibilitySettings.showPreviousCompany";
+    public const string PVS_ShowResume = "panelVisibilitySettings.showResume";
+    public const string PVS_ShowCollege = "panelVisibilitySettings.showCollege";
+    public const string PVS_ShowAddress = "panelVisibilitySettings.showAddress";
+    public const string PVS_ShowLinkedIn = "panelVisibilitySettings.showLinkedIn";
+    public const string PVS_ShowGitHub = "panelVisibilitySettings.showGitHub";
+
+    public const string NotificationSettings = "notificationSettings";
+    public const string NS_EmailNotificationEnabled = "notificationSettings.emailNotificationEnabled";
+
+    public const string FeedbackConfiguration = "feedbackConfiguration";
+    public const string FC_OverallRatingRequired = "feedbackConfiguration.overallRatingRequired";
+    public const string FC_TechnicalSkillRequired = "feedbackConfiguration.technicalSkillRequired";
+    public const string FC_CommunicationRequired = "feedbackConfiguration.communicationRequired";
+    public const string FC_ProblemSolvingRequired = "feedbackConfiguration.problemSolvingRequired";
+    public const string FC_RecommendationRequired = "feedbackConfiguration.recommendationRequired";
+    public const string FC_OverallFeedbackRequired = "feedbackConfiguration.overallFeedbackRequired";
+
+    public const string HrConfiguration = "hrConfiguration";
+    public const string HC_AllowBulkUpload = "hrConfiguration.allowBulkUpload";
+    public const string HC_CanEditSubmittedFeedback = "hrConfiguration.canEditSubmittedFeedback";
+    public const string HC_AllowPanelReassign = "hrConfiguration.allowPanelReassign";
+    public const string HC_RequireApprovalForReassignment = "hrConfiguration.requireApprovalForReassignment";
+
+    public const string PanelConfiguration = "panelConfiguration";
+    public const string PC_CanEditSubmittedFeedback = "panelConfiguration.canEditSubmittedFeedback";
+    public const string PC_AllowPanelReassign = "panelConfiguration.allowPanelReassign";
+    public const string PC_RequireApprovalForReassignment = "panelConfiguration.requireApprovalForReassignment";
+
+    public const string MentorConfiguration = "mentorConfiguration";
+    public const string MC_CanViewFeedback = "mentorConfiguration.canViewFeedback";
+    public const string MC_AllowPanelReassign = "mentorConfiguration.allowPanelReassign";
+    public const string MC_RequireApprovalForReassignment = "mentorConfiguration.requireApprovalForReassignment";
 }
 
 public static class AppSettingKey

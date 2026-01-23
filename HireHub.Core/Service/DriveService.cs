@@ -1,4 +1,5 @@
-﻿using HireHub.Core.Data.Filters;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using HireHub.Core.Data.Filters;
 using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
@@ -87,24 +88,8 @@ public class DriveService
             throw new CommonException(ResponseMessage.DriveNotFound);
 
         var roles = await _roleRepository.GetAllAsync(CancellationToken.None);
-        var hrRole = roles.First(e => e.RoleName == UserRole.HR);
-        var panelRole = roles.First(e => e.RoleName == UserRole.Panel);
-        var mentorRole = roles.First(e => e.RoleName == UserRole.Mentor);
 
-        var hrConfig = driveWithConfig.DriveRoleConfigurations.First(e => e.RoleId == hrRole.RoleId);
-        var panelConfig = driveWithConfig.DriveRoleConfigurations.First(e => e.RoleId == panelRole.RoleId);
-        var mentorConfig = driveWithConfig.DriveRoleConfigurations.First(e => e.RoleId == mentorRole.RoleId);
-
-        var driveConfigDTO = new DriveConfigDTO
-        {
-            DriveId = driveId,
-            HrConfiguration = Helper.Map<DriveRoleConfiguration, HrConfigurationDTO>(hrConfig),
-            PanelConfiguration = Helper.Map<DriveRoleConfiguration, PanelConfigurationDTO>(hrConfig),
-            MentorConfiguration = Helper.Map<DriveRoleConfiguration, MentorConfigurationDTO>(hrConfig),
-            PanelVisibilitySettings = Helper.Map<PanelVisibilitySettings, PanelVisibilitySettingsDTO>(driveWithConfig.PanelVisibilitySettings!),
-            NotificationSettings = Helper.Map<NotificationSettings, NotificationSettingsDTO>(driveWithConfig.NotificationSettings!),
-            FeedbackConfiguration = Helper.Map<FeedbackConfiguration, FeedbackConfigurationDTO>(driveWithConfig.FeedbackConfiguration!)
-        };
+        var driveConfigDTO = ConverToDriveConfigDTO(driveWithConfig, roles.ToList());
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetDriveConfig));
 
@@ -305,6 +290,136 @@ public class DriveService
         return new() { Data = driveDTO };
     }
 
+
+    public async Task<Response<DriveConfigDTO>> EditDriveConfig(JObject request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(EditDriveConfig));
+
+        int driveId = request[JOPropertyName.DriveId]!.ToObject<int>();
+
+        var drive = await _driveRepository.GetDriveWithConfigAsync(driveId) ??
+            throw new CommonException(ResponseMessage.DriveNotFound);
+
+        // ✅ Allowed updates only
+        if (request.ContainsKey(JOPropertyName.PanelVisibilitySettings)) 
+        {
+            var token = request.SelectToken(JOPropertyName.PVS_ShowPhone);
+            if (token != null)
+                drive.PanelVisibilitySettings!.ShowPhone = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.PVS_ShowEmail);
+            if (token != null)
+                drive.PanelVisibilitySettings!.ShowEmail = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.PVS_ShowPreviousCompany);
+            if (token != null)
+                drive.PanelVisibilitySettings!.ShowPreviousCompany = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.PVS_ShowResume);
+            if (token != null)
+                drive.PanelVisibilitySettings!.ShowResume = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.PVS_ShowCollege);
+            if (token != null)
+                drive.PanelVisibilitySettings!.ShowCollege = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.PVS_ShowAddress);
+            if (token != null)
+                drive.PanelVisibilitySettings!.ShowAddress = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.PVS_ShowLinkedIn);
+            if (token != null)
+                drive.PanelVisibilitySettings!.ShowLinkedIn = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.PVS_ShowGitHub);
+            if (token != null)
+                drive.PanelVisibilitySettings!.ShowGitHub = token.ToObject<bool>();
+
+        }
+
+        if (request.ContainsKey(JOPropertyName.NotificationSettings))
+        {
+            var token = request.SelectToken(JOPropertyName.NS_EmailNotificationEnabled);
+            if (token != null)
+                drive.NotificationSettings!.EmailNotificationEnabled = token.ToObject<bool>();
+        }
+
+        if (request.ContainsKey(JOPropertyName.FeedbackConfiguration))
+        {
+            var token = request.SelectToken(JOPropertyName.FC_OverallRatingRequired);
+            if (token != null)
+                drive.FeedbackConfiguration!.OverallRatingRequired = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.FC_TechnicalSkillRequired);
+            if (token != null)
+                drive.FeedbackConfiguration!.TechnicalSkillRequired = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.FC_CommunicationRequired);
+            if (token != null)
+                drive.FeedbackConfiguration!.CommunicationRequired = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.FC_ProblemSolvingRequired);
+            if (token != null)
+                drive.FeedbackConfiguration!.ProblemSolvingRequired = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.FC_RecommendationRequired);
+            if (token != null)
+                drive.FeedbackConfiguration!.RecommendationRequired = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.FC_OverallFeedbackRequired);
+            if (token != null)
+                drive.FeedbackConfiguration!.OverallFeedbackRequired = token.ToObject<bool>();
+        }
+
+        var roles = await _roleRepository.GetAllAsync(CancellationToken.None);
+
+        var hrRole = roles.First(e => e.RoleName == UserRole.HR);
+        var panelRole = roles.First(e => e.RoleName == UserRole.Panel);
+        var mentorRole = roles.First(e => e.RoleName == UserRole.Mentor);
+
+        var hrConfig = drive.DriveRoleConfigurations.First(e => e.RoleId == hrRole.RoleId);
+        if (request.ContainsKey(JOPropertyName.HrConfiguration))
+        {
+            var token = request.SelectToken(JOPropertyName.HC_AllowBulkUpload);
+            if (token != null)
+                hrConfig.AllowBulkUpload = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.HC_CanEditSubmittedFeedback);
+            if (token != null)
+                hrConfig.CanEditSubmittedFeedback = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.HC_AllowPanelReassign);
+            if (token != null)
+                hrConfig.AllowPanelReassign = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.HC_RequireApprovalForReassignment);
+            if (token != null)
+                hrConfig.RequireApprovalForReassignment = token.ToObject<bool>();
+        }
+
+        var panelConfig = drive.DriveRoleConfigurations.First(e => e.RoleId == panelRole.RoleId);
+        if (request.ContainsKey(JOPropertyName.PanelConfiguration))
+        {
+            var token = request.SelectToken(JOPropertyName.PC_CanEditSubmittedFeedback);
+            if (token != null)
+                panelConfig.CanEditSubmittedFeedback = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.PC_AllowPanelReassign);
+            if (token != null)
+                panelConfig.AllowPanelReassign = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.PC_RequireApprovalForReassignment);
+            if (token != null)
+                panelConfig.RequireApprovalForReassignment = token.ToObject<bool>();
+        }
+
+        var mentorConfig = drive.DriveRoleConfigurations.First(e => e.RoleId == mentorRole.RoleId);
+        if (request.ContainsKey(JOPropertyName.MentorConfiguration))
+        {
+            var token = request.SelectToken(JOPropertyName.MC_CanViewFeedback);
+            if (token != null)
+                mentorConfig.CanViewFeedback = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.MC_AllowPanelReassign);
+            if (token != null)
+                mentorConfig.AllowPanelReassign = token.ToObject<bool>();
+            token = request.SelectToken(JOPropertyName.MC_RequireApprovalForReassignment);
+            if (token != null)
+                mentorConfig.RequireApprovalForReassignment = token.ToObject<bool>();
+        }
+
+        _driveRepository.Update(drive);
+        _saveRepository.SaveChanges();
+
+        var driveConfigDTO = ConverToDriveConfigDTO(drive, roles.ToList());
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(EditDriveConfig));
+
+        return new() { Data = driveConfigDTO };
+    }
+
     #endregion
 
     #region Private Methods
@@ -320,6 +435,28 @@ public class DriveService
             driveDTOs.Add(driveDTO);
         });
         return driveDTOs;
+    }
+
+    private DriveConfigDTO ConverToDriveConfigDTO(Drive driveWithConfig, List<Role> roles)
+    {
+        var hrRole = roles.First(e => e.RoleName == UserRole.HR);
+        var panelRole = roles.First(e => e.RoleName == UserRole.Panel);
+        var mentorRole = roles.First(e => e.RoleName == UserRole.Mentor);
+
+        var hrConfig = driveWithConfig.DriveRoleConfigurations.First(e => e.RoleId == hrRole.RoleId);
+        var panelConfig = driveWithConfig.DriveRoleConfigurations.First(e => e.RoleId == panelRole.RoleId);
+        var mentorConfig = driveWithConfig.DriveRoleConfigurations.First(e => e.RoleId == mentorRole.RoleId);
+
+        return new DriveConfigDTO
+        {
+            DriveId = driveWithConfig.DriveId,
+            HrConfiguration = Helper.Map<DriveRoleConfiguration, HrConfigurationDTO>(hrConfig),
+            PanelConfiguration = Helper.Map<DriveRoleConfiguration, PanelConfigurationDTO>(hrConfig),
+            MentorConfiguration = Helper.Map<DriveRoleConfiguration, MentorConfigurationDTO>(hrConfig),
+            PanelVisibilitySettings = Helper.Map<PanelVisibilitySettings, PanelVisibilitySettingsDTO>(driveWithConfig.PanelVisibilitySettings!),
+            NotificationSettings = Helper.Map<NotificationSettings, NotificationSettingsDTO>(driveWithConfig.NotificationSettings!),
+            FeedbackConfiguration = Helper.Map<FeedbackConfiguration, FeedbackConfigurationDTO>(driveWithConfig.FeedbackConfiguration!)
+        };
     }
 
     #endregion
