@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
@@ -25,6 +26,12 @@ public class AddMemberToDriveRequestValidator : AbstractValidator<AddMemberToDri
             if (drive == null)
             {
                 context.AddFailure(PropertyName.Main, ResponseMessage.DriveNotFound);
+                return;
+            }
+
+            if (drive.Status == DriveStatus.Completed)
+            {
+                context.AddFailure(PropertyName.Main, ResponseMessage.CannotAddMemberOnClosedDrive);
                 return;
             }
 

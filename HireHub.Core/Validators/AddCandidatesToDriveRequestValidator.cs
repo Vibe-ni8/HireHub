@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
+using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Service;
+using HireHub.Core.Utils.Common;
 using HireHub.Core.Utils.UserProgram.Interface;
 
 namespace HireHub.Core.Validators;
@@ -14,5 +16,22 @@ public class AddCandidatesToDriveRequestValidator : AbstractValidator<AddCandida
             .NotEmpty();
         RuleFor(e => e.CandidateIds)
             .NotNull();
+
+        RuleFor(e => e).Custom((request, context) =>
+        {
+            var drive = repoService.DriveRepository.GetByIdAsync(request.DriveId)
+                        .WaitAsync(CancellationToken.None).Result;
+            if (drive == null)
+            {
+                context.AddFailure(PropertyName.Main, ResponseMessage.DriveNotFound);
+                return;
+            }
+
+            if (drive.Status == DriveStatus.Completed)
+            {
+                context.AddFailure(PropertyName.Main, ResponseMessage.CannotAddCandidatesOnClosedDrive);
+                return;
+            }
+        });
     }
 }

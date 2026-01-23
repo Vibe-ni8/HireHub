@@ -51,6 +51,8 @@ public static class ResponseMessage
     public const string SomeDuplicateUsersFoundIn = "Some duplicate users found in {0} list";
     public const string UserNotFound = "User not found";
     public const string DriveNotFound = "Drive not found";
+    public const string CannotAddMemberOnClosedDrive = "Cannot add Member on a closed Drive";
+    public const string CannotAddCandidatesOnClosedDrive = "Cannot add candidates on a closed Drive";
     public const string SomeDriveNotFound = "Some Drive not found";
     public const string CandidateNotFound = "Candidate not found";
     public const string UserNotInSpecifiedRole = "User not in a Specified Role";
