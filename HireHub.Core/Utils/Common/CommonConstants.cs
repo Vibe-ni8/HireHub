@@ -51,8 +51,10 @@ public static class ResponseMessage
     public const string SomeDuplicateUsersFoundIn = "Some duplicate users found in {0} list";
     public const string UserNotFound = "User not found";
     public const string DriveNotFound = "Drive not found";
+    public const string DriveMemberNotFound = "Drive Member not found";
     public const string CannotAddMemberOnClosedDrive = "Cannot add Member on a closed Drive";
     public const string CannotAddCandidatesOnClosedDrive = "Cannot add candidates on a closed Drive";
+    public const string ClosedDriveCannotBeEdit = "Closed Drive cannot be edit";
     public const string SomeDriveNotFound = "Some Drive not found";
     public const string CandidateNotFound = "Candidate not found";
     public const string UserNotInSpecifiedRole = "User not in a Specified Role";
@@ -72,11 +74,11 @@ public static class ResponseMessage
     public const string DriveNameCannotBeChange = "Drive Name cannot be change";
     public const string DriveDateCannotBeChange = "Drive Date cannot be change";
     public const string DriveTechnicalRoundsCannotBeChange = "Drive Technical Rounds cannot be change";
-    public const string DriveStatusCannotBeChange = "Drive Status cannot be change";
     public const string FutureDateOnlyAllowed = "Future Date only allowed";
     public const string TechRoundsShouldBe = "Technical Rounds should be 1 or 2";
     public const string InvalidDriveStatus = "Invalid Drive Status";
     public const string DriveStatusCannotChangeToInproposal = "DriveStatus cannot be change to InProposal";
+    public const string CannotRemoveMembersOnStartedDrive = "Cannot remove Members on a started Drive";
 }
 
 public static class FieldName

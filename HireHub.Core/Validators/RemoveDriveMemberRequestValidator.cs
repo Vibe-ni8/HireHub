@@ -4,25 +4,29 @@ using HireHub.Core.DTO;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
 using HireHub.Core.Utils.UserProgram.Interface;
-using Newtonsoft.Json.Linq;
 
 namespace HireHub.Core.Validators;
 
-public class EditDriveConfigRequestValidator : AbstractValidator<JObject>
+public class RemoveDriveMemberRequestValidator : AbstractValidator<RemoveDriveMemberRequest>
 {
-    public EditDriveConfigRequestValidator(List<object> warnings, RepoService repoService, IUserProvider userProvider)
+    public RemoveDriveMemberRequestValidator(List<object> warnings, RepoService repoService, IUserProvider userProvider)
     {
-        RuleFor(x => x[JOPropertyName.DriveId])
+        RuleFor(x => x.DriveId)
             .NotNull().WithMessage(ResponseMessage.DriveIdRequired)
             .Must(x => int.TryParse(x!.ToString(), out _))
             .WithMessage(ResponseMessage.InvalidDriveId);
 
+        RuleFor(x => x.MemberId)
+            .NotNull().WithMessage(ResponseMessage.UserIdRequired)
+            .Must(x => int.TryParse(x!.ToString(), out _))
+            .WithMessage(ResponseMessage.InvalidUserId);
+
         RuleFor(x => x)
             .Custom((req, context) =>
             {
-                int driveId = req[JOPropertyName.DriveId]!.ToObject<int>();
                 var drive = repoService.DriveRepository
-                    .GetByIdAsync(driveId).WaitAsync(CancellationToken.None).Result;
+                    .GetDriveWithMembersAsync(req.DriveId).WaitAsync(CancellationToken.None).Result;
+
                 if (drive == null)
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.DriveNotFound);
@@ -32,6 +36,12 @@ public class EditDriveConfigRequestValidator : AbstractValidator<JObject>
                 if (drive.Status == DriveStatus.Completed)
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.ClosedDriveCannotBeEdit);
+                    return;
+                }
+
+                if (drive.Status != DriveStatus.InProposal)
+                {
+                    context.AddFailure(PropertyName.Main, ResponseMessage.CannotRemoveMembersOnStartedDrive);
                     return;
                 }
 

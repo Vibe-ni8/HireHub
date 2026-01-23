@@ -420,6 +420,28 @@ public class DriveService
         return new() { Data = driveConfigDTO };
     }
 
+
+    public async Task<Response<DriveMemberDTO>> RemoveDriveMember(RemoveDriveMemberRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(RemoveDriveMember));
+
+        var drive = await _driveRepository.GetDriveWithMembersAsync(request.DriveId) ??
+            throw new CommonException(ResponseMessage.DriveNotFound);
+
+        var driveMember = drive.DriveMembers.FirstOrDefault(e => e.UserId == request.MemberId) ??
+            throw new CommonException(ResponseMessage.DriveMemberNotFound);
+
+        _driveRepository.RemoveDriveMember(driveMember);
+        _saveRepository.SaveChanges();
+
+        var driveMemberDTO = Helper.Map<DriveMember, DriveMemberDTO>(driveMember);
+        driveMemberDTO.RoleName = (await _roleRepository.GetByIdAsync(driveMember.RoleId))!.RoleName.ToString();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(RemoveDriveMember));
+
+        return new() { Data = driveMemberDTO };
+    }
+
     #endregion
 
     #region Private Methods

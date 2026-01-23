@@ -12,12 +12,13 @@ public interface IDriveRepository : IGenericRepository<Drive>
     Task<bool> IsUserAssignedInAnyActiveDriveOnDateAsync(int userId, DateTime driveDate, CancellationToken cancellationToken = default);
     Task<Drive?> GetDriveWithConfigAsync(int driveId, CancellationToken cancellationToken = default);
     Task<bool> IsDriveWithNameExist(string driveName, CancellationToken cancellationToken = default);
+    Task<Drive?> GetDriveWithMembersAsync(int driveId, CancellationToken cancellationToken = default);
 
     #endregion
 
     #region DML
 
-
+    void RemoveDriveMember(DriveMember driveMember);
 
     #endregion
 }

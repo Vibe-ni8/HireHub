@@ -13,7 +13,7 @@ public class HireHubDbContext : DbContext
     public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
     public DbSet<Request> Requests => Set<Request>();
     public DbSet<Drive> Drives => Set<Drive>();
-    public DbSet<DriveMember> DriveTeams => Set<DriveMember>();
+    public DbSet<DriveMember> DriveMembers => Set<DriveMember>();
     public DbSet<DriveRoleConfiguration> DriveRoleConfigurations => Set<DriveRoleConfiguration>();
     public DbSet<PanelVisibilitySettings> PanelVisibilitySettings => Set<PanelVisibilitySettings>();
     public DbSet<NotificationSettings> NotificationSettings => Set<NotificationSettings>();

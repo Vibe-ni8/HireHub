@@ -36,6 +36,12 @@ public class EditDriveRequestValidator : AbstractValidator<JObject>
                     return;
                 }
 
+                if (drive.Status == DriveStatus.Completed)
+                {
+                    context.AddFailure(PropertyName.Main, ResponseMessage.ClosedDriveCannotBeEdit);
+                    return;
+                }
+
                 var currentUserId = userProvider.CurrentUserId;
                 var currentUserRole = userProvider.CurrentUserRole;
                 if (currentUserRole != RoleName.Admin || currentUserId != drive.CreatedBy.ToString())
@@ -95,12 +101,6 @@ public class EditDriveRequestValidator : AbstractValidator<JObject>
 
                 if (req.ContainsKey(JOPropertyName.Status))
                 {
-                    if (drive.Status == DriveStatus.Completed)
-                    {
-                        context.AddFailure(PropertyName.Main, ResponseMessage.DriveStatusCannotBeChange);
-                        return;
-                    }
-
                     if (!Options.DriveStatuses.Contains(req[JOPropertyName.Status]!.ToString()))
                     {
                         context.AddFailure(PropertyName.Main, ResponseMessage.InvalidDriveStatus);

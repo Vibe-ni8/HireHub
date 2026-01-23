@@ -65,7 +65,7 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
     public async Task<bool> IsUserAssignedInAnyActiveDriveOnDateAsync(int userId, DateTime driveDate, 
         CancellationToken cancellationToken = default)
     {
-        return await _context.DriveTeams
+        return await _context.DriveMembers
             .Where(dm => dm.UserId == userId)
             .Include(dm => dm.Drive)
             .AnyAsync(
@@ -90,11 +90,22 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
         return await _context.Drives.AnyAsync(e => e.DriveName == driveName, cancellationToken);
     }
 
+    public async Task<Drive?> GetDriveWithMembersAsync(int driveId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Drives
+            .Where(d => d.DriveId == driveId)
+            .Include(e => e.DriveMembers)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     #endregion
 
     #region DML
 
-
+    public void RemoveDriveMember(DriveMember driveMember)
+    {
+        _context.DriveMembers.Remove(driveMember);
+    }
 
     #endregion
 
