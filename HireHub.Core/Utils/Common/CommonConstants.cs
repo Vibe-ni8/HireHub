@@ -70,6 +70,8 @@ public static class ResponseMessage
     public const string InvalidDriveId = "Invalid DriveId";
     public const string CreatedByCannotBeUpdated = "CreatedBy cannot be updated";
     public const string AdminOrDriveOwnerCanEdit = "Admin or Owner of the Drive can able to edit";
+    public const string AdminOrDriveOwnerCanAdd = "Admin or Owner of the Drive can able to add";
+    public const string AdminOrDriveOwnerCanRemove = "Admin or Owner of the Drive can able to remove";
     public const string DriveNameAlreadyExist = "Drive Name Already Exist";
     public const string DriveNameCannotBeChange = "Drive Name cannot be change";
     public const string DriveDateCannotBeChange = "Drive Date cannot be change";

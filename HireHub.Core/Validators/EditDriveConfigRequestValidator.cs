@@ -29,17 +29,17 @@ public class EditDriveConfigRequestValidator : AbstractValidator<JObject>
                     return;
                 }
 
-                if (drive.Status == DriveStatus.Completed)
-                {
-                    context.AddFailure(PropertyName.Main, ResponseMessage.ClosedDriveCannotBeEdit);
-                    return;
-                }
-
                 var currentUserId = userProvider.CurrentUserId;
                 var currentUserRole = userProvider.CurrentUserRole;
                 if (currentUserRole != RoleName.Admin || currentUserId != drive.CreatedBy.ToString())
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.AdminOrDriveOwnerCanEdit);
+                    return;
+                }
+
+                if (drive.Status == DriveStatus.Completed)
+                {
+                    context.AddFailure(PropertyName.Main, ResponseMessage.ClosedDriveCannotBeEdit);
                     return;
                 }
             });

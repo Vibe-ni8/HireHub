@@ -33,6 +33,14 @@ public class RemoveDriveMemberRequestValidator : AbstractValidator<RemoveDriveMe
                     return;
                 }
 
+                var currentUserId = userProvider.CurrentUserId;
+                var currentUserRole = userProvider.CurrentUserRole;
+                if (currentUserRole != RoleName.Admin || currentUserId != drive.CreatedBy.ToString())
+                {
+                    context.AddFailure(PropertyName.Main, ResponseMessage.AdminOrDriveOwnerCanRemove);
+                    return;
+                }
+
                 if (drive.Status == DriveStatus.Completed)
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.ClosedDriveCannotBeEdit);
@@ -45,11 +53,10 @@ public class RemoveDriveMemberRequestValidator : AbstractValidator<RemoveDriveMe
                     return;
                 }
 
-                var currentUserId = userProvider.CurrentUserId;
-                var currentUserRole = userProvider.CurrentUserRole;
-                if (currentUserRole != RoleName.Admin || currentUserId != drive.CreatedBy.ToString())
+                var driveMember = drive.DriveMembers.FirstOrDefault(e => e.UserId == req.MemberId);
+                if (driveMember == null)
                 {
-                    context.AddFailure(PropertyName.Main, ResponseMessage.AdminOrDriveOwnerCanEdit);
+                    context.AddFailure(PropertyName.Main, ResponseMessage.DriveMemberNotFound);
                     return;
                 }
             });

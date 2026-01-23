@@ -436,7 +436,7 @@ public class DriveController : ControllerBase
 
     [RequireAuth([RoleName.Admin])]
     [RequirePermission(UserAction.Drive, ActionType.Update)]
-    [HttpPut("member/remove")]
+    [HttpDelete("member/remove")]
     [ProducesResponseType<Response<DriveMemberDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
