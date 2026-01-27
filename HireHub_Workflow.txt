@@ -220,7 +220,7 @@ DriveCandidates (
 Rounds (
     RoundId INT PK IDENTITY,
     DriveCandidateId INT FK → DriveCandidates.DriveCandidateId,
-    InterviewerId INT FK → Users.UserId,
+    InterviewerId INT FK → DriveMembers.DriveMemberId,
     RoundType VARCHAR(20),  -- Hr, Tech 1, Tech 2
     Status VARCHAR(20) DEFAULT 'Scheduled',  -- Scheduled, OnProcess, Completed, Skipped
     Result VARCHAR(20) DEFAULT 'Pending',  -- Pending, Selected, Rejected
@@ -229,8 +229,8 @@ Rounds (
 CandidateReassignments (
     ReassignId INT PK IDENTITY,
     DriveCandidateId INT NOT NULL FK → DriveCandidates.DriveCandidateId,
-    PreviousUserId INT NOT NULL FK → Users.UserId,
-    NewUserId INT NOT NULL FK → Users.UserId,
+    PreviousUserId INT NOT NULL FK → DriveMembers.DriveMemberId,
+    NewUserId INT NOT NULL FK → DriveMembers.DriveMemberId,
     RequestedBy INT NOT NULL FK → Users.UserId,
     RequireApproval BIT NOT NULL,
     ApprovedBy INT FK → Users.UserId NULL,
@@ -243,7 +243,7 @@ CandidateReassignments (
 Interviews (
     InterviewId INT PK IDENTITY,
     DriveCandidateId INT NOT NULL FK → DriveCandidates.DriveCandidateId,
-    InterviewerId INT NOT NULL FK → Users.UserId,
+    InterviewerId INT NOT NULL FK → DriveMembers.DriveMemberId,
     InterviewDate DATETIME
 )
 

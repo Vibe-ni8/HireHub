@@ -30,8 +30,6 @@ public class User : BaseEntity
     public ICollection<Drive> CreatedDrives { get; set; } = new List<Drive>();
     public ICollection<DriveMember> DriveMembers { get; set; } = new List<DriveMember>();
     public ICollection<DriveCandidate> RecruitedCandidates { get; set; } = new List<DriveCandidate>();
-    public ICollection<Round> InterviewedPanels { get; set; } = new List<Round>();
-    public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
     public ICollection<CandidateReassignment> RequestedReassignments { get; set; } = new List<CandidateReassignment>();
     public ICollection<CandidateReassignment> ApprovedReassignments { get; set; } = new List<CandidateReassignment>();
     public ICollection<Request> RaisedRequests { get; set; } = new List<Request>();

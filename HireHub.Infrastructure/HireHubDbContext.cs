@@ -733,7 +733,7 @@ public class HireHubDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
             b.HasOne(x => x.Interviewer).WithMany(x => x.InterviewedPanels)
-            .HasPrincipalKey(x => x.UserId).HasForeignKey(x => x.InterviewerId)
+            .HasPrincipalKey(x => x.DriveMemberId).HasForeignKey(x => x.InterviewerId)
             .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -794,11 +794,11 @@ public class HireHubDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
             b.HasOne(x => x.PreviousUser).WithMany()
-            .HasPrincipalKey(x => x.UserId).HasForeignKey(x => x.PreviousUserId)
+            .HasPrincipalKey(x => x.DriveMemberId).HasForeignKey(x => x.PreviousUserId)
             .OnDelete(DeleteBehavior.Restrict);
 
             b.HasOne(x => x.NewUser).WithMany()
-            .HasPrincipalKey(x => x.UserId).HasForeignKey(x => x.NewUserId)
+            .HasPrincipalKey(x => x.DriveMemberId).HasForeignKey(x => x.NewUserId)
             .OnDelete(DeleteBehavior.Restrict);
 
             b.HasOne(x => x.Requester).WithMany(x => x.RequestedReassignments)
@@ -843,7 +843,7 @@ public class HireHubDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
             b.HasOne(x => x.Interviewer).WithMany(x => x.Interviews)
-            .HasPrincipalKey(x => x.UserId).HasForeignKey(x => x.InterviewerId)
+            .HasPrincipalKey(x => x.DriveMemberId).HasForeignKey(x => x.InterviewerId)
             .OnDelete(DeleteBehavior.Restrict);
         });
 

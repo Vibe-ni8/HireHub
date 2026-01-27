@@ -22,8 +22,8 @@ public class CandidateReassignment : BaseEntity
 
     // Navigation
     public DriveCandidate? DriveCandidate { get; set; }
-    public User? PreviousUser { get; set; }
-    public User? NewUser { get; set; }
+    public DriveMember? PreviousUser { get; set; }
+    public DriveMember? NewUser { get; set; }
     public User? Requester { get; set; }
     public User? Approver { get; set; }
 }

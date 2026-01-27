@@ -17,4 +17,6 @@ public class DriveMember : BaseEntity
     public Drive? Drive { get; set; }
     public User? User { get; set; }
     public Role? Role { get; set; }
+    public ICollection<Round> InterviewedPanels { get; set; } = new List<Round>();
+    public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
 }

@@ -17,7 +17,7 @@ public class Round : BaseEntity
 
     // Navigation
     public DriveCandidate? DriveCandidate { get; set; }
-    public User? Interviewer { get; set; }
+    public DriveMember? Interviewer { get; set; }
 }
 
 public enum RoundType

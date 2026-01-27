@@ -161,7 +161,7 @@ CREATE TABLE rounds (
     status VARCHAR(20) DEFAULT 'Scheduled', -- Scheduled, OnProcess, Completed, Skipped
     result VARCHAR(20) DEFAULT 'Pending', -- Pending, Selected, Rejected
     FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE NO ACTION,
-    FOREIGN KEY (interviewer_id) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY (interviewer_id) REFERENCES drive_members(drive_member_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
     CONSTRAINT UQ_DriveCandidateId_PanelId UNIQUE (drive_candidate_id, interviewer_id)
 );
 
@@ -176,8 +176,8 @@ CREATE TABLE candidate_reassignments (
     requested_by INT NOT NULL,
     requested_date DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (previous_user_id) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
-    FOREIGN KEY (new_user_id) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY (previous_user_id) REFERENCES drive_members(drive_member_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY (new_user_id) REFERENCES drive_members(drive_member_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
     FOREIGN KEY (requested_by) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
     FOREIGN KEY (approved_by) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -188,7 +188,7 @@ CREATE TABLE interviews (
     interviewer_id INT NOT NULL,
     interview_date DATETIME NOT NULL,
     FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE NO ACTION,
-    FOREIGN KEY (interviewer_id) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY (interviewer_id) REFERENCES drive_members(drive_member_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
     CONSTRAINT UQ_DriveCandidateId_InterviewerId UNIQUE (drive_candidate_id, interviewer_id)
 );
 
