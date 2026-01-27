@@ -98,6 +98,14 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<Drive?> GetDriveWithCandidatesAsync(int driveId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Drives
+            .Where(d => d.DriveId == driveId)
+            .Include(e => e.DriveCandidates)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     #endregion
 
     #region DML
@@ -105,6 +113,12 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
     public void RemoveDriveMember(DriveMember driveMember)
     {
         _context.DriveMembers.Remove(driveMember);
+    }
+
+
+    public void RemoveDriveCandidate(DriveCandidate driveCandidate)
+    {
+        _context.DriveCandidates.Remove(driveCandidate);
     }
 
     #endregion

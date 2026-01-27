@@ -52,6 +52,7 @@ public static class ResponseMessage
     public const string UserNotFound = "User not found";
     public const string DriveNotFound = "Drive not found";
     public const string DriveMemberNotFound = "Drive Member not found";
+    public const string DriveCandidateNotFound = "Drive Candidate not found";
     public const string CannotAddMemberOnClosedDrive = "Cannot add Member on a closed Drive";
     public const string CannotAddCandidatesOnClosedDrive = "Cannot add candidates on a closed Drive";
     public const string ClosedDriveCannotBeEdit = "Closed Drive cannot be edit";

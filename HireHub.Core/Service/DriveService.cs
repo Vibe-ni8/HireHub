@@ -1,11 +1,9 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using HireHub.Core.Data.Filters;
+﻿using HireHub.Core.Data.Filters;
 using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
 using HireHub.Shared.Common.Exceptions;
-using HireHub.Shared.Common.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
@@ -440,6 +438,30 @@ public class DriveService
         _logger.LogInformation(LogMessage.EndMethod, nameof(RemoveDriveMember));
 
         return new() { Data = driveMemberDTO };
+    }
+
+
+    public async Task<Response<List<int>>> RemoveCandidatesFromDrive(RemoveDriveCandidatesRequest request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(RemoveCandidatesFromDrive));
+
+        var drive = await _driveRepository.GetDriveWithCandidatesAsync(request.DriveId) ??
+            throw new CommonException(ResponseMessage.DriveNotFound);
+
+        var driveCandidateIds = new List<int>();
+        foreach (var candidateId in request.CandidateIds)
+        {
+            var driveCandidate = drive.DriveCandidates.FirstOrDefault(e => e.CandidateId == candidateId) ??
+            throw new CommonException(ResponseMessage.DriveCandidateNotFound + $" : {candidateId}");
+            _driveRepository.RemoveDriveCandidate(driveCandidate);
+            driveCandidateIds.Add(driveCandidate.DriveCandidateId);
+        }
+
+        _saveRepository.SaveChanges();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(RemoveCandidatesFromDrive));
+
+        return new() { Data = driveCandidateIds };
     }
 
     #endregion
