@@ -14,6 +14,7 @@ public interface IDriveRepository : IGenericRepository<Drive>
     Task<bool> IsDriveWithNameExist(string driveName, CancellationToken cancellationToken = default);
     Task<Drive?> GetDriveWithMembersAsync(int driveId, CancellationToken cancellationToken = default);
     Task<Drive?> GetDriveWithCandidatesAsync(int driveId, CancellationToken cancellationToken = default);
+    Task<List<DriveMember>> GetDriveMembersWithDetailsAsync(DriveMemberFilter filter, CancellationToken cancellationToken = default);
 
     #endregion
 

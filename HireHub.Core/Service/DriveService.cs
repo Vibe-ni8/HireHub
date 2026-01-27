@@ -98,6 +98,29 @@ public class DriveService
         return new() { Data = driveConfigDTO };
     }
 
+
+    public async Task<Response<List<DriveMemberDTO>>> GetDriveMembers(int? driveId, int? userId, UserRole? role)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetDriveMembers));
+
+        var filter = new DriveMemberFilter
+        {
+            DriveId = driveId,
+            UserId = userId,
+            Role = role
+        };
+        var driveMembers = await _driveRepository.GetDriveMembersWithDetailsAsync(filter, CancellationToken.None);
+
+        var driveMemberDTOs = ConverToDriveMemberDTO(driveMembers);
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetDriveMembers));
+
+        return new()
+        {
+            Data = driveMemberDTOs
+        };
+    }
+
     #endregion
 
     #region Command Services
@@ -520,6 +543,21 @@ public class DriveService
             NotificationSettings = Helper.Map<NotificationSettings, NotificationSettingsDTO>(driveWithConfig.NotificationSettings!),
             FeedbackConfiguration = Helper.Map<FeedbackConfiguration, FeedbackConfigurationDTO>(driveWithConfig.FeedbackConfiguration!)
         };
+    }
+
+    private List<DriveMemberDTO> ConverToDriveMemberDTO(List<DriveMember> driveMembers)
+    {
+        var driveMemberDTOs = new List<DriveMemberDTO>();
+        driveMembers.ForEach(driveMember =>
+        {
+            var driveMemberDTO = Helper.Map<DriveMember, DriveMemberDTO>(driveMember);
+            driveMemberDTO.DriveName = driveMember.Drive!.DriveName;
+            driveMemberDTO.UserName = driveMember.User!.FullName;
+            driveMemberDTO.UserEmail = driveMember.User.Email;
+            driveMemberDTO.RoleName = driveMember.Role!.RoleName.ToString();
+            driveMemberDTOs.Add(driveMemberDTO);
+        });
+        return driveMemberDTOs;
     }
 
     #endregion

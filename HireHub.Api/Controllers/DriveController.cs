@@ -141,6 +141,40 @@ public class DriveController : ControllerBase
         }
     }
 
+
+    [HttpGet("members/fetch/all")]
+    [ProducesResponseType<Response<List<DriveMemberDTO>>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetDriveMembers([FromQuery] int? driveId, [FromQuery] int? userId, [FromQuery] string? role)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetDriveMembers));
+
+        try
+        {
+            object? userRole = null;
+            if (role != null && !Enum.TryParse(typeof(UserRole), role, true, out userRole))
+                throw new CommonException(ResponseMessage.InvalidExperienceLevel);
+
+            var response = await _driveService.GetDriveMembers(driveId, userId,
+                userRole != null ? (UserRole)userRole : null);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetDriveMembers));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetDriveMembers), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
     #endregion
 
     #region Post API's

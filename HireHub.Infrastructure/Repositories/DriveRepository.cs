@@ -107,6 +107,29 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<List<DriveMember>> GetDriveMembersWithDetailsAsync(DriveMemberFilter filter, CancellationToken cancellationToken = default)
+    {
+        var query = _context.DriveMembers
+            .Include(dm => dm.Drive)
+            .Include(dm => dm.User)
+            .Include(dm => dm.Role)
+            .Select(dm => dm);
+
+        if (filter.DriveId != null)
+            query = query
+                .Where(dm => dm.DriveId == filter.DriveId);
+
+        if (filter.UserId != null)
+            query = query
+                .Where(dm => dm.UserId == filter.UserId);
+
+        if (filter.Role != null)
+            query = query
+                .Where(dm => dm.Role!.RoleName == filter.Role);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
     #endregion
 
     #region DML
