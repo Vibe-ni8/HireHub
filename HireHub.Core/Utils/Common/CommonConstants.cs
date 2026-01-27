@@ -82,6 +82,7 @@ public static class ResponseMessage
     public const string InvalidDriveStatus = "Invalid Drive Status";
     public const string DriveStatusCannotChangeToInproposal = "DriveStatus cannot be change to InProposal";
     public const string CannotRemoveMembersOnStartedDrive = "Cannot remove Members on a started Drive";
+    public const string InvalidCandidateStatus = "Invalid Candidate Status";
 }
 
 public static class FieldName

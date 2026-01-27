@@ -83,6 +83,7 @@ public class DriveController : ControllerBase
 
 
     [RequireAuth([RoleName.Admin])]
+    [RequirePermission(UserAction.Drive, ActionType.View)]
     [HttpGet("fetch/{driveId:int}")]
     [ProducesResponseType<Response<DriveDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
@@ -113,6 +114,7 @@ public class DriveController : ControllerBase
 
 
     [RequireAuth([RoleName.Admin])]
+    [RequirePermission(UserAction.Drive, ActionType.View)]
     [HttpGet("config/fetch/{driveId:int}")]
     [ProducesResponseType<Response<DriveConfigDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
@@ -143,6 +145,7 @@ public class DriveController : ControllerBase
 
 
     [HttpGet("members/fetch/all")]
+    [RequirePermission(UserAction.Drive, ActionType.View)]
     [ProducesResponseType<Response<List<DriveMemberDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
@@ -172,6 +175,48 @@ public class DriveController : ControllerBase
         catch (CommonException ex)
         {
             _logger.LogWarning(LogMessage.EndMethodException, nameof(GetDriveMembers), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
+
+    [HttpGet("candidates/fetch/all")]
+    [RequirePermission(UserAction.Drive, ActionType.View)]
+    [ProducesResponseType<Response<List<DriveCandidateDTO>>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetDriveCandidates([FromQuery] int? driveId, [FromQuery] int? candidateId, [FromQuery] string? candidateStatus,
+        [FromQuery] string? driveStatus, [FromQuery] bool isLatestFirst, [FromQuery] bool includePastDrives,
+        [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, [FromQuery] int? pageNumber, [FromQuery] int? pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetDriveCandidates));
+
+        try
+        {
+            object? candidateStatusObj = null;
+            if (candidateStatus != null && !Enum.TryParse(typeof(CandidateStatus), candidateStatus, true, out candidateStatusObj))
+                throw new CommonException(ResponseMessage.InvalidCandidateStatus);
+            object? driveStatusObj = null;
+            if (driveStatus != null && !Enum.TryParse(typeof(DriveStatus), driveStatus, true, out driveStatusObj))
+                throw new CommonException(ResponseMessage.InvalidDriveStatus);
+
+            var response = await _driveService.GetDriveCandidates(driveId, candidateId,
+                candidateStatusObj != null ? (CandidateStatus)candidateStatusObj : null, 
+                driveStatusObj != null ? (DriveStatus)driveStatusObj : null,
+                isLatestFirst, includePastDrives, startDate, endDate, pageNumber, pageSize);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetDriveCandidates));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetDriveCandidates), ex.Message);
             return BadRequest(new BaseResponse()
             {
                 Errors = [

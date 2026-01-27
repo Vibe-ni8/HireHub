@@ -1,11 +1,9 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using HireHub.Core.Data.Filters;
+﻿using HireHub.Core.Data.Filters;
 using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
 using HireHub.Shared.Common.Exceptions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
@@ -128,6 +126,38 @@ public class DriveService
         return new()
         {
             Data = driveMemberDTOs
+        };
+    }
+
+
+    public async Task<Response<List<DriveCandidateDTO>>> GetDriveCandidates(int? driveId, int? candidateId, CandidateStatus? candidateStatus,
+        DriveStatus? driveStatus, bool isLatestFirst, bool includePastDrives, DateTime? startDate, DateTime? endDate,
+        int? pageNumber, int? pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetDriveCandidates));
+
+        var filter = new DriveCandidateFilter
+        {
+            DriveId = driveId,
+            CandidateId = candidateId,
+            CandidateStatus = candidateStatus,
+            DriveStatus = driveStatus,
+            IsLatestFirst = isLatestFirst,
+            IncludePastDrives = includePastDrives,
+            StartDate = startDate,
+            EndDate = endDate,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+        var driveCandidates = await _driveRepository.GetDriveCandidatesWithDetailsAsync(filter, CancellationToken.None);
+
+        var driveCandidateDTOs = ConverToDriveCandidateDTO(driveCandidates);
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetDriveCandidates));
+
+        return new()
+        {
+            Data = driveCandidateDTOs
         };
     }
 
@@ -576,6 +606,23 @@ public class DriveService
             driveMemberDTOs.Add(driveMemberDTO);
         });
         return driveMemberDTOs;
+    }
+
+    private List<DriveCandidateDTO> ConverToDriveCandidateDTO(List<DriveCandidate> driveCandidates)
+    {
+        var driveCandidateDTOs = new List<DriveCandidateDTO>();
+        driveCandidates.ForEach(driveCandidate =>
+        {
+            var driveCandidateDTO = Helper.Map<DriveCandidate, DriveCandidateDTO>(driveCandidate);
+            driveCandidateDTO.DriveName = driveCandidate.Drive!.DriveName;
+            driveCandidateDTO.DriveDate = driveCandidate.Drive.DriveDate;
+            driveCandidateDTO.DriveStatus = driveCandidate.Drive.Status.ToString();
+            driveCandidateDTO.CandidateName = driveCandidate.Candidate!.FullName;
+            driveCandidateDTO.CandidateEmail = driveCandidate.Candidate.Email;
+            driveCandidateDTO.CandidateStatus = driveCandidate.Status.ToString();
+            driveCandidateDTOs.Add(driveCandidateDTO);
+        });
+        return driveCandidateDTOs;
     }
 
     #endregion

@@ -159,6 +159,57 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
         return await query.ToListAsync(cancellationToken);
     }
 
+    public async Task<List<DriveCandidate>> GetDriveCandidatesWithDetailsAsync(DriveCandidateFilter filter, CancellationToken cancellationToken = default)
+    {
+        var query = _context.DriveCandidates
+            .Include(dc => dc.Drive)
+            .Include(dc => dc.Candidate)
+            .Select(dc => dc);
+
+        if (filter.DriveId != null)
+            query = query
+                .Where(dc => dc.DriveId == filter.DriveId);
+
+        if (filter.CandidateId != null)
+            query = query
+                .Where(dc => dc.CandidateId == filter.CandidateId);
+
+        if (filter.CandidateStatus != null)
+            query = query
+                .Where(dc => dc.Status == filter.CandidateStatus);
+
+        if (filter.DriveStatus != null)
+            query = query
+                .Where(dm => dm.Drive!.Status == filter.DriveStatus);
+
+        if (!filter.IncludePastDrives)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate >= DateTime.Today);
+
+        if (filter.StartDate != null)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate >= filter.StartDate);
+
+        if (filter.EndDate != null)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate <= filter.EndDate);
+
+        if (filter.PageNumber != null && filter.PageSize != null)
+        {
+            var pageNumber = (int)filter.PageNumber;
+            var pageSize = (int)filter.PageSize;
+            query = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+        }
+
+        query = filter.IsLatestFirst ?
+            query.OrderByDescending(dm => dm.Drive!.DriveDate).ThenByDescending(dm => dm.Drive!.CreatedDate) :
+            query.OrderBy(dm => dm.Drive!.DriveDate).ThenBy(dm => dm.Drive!.CreatedDate);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
     #endregion
 
     #region DML
