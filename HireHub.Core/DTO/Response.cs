@@ -1,5 +1,4 @@
-﻿using HireHub.Core.Data.Models;
-using HireHub.Shared.Common.Models;
+﻿using HireHub.Shared.Common.Models;
 
 namespace HireHub.Core.DTO;
 
@@ -140,6 +139,8 @@ public class DriveCandidateDTO
     public string CandidateEmail { get; set; } = null!;
     public int DriveId { get; set; }
     public string DriveName { get; set; } = null!;
+    public DateTime DriveDate { get; set; }
+    public string DriveStatus { get; set; } = null!;
     public string CandidateStatus { get; set; } = null!;
     public int? StatusSetBy { get; set; }
 }

@@ -251,6 +251,8 @@ public class DriveService
             var driveCandidateDTO = Helper.Map<DriveCandidate, DriveCandidateDTO>(driveCandidate);
             driveCandidateDTO.CandidateStatus = driveCandidate.Status.ToString();
             driveCandidateDTO.DriveName = drive.DriveName;
+            driveCandidateDTO.DriveDate = drive.DriveDate;
+            driveCandidateDTO.DriveStatus = drive.Status.ToString();
             driveCandidateDTO.CandidateName = candidate.FullName;
             driveCandidateDTO.CandidateEmail = candidate.Email;
             driveCandidateDTOs.Add(driveCandidateDTO);
