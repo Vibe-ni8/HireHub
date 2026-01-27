@@ -58,7 +58,7 @@ public class DriveController : ControllerBase
         {
             object? status = null;
             if (driveStatus != null && !Enum.TryParse(typeof(DriveStatus), driveStatus, true, out status))
-                throw new CommonException(ResponseMessage.InvalidExperienceLevel);
+                throw new CommonException(ResponseMessage.InvalidDriveStatus);
 
             var response = await _driveService.GetDrives(
                 status != null ? (DriveStatus)status : null,
@@ -146,7 +146,9 @@ public class DriveController : ControllerBase
     [ProducesResponseType<Response<List<DriveMemberDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
-    public async Task<IActionResult> GetDriveMembers([FromQuery] int? driveId, [FromQuery] int? userId, [FromQuery] string? role)
+    public async Task<IActionResult> GetDriveMembers([FromQuery] int? driveId, [FromQuery] int? userId, [FromQuery] string? role,
+        [FromQuery] string? driveStatus, [FromQuery] bool isLatestFirst, [FromQuery] bool includePastDrives, 
+        [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, [FromQuery] int? pageNumber, [FromQuery] int? pageSize)
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetDriveMembers));
 
@@ -154,10 +156,14 @@ public class DriveController : ControllerBase
         {
             object? userRole = null;
             if (role != null && !Enum.TryParse(typeof(UserRole), role, true, out userRole))
-                throw new CommonException(ResponseMessage.InvalidExperienceLevel);
+                throw new CommonException(ResponseMessage.InvalidRole);
+            object? status = null;
+            if (driveStatus != null && !Enum.TryParse(typeof(DriveStatus), driveStatus, true, out status))
+                throw new CommonException(ResponseMessage.InvalidDriveStatus);
 
-            var response = await _driveService.GetDriveMembers(driveId, userId,
-                userRole != null ? (UserRole)userRole : null);
+            var response = await _driveService.GetDriveMembers(driveId, userId, 
+                userRole != null ? (UserRole)userRole : null, status != null ? (DriveStatus)status : null, 
+                isLatestFirst, includePastDrives, startDate, endDate, pageNumber, pageSize);
 
             _logger.LogInformation(LogMessage.EndMethod, nameof(GetDriveMembers));
 

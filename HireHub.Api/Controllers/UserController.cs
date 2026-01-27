@@ -55,7 +55,7 @@ public class UserController : ControllerBase
         {
             object? userRole = null;
             if (role != null && !Enum.TryParse(typeof(UserRole), role, true, out userRole))
-                throw new CommonException(ResponseMessage.InvalidExperienceLevel);
+                throw new CommonException(ResponseMessage.InvalidRole);
 
             var response = await _userService.GetUsers(
                 userRole != null ? (UserRole)userRole : null, 

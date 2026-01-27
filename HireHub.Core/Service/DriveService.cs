@@ -5,6 +5,7 @@ using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
 using HireHub.Shared.Common.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
@@ -99,7 +100,9 @@ public class DriveService
     }
 
 
-    public async Task<Response<List<DriveMemberDTO>>> GetDriveMembers(int? driveId, int? userId, UserRole? role)
+    public async Task<Response<List<DriveMemberDTO>>> GetDriveMembers(int? driveId, int? userId, UserRole? role,
+        DriveStatus? driveStatus, bool isLatestFirst, bool includePastDrives, DateTime? startDate, DateTime? endDate, 
+        int? pageNumber, int? pageSize)
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(GetDriveMembers));
 
@@ -107,7 +110,14 @@ public class DriveService
         {
             DriveId = driveId,
             UserId = userId,
-            Role = role
+            Role = role,
+            DriveStatus = driveStatus,
+            IsLatestFirst = isLatestFirst,
+            IncludePastDrives = includePastDrives,
+            StartDate = startDate,
+            EndDate = endDate,
+            PageNumber = pageNumber,
+            PageSize = pageSize
         };
         var driveMembers = await _driveRepository.GetDriveMembersWithDetailsAsync(filter, CancellationToken.None);
 
@@ -279,6 +289,8 @@ public class DriveService
         var driveMemberDTO = Helper.Map<DriveMember, DriveMemberDTO>(driveMember);
         driveMemberDTO.RoleName = (await _roleRepository.GetByIdAsync(user.RoleId))!.RoleName.ToString();
         driveMemberDTO.DriveName = drive.DriveName;
+        driveMemberDTO.DriveDate = drive.DriveDate;
+        driveMemberDTO.DriveStatus = drive.Status.ToString();
         driveMemberDTO.UserName = user.FullName;
         driveMemberDTO.UserEmail = user.Email;
 
@@ -474,6 +486,8 @@ public class DriveService
         var driveMemberDTO = Helper.Map<DriveMember, DriveMemberDTO>(driveMember);
         driveMemberDTO.RoleName = (await _roleRepository.GetByIdAsync(driveMember.RoleId))!.RoleName.ToString();
         driveMemberDTO.DriveName = drive.DriveName;
+        driveMemberDTO.DriveDate = drive.DriveDate;
+        driveMemberDTO.DriveStatus = drive.Status.ToString();
         driveMemberDTO.UserName = user.FullName;
         driveMemberDTO.UserEmail = user.Email;
 
@@ -552,6 +566,8 @@ public class DriveService
         {
             var driveMemberDTO = Helper.Map<DriveMember, DriveMemberDTO>(driveMember);
             driveMemberDTO.DriveName = driveMember.Drive!.DriveName;
+            driveMemberDTO.DriveDate = driveMember.Drive.DriveDate;
+            driveMemberDTO.DriveStatus = driveMember.Drive.Status.ToString();
             driveMemberDTO.UserName = driveMember.User!.FullName;
             driveMemberDTO.UserEmail = driveMember.User.Email;
             driveMemberDTO.RoleName = driveMember.Role!.RoleName.ToString();

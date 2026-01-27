@@ -127,6 +127,35 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
             query = query
                 .Where(dm => dm.Role!.RoleName == filter.Role);
 
+        if (filter.DriveStatus != null)
+            query = query
+                .Where(dm => dm.Drive!.Status == filter.DriveStatus);
+
+        if (!filter.IncludePastDrives)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate >= DateTime.Today);
+
+        if (filter.StartDate != null)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate >= filter.StartDate);
+
+        if (filter.EndDate != null)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate <= filter.EndDate);
+
+        if (filter.PageNumber != null && filter.PageSize != null)
+        {
+            var pageNumber = (int)filter.PageNumber;
+            var pageSize = (int)filter.PageSize;
+            query = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+        }
+
+        query = filter.IsLatestFirst ?
+            query.OrderByDescending(dm => dm.Drive!.DriveDate).ThenByDescending(dm => dm.Drive!.CreatedDate) :
+            query.OrderBy(dm => dm.Drive!.DriveDate).ThenBy(dm => dm.Drive!.CreatedDate);
+
         return await query.ToListAsync(cancellationToken);
     }
 
