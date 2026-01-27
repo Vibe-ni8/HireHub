@@ -39,7 +39,7 @@ public class RemoveDriveCandidatesRequestValidator : AbstractValidator<RemoveDri
                     return;
                 }
 
-                if (drive.Status == DriveStatus.Completed)
+                if (drive.Status == DriveStatus.Completed || drive.Status == DriveStatus.Cancelled)
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.ClosedDriveCannotBeEdit);
                     return;

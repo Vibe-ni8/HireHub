@@ -37,7 +37,7 @@ public class EditDriveConfigRequestValidator : AbstractValidator<JObject>
                     return;
                 }
 
-                if (drive.Status == DriveStatus.Completed)
+                if (drive.Status == DriveStatus.Completed || drive.Status == DriveStatus.Cancelled)
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.ClosedDriveCannotBeEdit);
                     return;

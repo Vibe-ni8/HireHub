@@ -70,6 +70,7 @@ public class DriveService
             throw new CommonException(ResponseMessage.DriveNotFound);
 
         var driveDTO = Helper.Map<Drive, DriveDTO>(drive);
+        driveDTO.DriveStatus = drive.Status.ToString();
         driveDTO.CreatorName = (await _userRepository.GetByIdAsync(drive.CreatedBy))!.FullName;
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetDrive));

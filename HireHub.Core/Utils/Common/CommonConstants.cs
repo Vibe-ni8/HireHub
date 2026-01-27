@@ -208,7 +208,8 @@ public static class Options
         nameof(DriveStatus.InProposal),
         nameof(DriveStatus.Started),
         nameof(DriveStatus.Halted),
-        nameof(DriveStatus.Completed)
+        nameof(DriveStatus.Completed),
+        nameof(DriveStatus.Cancelled)
     ];
     public static string[] Recommendations => [
         nameof(Recommendation.NoHire),

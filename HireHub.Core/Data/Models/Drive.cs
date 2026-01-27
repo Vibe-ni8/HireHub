@@ -36,5 +36,6 @@ public enum DriveStatus
     InProposal,
     Started,
     Halted,
-    Completed
+    Completed,
+    Cancelled
 }

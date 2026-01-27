@@ -69,7 +69,8 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
             .Where(dm => dm.UserId == userId)
             .Include(dm => dm.Drive)
             .AnyAsync(
-                dm => dm.Drive!.DriveDate.Date == driveDate.Date && dm.Drive.Status != DriveStatus.Completed,
+                dm => dm.Drive!.DriveDate.Date == driveDate.Date && 
+                    dm.Drive.Status != DriveStatus.Completed && dm.Drive.Status != DriveStatus.Cancelled,
                 cancellationToken
             );
     }
