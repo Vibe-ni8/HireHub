@@ -136,7 +136,10 @@ public class DriveCandidateDTO
 {
     public int DriveCandidateId { get; set; }
     public int CandidateId { get; set; }
+    public string CandidateName { get; set; } = null!;
+    public string CandidateEmail { get; set; } = null!;
     public int DriveId { get; set; }
+    public string DriveName { get; set; } = null!;
     public string CandidateStatus { get; set; } = null!;
     public int? StatusSetBy { get; set; }
 }
@@ -145,7 +148,10 @@ public class DriveMemberDTO
 {
     public int DriveMemberId { get; set; }
     public int DriveId { get; set; }
+    public string DriveName { get; set; } = null!;
     public int UserId { get; set; }
+    public string UserName { get; set; } = null!;
+    public string UserEmail { get; set; } = null!;
     public int RoleId { get; set; }
     public string RoleName { get; set; } = null!;
 }

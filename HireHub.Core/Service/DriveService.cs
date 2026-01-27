@@ -1,4 +1,5 @@
-﻿using HireHub.Core.Data.Filters;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using HireHub.Core.Data.Filters;
 using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
@@ -14,16 +15,18 @@ public class DriveService
     private readonly IDriveRepository _driveRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly IUserRepository _userRepository;
+    private readonly ICandidateRepository _candidateRepository;
     private readonly ISaveRepository _saveRepository;
     private readonly ILogger<DriveService> _logger;
 
     public DriveService(IDriveRepository driveRepository, IRoleRepository roleRepository,
-        IUserRepository userRepository,
+        IUserRepository userRepository, ICandidateRepository candidateRepository,
         ISaveRepository saveRepository, ILogger<DriveService> logger)
     {
         _driveRepository = driveRepository;
         _roleRepository = roleRepository;
         _userRepository = userRepository;
+        _candidateRepository = candidateRepository;
         _saveRepository = saveRepository;
         _logger = logger;
     }
@@ -199,6 +202,9 @@ public class DriveService
 
         foreach(int candidateId in request.CandidateIds)
         {
+            var candidate = await _candidateRepository.GetByIdAsync(candidateId) ??
+                    throw new CommonException(ResponseMessage.DriveNotFound);
+
             var driveCandidate = new DriveCandidate
             {
                 DriveId = request.DriveId,
@@ -211,6 +217,9 @@ public class DriveService
 
             var driveCandidateDTO = Helper.Map<DriveCandidate, DriveCandidateDTO>(driveCandidate);
             driveCandidateDTO.CandidateStatus = driveCandidate.Status.ToString();
+            driveCandidateDTO.DriveName = drive.DriveName;
+            driveCandidateDTO.CandidateName = candidate.FullName;
+            driveCandidateDTO.CandidateEmail = candidate.Email;
             driveCandidateDTOs.Add(driveCandidateDTO);
         }
 
@@ -246,6 +255,9 @@ public class DriveService
 
         var driveMemberDTO = Helper.Map<DriveMember, DriveMemberDTO>(driveMember);
         driveMemberDTO.RoleName = (await _roleRepository.GetByIdAsync(user.RoleId))!.RoleName.ToString();
+        driveMemberDTO.DriveName = drive.DriveName;
+        driveMemberDTO.UserName = user.FullName;
+        driveMemberDTO.UserEmail = user.Email;
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(AddCandidatesToDriveAsync));
 
@@ -433,8 +445,14 @@ public class DriveService
         _driveRepository.RemoveDriveMember(driveMember);
         _saveRepository.SaveChanges();
 
+        var user = await _userRepository.GetByIdAsync(request.MemberId) ??
+                    throw new CommonException(ResponseMessage.UserNotFound);
+
         var driveMemberDTO = Helper.Map<DriveMember, DriveMemberDTO>(driveMember);
         driveMemberDTO.RoleName = (await _roleRepository.GetByIdAsync(driveMember.RoleId))!.RoleName.ToString();
+        driveMemberDTO.DriveName = drive.DriveName;
+        driveMemberDTO.UserName = user.FullName;
+        driveMemberDTO.UserEmail = user.Email;
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(RemoveDriveMember));
 
