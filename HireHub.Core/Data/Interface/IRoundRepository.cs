@@ -3,7 +3,7 @@ using HireHub.Shared.Persistence.Interface;
 
 namespace HireHub.Core.Data.Interface;
 
-public interface IInterviewRepository : IGenericRepository<Interview>
+public interface IRoundRepository : IGenericRepository<Round>
 {
     #region DQL
 

@@ -22,7 +22,6 @@ public class HireHubDbContext : DbContext
     public DbSet<DriveCandidate> DriveCandidates => Set<DriveCandidate>();
     public DbSet<Round> Rounds => Set<Round>();
     public DbSet<CandidateReassignment> CandidateReassignments => Set<CandidateReassignment>();
-    public DbSet<Interview> Interviews => Set<Interview>();
     public DbSet<Feedback> Feedbacks => Set<Feedback>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -728,12 +727,21 @@ public class HireHubDbContext : DbContext
             .HasConversion(Helper.EnumConverter<RoundResult>())
             .IsRequired();
 
+            b.Property(x => x.FeedbackId)
+            .HasColumnName("feedback_id")
+            .HasColumnType("INT")
+            .IsRequired(false);
+
             b.HasOne(x => x.DriveCandidate).WithMany(x => x.Rounds)
             .HasPrincipalKey(x => x.DriveCandidateId).HasForeignKey(x => x.DriveCandidateId)
             .OnDelete(DeleteBehavior.Restrict);
 
             b.HasOne(x => x.Interviewer).WithMany(x => x.InterviewedPanels)
             .HasPrincipalKey(x => x.DriveMemberId).HasForeignKey(x => x.InterviewerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.Feedback).WithMany()
+            .HasPrincipalKey(x => x.FeedbackId).HasForeignKey(x => x.FeedbackId)
             .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -810,43 +818,6 @@ public class HireHubDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // Interviews
-        modelBuilder.Entity<Interview>(b =>
-        {
-            b.ToTable("interviews");
-            b.HasKey(x => x.InterviewId);
-
-            b.Property(x => x.InterviewId)
-            .HasColumnName("interview_id")
-            .HasColumnType("INT")
-            .IsRequired();
-
-            b.Property(x => x.DriveCandidateId)
-            .HasColumnName("drive_candidate_id")
-            .HasColumnType("INT")
-            .IsRequired();
-
-            b.Property(x => x.InterviewerId)
-            .HasColumnName("interviewer_id")
-            .HasColumnType("INT")
-            .IsRequired();
-
-            b.HasIndex(x => new { x.DriveCandidateId, x.InterviewerId }).IsUnique().HasDatabaseName("UQ_DriveCandidateId_InterviewerId");
-
-            b.Property(x => x.InterviewDate)
-            .HasColumnName("interview_date")
-            .HasColumnType("DATETIME")
-            .IsRequired();
-
-            b.HasOne(x => x.DriveCandidate).WithMany(x => x.Interviews)
-            .HasPrincipalKey(x => x.DriveCandidateId).HasForeignKey(x => x.DriveCandidateId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-            b.HasOne(x => x.Interviewer).WithMany(x => x.Interviews)
-            .HasPrincipalKey(x => x.DriveMemberId).HasForeignKey(x => x.InterviewerId)
-            .OnDelete(DeleteBehavior.Restrict);
-        });
-
         // Feedbacks
         modelBuilder.Entity<Feedback>(b =>
         {
@@ -857,13 +828,6 @@ public class HireHubDbContext : DbContext
             .HasColumnName("feedback_id")
             .HasColumnType("INT")
             .IsRequired();
-
-            b.Property(x => x.InterviewId)
-            .HasColumnName("interview_id")
-            .HasColumnType("INT")
-            .IsRequired();
-
-            b.HasIndex(x => x.InterviewId).IsUnique();
 
             b.Property(x => x.OverallRating)
             .HasColumnName("overall_rating")
@@ -906,10 +870,6 @@ public class HireHubDbContext : DbContext
             .HasColumnType("DATETIME")
             .HasDefaultValueSql("GETDATE()")
             .IsRequired();
-
-            b.HasOne(x => x.Interview).WithOne(i => i.Feedback)
-            .HasPrincipalKey<Interview>(x => x.InterviewId).HasForeignKey<Feedback>(x => x.InterviewId)
-            .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

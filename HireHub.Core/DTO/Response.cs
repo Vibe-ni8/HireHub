@@ -167,5 +167,6 @@ public class RoundDTO
     public string Type { get; set; } = null!;
     public string RoundStatus { get; set; } = null!;
     public string RoundResult { get; set; } = null!;
+    public int? FeedbackId { get; set; } = null;
 }
 

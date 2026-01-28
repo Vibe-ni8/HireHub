@@ -11,7 +11,6 @@ public class Feedback : BaseEntity
     }
 
     public int FeedbackId { get; set; }
-    public int InterviewId { get; set; }
     public int? OverallRating { get; set; }
     public int? TechnicalSkill { get; set; }
     public int? Communication { get; set; }
@@ -19,9 +18,6 @@ public class Feedback : BaseEntity
     public string? OverallFeedback { get; set; }
     public Recommendation Recommendation { get; set; } = Recommendation.Hire;
     public DateTime SubmittedDate { get; set; } = DateTime.Now;
-
-    // Navigation
-    public Interview? Interview { get; set; }
 }
 
 public enum Recommendation

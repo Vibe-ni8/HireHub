@@ -6,14 +6,14 @@ public class RepoService
 {
     public RepoService(IUserRepository userRepository, IUserPermissionRepository userPermissionRepository,
         IRoleRepository roleRepository, ICandidateRepository candidateRepository, 
-        IDriveRepository driveRepository, IInterviewRepository interviewRepository)
+        IDriveRepository driveRepository, IRoundRepository roundRepository)
     {
         UserRepository = userRepository;
         UserPermissionRepository = userPermissionRepository;
         RoleRepository = roleRepository;
         CandidateRepository = candidateRepository;
         DriveRepository = driveRepository;
-        InterviewRepository = interviewRepository;
+        RoundRepository = roundRepository;
     }
 
     public IUserRepository UserRepository { get; }
@@ -21,5 +21,5 @@ public class RepoService
     public IRoleRepository RoleRepository { get; }
     public ICandidateRepository CandidateRepository { get; }
     public IDriveRepository DriveRepository { get; }
-    public IInterviewRepository InterviewRepository { get; }
+    public IRoundRepository RoundRepository { get; }
 }

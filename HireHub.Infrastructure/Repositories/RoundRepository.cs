@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HireHub.Infrastructure.Repositories;
 
-public class InterviewRepository : GenericRepository<Interview>, IInterviewRepository
+public class RoundRepository : GenericRepository<Round>, IRoundRepository
 {
     private new readonly HireHubDbContext _context;
 
-    public InterviewRepository(HireHubDbContext context) : base(context)
+    public RoundRepository(HireHubDbContext context) : base(context)
     {
         _context = context;
     }
@@ -19,7 +19,7 @@ public class InterviewRepository : GenericRepository<Interview>, IInterviewRepos
 
     public async Task<int> CountInterviewsAsync(CancellationToken cancellationToken = default)
     {
-        return await _context.Interviews.CountAsync(cancellationToken);
+        return await _context.Rounds.CountAsync(cancellationToken);
     }
 
     #endregion

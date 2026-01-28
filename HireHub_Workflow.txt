@@ -84,6 +84,11 @@ DATABASE SCHEMA
 
 - USER MANAGEMENT
 
+Roles (
+    RoleId INT PK IDENTITY,
+    RoleName VARCHAR(20) UNIQUE  -- SuperAdmin, HR, Mentor, Panel
+)
+
 Users (
     UserId INT PK IDENTITY,
     FullName VARCHAR(100),
@@ -94,11 +99,6 @@ Users (
     CreatedDate DATETIME DEFAULT GETDATE(),
     UpdatedDate DATETIME,
     PasswordHash VARCHAR(MAX)
-)
-
-Roles (
-    RoleId INT PK IDENTITY,
-    RoleName VARCHAR(20) UNIQUE  -- SuperAdmin, HR, Mentor, Panel
 )
 
 //UserRoles (
@@ -224,6 +224,7 @@ Rounds (
     RoundType VARCHAR(20),  -- Hr, Tech 1, Tech 2
     Status VARCHAR(20) DEFAULT 'Scheduled',  -- Scheduled, OnProcess, Completed, Skipped
     Result VARCHAR(20) DEFAULT 'Pending',  -- Pending, Selected, Rejected
+    FeedbackId INT NULL FK → Feedbacks.FeedbackId,
 )
 
 CandidateReassignments (
@@ -238,18 +239,10 @@ CandidateReassignments (
     RequestedDate DATETIME DEFAULT GETDATE()
 )
 
-- INTERVIEW & FEEDBACK
-
-Interviews (
-    InterviewId INT PK IDENTITY,
-    DriveCandidateId INT NOT NULL FK → DriveCandidates.DriveCandidateId,
-    InterviewerId INT NOT NULL FK → DriveMembers.DriveMemberId,
-    InterviewDate DATETIME
-)
+- FEEDBACK
 
 Feedbacks (
     FeedbackId INT PK IDENTITY,
-    InterviewId INT NOT NULL UNIQUE FK → Interviews.InterviewId,
     OverallRating INT NOT NULL,
     TechnicalSkill VARCHAR(500),
     Communication VARCHAR(500),

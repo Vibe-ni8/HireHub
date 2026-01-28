@@ -23,7 +23,6 @@ public class DriveCandidate : BaseEntity
     public Drive? Drive { get; set; }
     public User? Recruiter { get; set; }
     public ICollection<Round> Rounds { get; set; } = new List<Round>();
-    public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
     public ICollection<CandidateReassignment> CandidateReassignments { get; set; } = new List<CandidateReassignment>();
 }
 

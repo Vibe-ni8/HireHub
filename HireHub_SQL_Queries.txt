@@ -4,6 +4,12 @@ GO
 USE DriveManagementDB;
 GO
 
+
+CREATE TABLE roles (
+    role_id INT IDENTITY(1,1) PRIMARY KEY,
+    role_name VARCHAR(20) UNIQUE -- SuperAdmin, HR, Mentor, Panel
+);
+
 CREATE TABLE users (
     user_id INT IDENTITY(1,1) PRIMARY KEY,
     full_name VARCHAR(100),
@@ -16,20 +22,6 @@ CREATE TABLE users (
     password_hash VARCHAR(MAX) NULL
     FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE NO ACTION,
 );
-
-CREATE TABLE roles (
-    role_id INT IDENTITY(1,1) PRIMARY KEY,
-    role_name VARCHAR(20) UNIQUE -- SuperAdmin, HR, Mentor, Panel
-);
-
---CREATE TABLE user_roles (
---    user_role_id INT IDENTITY(1,1) PRIMARY KEY,
---    user_id INT NOT NULL,
---    role_id INT NOT NULL,
---    FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
---    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE ON DELETE CASCADE,
---    CONSTRAINT UQ_UserId_RoleId UNIQUE (user_id, role_id)
---);
 
 CREATE TABLE user_permissions (
     user_id INT NOT NULL,
@@ -160,8 +152,10 @@ CREATE TABLE rounds (
     round_type VARCHAR(20) DEFAULT 'Tech1', -- Hr, Tech1, Tech2
     status VARCHAR(20) DEFAULT 'Scheduled', -- Scheduled, OnProcess, Completed, Skipped
     result VARCHAR(20) DEFAULT 'Pending', -- Pending, Selected, Rejected
+    feedback_id INT NULL,
     FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE NO ACTION,
     FOREIGN KEY (interviewer_id) REFERENCES drive_members(drive_member_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY (feedback_id) REFERENCES feedbacks(feedback_id) ON UPDATE CASCADE ON DELETE NO ACTION,
     CONSTRAINT UQ_DriveCandidateId_PanelId UNIQUE (drive_candidate_id, interviewer_id)
 );
 
@@ -182,19 +176,8 @@ CREATE TABLE candidate_reassignments (
     FOREIGN KEY (approved_by) REFERENCES users(user_id) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
-CREATE TABLE interviews (
-    interview_id INT IDENTITY(1,1) PRIMARY KEY,
-    drive_candidate_id INT NOT NULL,
-    interviewer_id INT NOT NULL,
-    interview_date DATETIME NOT NULL,
-    FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE NO ACTION,
-    FOREIGN KEY (interviewer_id) REFERENCES drive_members(drive_member_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
-    CONSTRAINT UQ_DriveCandidateId_InterviewerId UNIQUE (drive_candidate_id, interviewer_id)
-);
-
 CREATE TABLE feedbacks (
     feedback_id INT IDENTITY(1,1) PRIMARY KEY,
-    interview_id INT NOT NULL UNIQUE,
     overall_rating INT NOT NULL,
     technical_skill INT NULL,
     communication INT NULL,
@@ -202,5 +185,4 @@ CREATE TABLE feedbacks (
     overall_feedback TEXT,
     recommendation VARCHAR(20) NOT NULL DEFAULT 'Hire', -- Hire, May be, No Hire
     submitted_date DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (interview_id) REFERENCES interviews(interview_id) ON UPDATE CASCADE ON DELETE CASCADE
 );

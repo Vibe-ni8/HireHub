@@ -10,17 +10,17 @@ public class AdminService
 {
     private readonly IUserRepository _userRepository;
     private readonly ICandidateRepository _candidateRepository;
-    private readonly IInterviewRepository _interviewRepository;
+    private readonly IRoundRepository _roundRepository;
     private readonly ISaveRepository _saveRepository;
     private readonly ILogger<AdminService> _logger;
 
     public AdminService(IUserRepository userRepository,
-        ICandidateRepository candidateRepository,IInterviewRepository interviewRepository,
+        ICandidateRepository candidateRepository,IRoundRepository roundRepository,
         ISaveRepository saveRepository, ILogger<AdminService> logger)
     {
         _userRepository = userRepository;
         _candidateRepository = candidateRepository;
-        _interviewRepository = interviewRepository;
+        _roundRepository = roundRepository;
         _saveRepository = saveRepository;
         _logger = logger;
     }
@@ -39,7 +39,7 @@ public class AdminService
             TotalPanelMembers = await _userRepository.CountUsersByRoleAsync(UserRole.Panel),
             TotalMentors = await _userRepository.CountUsersByRoleAsync(UserRole.Mentor),
             TotalHrs = await _userRepository.CountUsersByRoleAsync(UserRole.HR),
-            TotalInterviews = await _interviewRepository.CountInterviewsAsync(),
+            TotalInterviews = await _roundRepository.CountInterviewsAsync(),
             TotalCandidatesHired = await _candidateRepository.CountByDriveStatusAsync(CandidateStatus.Selected),
             TotalCandidatesRejected = await _candidateRepository.CountByDriveStatusAsync(CandidateStatus.Rejected)
         };

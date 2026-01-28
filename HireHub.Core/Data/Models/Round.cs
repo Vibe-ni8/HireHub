@@ -14,10 +14,12 @@ public class Round : BaseEntity
     public RoundType RoundType { get; set; } = RoundType.Tech1;
     public RoundStatus Status { get; set; } = RoundStatus.Scheduled;
     public RoundResult Result { get; set; } = RoundResult.Pending;
+    public int? FeedbackId { get; set; } = null;
 
     // Navigation
     public DriveCandidate? DriveCandidate { get; set; }
     public DriveMember? Interviewer { get; set; }
+    public Feedback? Feedback { get; set; }
 }
 
 public enum RoundType
