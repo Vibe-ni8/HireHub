@@ -117,9 +117,7 @@ public class DriveService
             PageNumber = pageNumber,
             PageSize = pageSize
         };
-        var driveMembers = await _driveRepository.GetDriveMembersWithDetailsAsync(filter, CancellationToken.None);
-
-        var driveMemberDTOs = ConverToDriveMemberDTO(driveMembers);
+        var driveMemberDTOs = await _driveRepository.GetDriveMembersAsDtoAsync(filter, CancellationToken.None);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetDriveMembers));
 
@@ -149,9 +147,7 @@ public class DriveService
             PageNumber = pageNumber,
             PageSize = pageSize
         };
-        var driveCandidates = await _driveRepository.GetDriveCandidatesWithDetailsAsync(filter, CancellationToken.None);
-
-        var driveCandidateDTOs = ConverToDriveCandidateDTO(driveCandidates);
+        var driveCandidateDTOs = await _driveRepository.GetDriveCandidatesAsDtoAsync(filter, CancellationToken.None);
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetDriveCandidates));
 

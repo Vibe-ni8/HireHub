@@ -11,6 +11,7 @@ public interface IRoundRepository : IGenericRepository<Round>
 
     Task<int> CountInterviewsAsync(RoundStatus? roundStatus, CancellationToken cancellationToken = default);
 
+    [Obsolete]
     Task<List<Round>> GetAllAsync(RoundFilter filter, CancellationToken cancellationToken = default);
 
     Task<List<RoundDTO>> GetAllAsDtoAsync(RoundFilter filter, CancellationToken cancellationToken = default);
