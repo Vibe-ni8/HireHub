@@ -73,6 +73,7 @@ public static class ResponseMessage
     public const string AdminOrDriveOwnerCanEdit = "Admin or Owner of the Drive can able to edit";
     public const string AdminOrDriveOwnerCanAdd = "Admin or Owner of the Drive can able to add";
     public const string AdminOrDriveOwnerCanRemove = "Admin or Owner of the Drive can able to remove";
+    public const string AdminOrDriveMemberHrCanEdit = "Admin or Drive Member(Hr) can able to edit";
     public const string DriveNameAlreadyExist = "Drive Name Already Exist";
     public const string DriveNameCannotBeChange = "Drive Name cannot be change";
     public const string DriveDateCannotBeChange = "Drive Date cannot be change";
@@ -83,6 +84,9 @@ public static class ResponseMessage
     public const string DriveStatusCannotChangeToInproposal = "DriveStatus cannot be change to InProposal";
     public const string CannotRemoveMembersOnStartedDrive = "Cannot remove Members on a started Drive";
     public const string InvalidCandidateStatus = "Invalid Candidate Status";
+    public const string CandidateIdRequired = "CandidateId is required";
+    public const string CandidateStatusCannotChangeToPending = "CandidateStatus cannot be change to Pending";
+    public const string DriveNeedToStartFirst = "Drive need to be start first";
 }
 
 public static class FieldName
@@ -124,6 +128,7 @@ public static class JOPropertyName
     public const string TechnicalRounds = "technicalRounds";
     public const string DriveStatus = "driveStatus";
     public const string CreatedBy = "createdBy";
+    public const string CandidateStatus = "candidateStatus";
 
     public const string PanelVisibilitySettings = "panelVisibilitySettings";
     public const string PVS_ShowPhone = "panelVisibilitySettings.showPhone";
@@ -205,6 +210,11 @@ public static class ActionType
 
 public static class Options
 {
+    public static string[] CandidateStatuses => [
+        nameof(CandidateStatus.Pending),
+        nameof(CandidateStatus.Selected),
+        nameof(CandidateStatus.Rejected)
+    ];
     public static string[] DriveStatuses => [
         nameof(DriveStatus.InProposal),
         nameof(DriveStatus.Started),

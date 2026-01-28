@@ -266,7 +266,7 @@ public class DriveService
         foreach(int candidateId in request.CandidateIds)
         {
             var candidate = await _candidateRepository.GetByIdAsync(candidateId) ??
-                    throw new CommonException(ResponseMessage.DriveNotFound);
+                    throw new CommonException(ResponseMessage.CandidateNotFound);
 
             var driveCandidate = new DriveCandidate
             {
@@ -550,6 +550,45 @@ public class DriveService
         _logger.LogInformation(LogMessage.EndMethod, nameof(RemoveCandidatesFromDrive));
 
         return new() { Data = driveCandidateIds };
+    }
+
+
+    public async Task<Response<DriveCandidateDTO>> EditDriveCandidate(JObject request, int requestUserId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(EditDriveCandidate));
+
+        int driveId = request[JOPropertyName.DriveId]!.ToObject<int>();
+        var drive = await _driveRepository.GetDriveWithCandidatesAsync(driveId) ??
+            throw new CommonException(ResponseMessage.DriveNotFound);
+
+        int candidateId = request[JOPropertyName.CandidateId]!.ToObject<int>();
+        var driveCandidate = drive.DriveCandidates.FirstOrDefault(e => e.CandidateId == candidateId) ??
+            throw new CommonException(ResponseMessage.DriveCandidateNotFound);
+
+        if (request.ContainsKey(JOPropertyName.CandidateStatus))
+        {
+            driveCandidate.Status = Enum
+                .Parse<CandidateStatus>(request[JOPropertyName.CandidateStatus]!.ToString());
+            driveCandidate.StatusSetBy = requestUserId;
+        }
+
+        _driveRepository.Update(drive);
+        _saveRepository.SaveChanges();
+
+        var candidate = await _candidateRepository.GetByIdAsync(candidateId) ??
+                    throw new CommonException(ResponseMessage.CandidateNotFound);
+
+        var driveCandidateDTO = Helper.Map<DriveCandidate, DriveCandidateDTO>(driveCandidate);
+        driveCandidateDTO.CandidateStatus = driveCandidate.Status.ToString();
+        driveCandidateDTO.DriveName = drive.DriveName;
+        driveCandidateDTO.DriveDate = drive.DriveDate;
+        driveCandidateDTO.DriveStatus = drive.Status.ToString();
+        driveCandidateDTO.CandidateName = candidate.FullName;
+        driveCandidateDTO.CandidateEmail = candidate.Email;
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(EditDriveCandidate));
+
+        return new() { Data = driveCandidateDTO };
     }
 
     #endregion

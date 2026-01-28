@@ -35,7 +35,7 @@ public class RemoveDriveMemberRequestValidator : AbstractValidator<RemoveDriveMe
 
                 var currentUserId = userProvider.CurrentUserId;
                 var currentUserRole = userProvider.CurrentUserRole;
-                if (currentUserRole != RoleName.Admin || currentUserId != drive.CreatedBy.ToString())
+                if (currentUserRole != RoleName.Admin && currentUserId != drive.CreatedBy.ToString())
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.AdminOrDriveOwnerCanRemove);
                     return;

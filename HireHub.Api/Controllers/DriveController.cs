@@ -515,6 +515,64 @@ public class DriveController : ControllerBase
         }
     }
 
+
+    [RequireAuth([RoleName.Admin])]
+    [RequirePermission(UserAction.Drive, ActionType.Update)]
+    [HttpPut("candidate/edit")]
+    [ProducesResponseType<Response<DriveCandidateDTO>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> EditDriveCandidate([FromBody] JObject request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(EditDriveCandidate));
+
+        try
+        {
+            using (_transactionRepository.BeginTransaction())
+            {
+                var baseResponse = new BaseResponse();
+
+                var validator = await new
+                    EditDriveCandidateRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
+                    .ValidateAsync(request);
+
+                if (!validator.IsValid)
+                {
+                    validator.Errors.ForEach(e =>
+                        baseResponse.Errors.Add(new ValidationError
+                        {
+                            PropertyName = e.PropertyName,
+                            ErrorMessage = e.ErrorMessage
+                        })
+                    );
+                    return BadRequest(baseResponse);
+                }
+
+                var currentUserId = int.Parse(_userProvider.CurrentUserId);
+                var response = await _driveService.EditDriveCandidate(request, currentUserId);
+
+                baseResponse.Warnings.ForEach(response.Warnings.Add);
+
+                _transactionRepository.CommitTransaction();
+
+                _logger.LogInformation(LogMessage.EndMethod, nameof(EditDriveCandidate));
+
+                return Ok(response);
+            }
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(EditDriveCandidate), ex.Message);
+            _transactionRepository.RollbackTransaction();
+            return BadRequest(new BaseResponse
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
     #endregion
 
     #region Delete API's
