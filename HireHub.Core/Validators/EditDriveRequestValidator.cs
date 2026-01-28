@@ -99,15 +99,15 @@ public class EditDriveRequestValidator : AbstractValidator<JObject>
                     }
                 }
 
-                if (req.ContainsKey(JOPropertyName.Status))
+                if (req.ContainsKey(JOPropertyName.DriveStatus))
                 {
-                    if (!Options.DriveStatuses.Contains(req[JOPropertyName.Status]!.ToString()))
+                    if (!Options.DriveStatuses.Contains(req[JOPropertyName.DriveStatus]!.ToString()))
                     {
                         context.AddFailure(PropertyName.Main, ResponseMessage.InvalidDriveStatus);
                         return;
                     }
 
-                    if (req[JOPropertyName.Status]!.ToString() == nameof(DriveStatus.InProposal))
+                    if (req[JOPropertyName.DriveStatus]!.ToString() == nameof(DriveStatus.InProposal))
                     {
                         context.AddFailure(PropertyName.Main, ResponseMessage.DriveStatusCannotChangeToInproposal);
                         return;

@@ -351,8 +351,8 @@ public class DriveService
         if (request.ContainsKey(JOPropertyName.TechnicalRounds))
             drive.TechnicalRounds = request[JOPropertyName.TechnicalRounds]!.ToObject<int>();
 
-        if (request.ContainsKey(JOPropertyName.Status))
-            drive.Status = (DriveStatus)Enum.Parse(typeof(DriveStatus), request[JOPropertyName.Status]!.ToString());
+        if (request.ContainsKey(JOPropertyName.DriveStatus))
+            drive.Status = (DriveStatus)Enum.Parse(typeof(DriveStatus), request[JOPropertyName.DriveStatus]!.ToString());
 
         // ❌ NOT updating CreatedBy & CreatedDate
 

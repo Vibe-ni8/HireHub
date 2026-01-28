@@ -122,7 +122,7 @@ public static class JOPropertyName
     public const string DriveName = "driveName";
     public const string DriveDate = "driveDate";
     public const string TechnicalRounds = "technicalRounds";
-    public const string Status = "status";
+    public const string DriveStatus = "driveStatus";
     public const string CreatedBy = "createdBy";
 
     public const string PanelVisibilitySettings = "panelVisibilitySettings";
