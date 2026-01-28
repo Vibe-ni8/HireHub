@@ -217,16 +217,6 @@ DriveCandidates (
     CreatedDate DATETIME DEFAULT GETDATE()
 )
 
-Rounds (
-    RoundId INT PK IDENTITY,
-    DriveCandidateId INT FK → DriveCandidates.DriveCandidateId,
-    InterviewerId INT FK → DriveMembers.DriveMemberId,
-    RoundType VARCHAR(20),  -- Hr, Tech 1, Tech 2
-    Status VARCHAR(20) DEFAULT 'Scheduled',  -- Scheduled, OnProcess, Completed, Skipped
-    Result VARCHAR(20) DEFAULT 'Pending',  -- Pending, Selected, Rejected
-    FeedbackId INT NULL FK → Feedbacks.FeedbackId,
-)
-
 CandidateReassignments (
     ReassignId INT PK IDENTITY,
     DriveCandidateId INT NOT NULL FK → DriveCandidates.DriveCandidateId,
@@ -239,7 +229,7 @@ CandidateReassignments (
     RequestedDate DATETIME DEFAULT GETDATE()
 )
 
-- FEEDBACK
+- INTERVIEWS & FEEDBACK
 
 Feedbacks (
     FeedbackId INT PK IDENTITY,
@@ -252,5 +242,12 @@ Feedbacks (
     SubmittedDate DATETIME DEFAULT GETDATE()
 )
 
-
-	
+Rounds (
+    RoundId INT PK IDENTITY,
+    DriveCandidateId INT FK → DriveCandidates.DriveCandidateId,
+    InterviewerId INT FK → DriveMembers.DriveMemberId,
+    RoundType VARCHAR(20),  -- Hr, Tech 1, Tech 2
+    Status VARCHAR(20) DEFAULT 'Scheduled',  -- Scheduled, OnProcess, Completed, Skipped
+    Result VARCHAR(20) DEFAULT 'Pending',  -- Pending, Selected, Rejected
+    FeedbackId INT NULL FK → Feedbacks.FeedbackId,
+)

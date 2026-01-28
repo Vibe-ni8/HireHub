@@ -145,20 +145,6 @@ CREATE TABLE drive_candidates (
     CONSTRAINT UQ_CandidateId_DriveId UNIQUE (candidate_id, drive_id)
 );
 
-CREATE TABLE rounds (
-    round_id INT IDENTITY(1,1) PRIMARY KEY,
-    drive_candidate_id INT NOT NULL,
-    interviewer_id INT NOT NULL,
-    round_type VARCHAR(20) DEFAULT 'Tech1', -- Hr, Tech1, Tech2
-    status VARCHAR(20) DEFAULT 'Scheduled', -- Scheduled, OnProcess, Completed, Skipped
-    result VARCHAR(20) DEFAULT 'Pending', -- Pending, Selected, Rejected
-    feedback_id INT NULL,
-    FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE NO ACTION,
-    FOREIGN KEY (interviewer_id) REFERENCES drive_members(drive_member_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
-    FOREIGN KEY (feedback_id) REFERENCES feedbacks(feedback_id) ON UPDATE CASCADE ON DELETE NO ACTION,
-    CONSTRAINT UQ_DriveCandidateId_PanelId UNIQUE (drive_candidate_id, interviewer_id)
-);
-
 CREATE TABLE candidate_reassignments (
     reassign_id INT IDENTITY(1,1) PRIMARY KEY,
     drive_candidate_id INT NOT NULL,
@@ -185,4 +171,18 @@ CREATE TABLE feedbacks (
     overall_feedback TEXT,
     recommendation VARCHAR(20) NOT NULL DEFAULT 'Hire', -- Hire, May be, No Hire
     submitted_date DATETIME DEFAULT GETDATE(),
+);
+
+CREATE TABLE rounds (
+    round_id INT IDENTITY(1,1) PRIMARY KEY,
+    drive_candidate_id INT NOT NULL,
+    interviewer_id INT NOT NULL,
+    round_type VARCHAR(20) DEFAULT 'Tech1', -- Hr, Tech1, Tech2
+    status VARCHAR(20) DEFAULT 'Scheduled', -- Scheduled, OnProcess, Completed, Skipped
+    result VARCHAR(20) DEFAULT 'Pending', -- Pending, Selected, Rejected
+    feedback_id INT NULL,
+    FOREIGN KEY (drive_candidate_id) REFERENCES drive_candidates(drive_candidate_id) ON UPDATE CASCADE ON DELETE NO ACTION,
+    FOREIGN KEY (interviewer_id) REFERENCES drive_members(drive_member_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY (feedback_id) REFERENCES feedbacks(feedback_id) ON UPDATE CASCADE ON DELETE NO ACTION,
+    CONSTRAINT UQ_DriveCandidateId_PanelId UNIQUE (drive_candidate_id, interviewer_id)
 );
