@@ -1,5 +1,7 @@
-﻿using HireHub.Core.Data.Interface;
+﻿using HireHub.Core.Data.Filters;
+using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
+using HireHub.Core.DTO;
 using HireHub.Shared.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +25,102 @@ public class RoundRepository : GenericRepository<Round>, IRoundRepository
         if (roundStatus != null)
             query = query.Where(r => r.Status == roundStatus);
         return await query.CountAsync(cancellationToken);
+    }
+
+    public async Task<List<Round>> GetAllAsync(RoundFilter filter, CancellationToken cancellationToken = default)
+    {
+        var dQuery = _context.Drives.Select(e => e);
+        if (filter.DriveId != null)
+            dQuery = dQuery.Where(dm => dm.DriveId == filter.DriveId);
+        dQuery = dQuery
+            .OrderByDescending(d => d.DriveDate)
+            .ThenByDescending(d => d.CreatedDate);
+
+        var dmQuery = dQuery.SelectMany(d => d.DriveMembers);
+        if (filter.UserId != null)
+            dmQuery = dmQuery.Where(dm => dm.UserId == filter.UserId);
+
+        var rQuery = dmQuery.SelectMany(e => e.InterviewedPanels);
+        if (filter.RoundType != null)
+            rQuery = rQuery.Where(r => r.RoundType == filter.RoundType);
+        if (filter.RoundStatus != null)
+            rQuery = rQuery.Where(r => r.Status == filter.RoundStatus);
+        if (filter.RoundResult != null)
+            rQuery = rQuery.Where(r => r.Result == filter.RoundResult);
+
+        if (filter.PageNumber != null && filter.PageSize != null)
+        {
+            var pageNumber = (int)filter.PageNumber;
+            var pageSize = (int)filter.PageSize;
+            rQuery = rQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+        }
+
+        return await rQuery
+            .Select(e => new Round
+            {
+                RoundId = e.RoundId,
+                DriveCandidateId = e.DriveCandidateId,
+                InterviewerId = e.InterviewerId,
+                RoundType = e.RoundType,
+                Status = e.Status,
+                Result = e.Result,
+                FeedbackId = e.FeedbackId
+            })
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<RoundDTO>> GetAllAsDtoAsync(RoundFilter filter, CancellationToken cancellationToken = default)
+    {
+        var dQuery = _context.Drives.Select(e => e);
+        if (filter.DriveId != null)
+            dQuery = dQuery.Where(dm => dm.DriveId == filter.DriveId);
+        dQuery = dQuery
+            .OrderByDescending(d => d.DriveDate)
+            .ThenByDescending(d => d.CreatedDate);
+
+        var dmQuery = dQuery.SelectMany(d => d.DriveMembers);
+        if (filter.UserId != null)
+            dmQuery = dmQuery.Where(dm => dm.UserId == filter.UserId);
+
+        var rQuery = dmQuery.SelectMany(e => e.InterviewedPanels);
+        if (filter.RoundType != null)
+            rQuery = rQuery.Where(r => r.RoundType == filter.RoundType);
+        if (filter.RoundStatus != null)
+            rQuery = rQuery.Where(r => r.Status == filter.RoundStatus);
+        if (filter.RoundResult != null)
+            rQuery = rQuery.Where(r => r.Result == filter.RoundResult);
+
+        if (filter.PageNumber != null && filter.PageSize != null)
+        {
+            var pageNumber = (int)filter.PageNumber;
+            var pageSize = (int)filter.PageSize;
+            rQuery = rQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+        }
+
+        return await rQuery
+            .Select(e => new RoundDTO
+            {
+                RoundId = e.RoundId,
+                DriveId = e.Interviewer!.DriveId,
+                DriveName = e.Interviewer.Drive!.DriveName,
+                DriveDate = e.Interviewer.Drive.DriveDate,
+                DriveStatus = e.Interviewer.Drive.Status.ToString(),
+                CandidateId = e.DriveCandidate!.CandidateId,
+                CandidateName = e.DriveCandidate.Candidate!.FullName,
+                CandidateEmail = e.DriveCandidate.Candidate.Email,
+                UserId = e.Interviewer.UserId,
+                UserName = e.Interviewer.User!.FullName,
+                UserEmail = e.Interviewer.User.Email,
+                Type = e.RoundType.ToString(),
+                RoundStatus = e.Status.ToString(),
+                RoundResult = e.Result.ToString(),
+                FeedbackId = e.FeedbackId
+            })
+            .ToListAsync(cancellationToken);
     }
 
     #endregion

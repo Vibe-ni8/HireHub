@@ -166,8 +166,16 @@ public class DriveMemberDTO
 public class RoundDTO
 {
     public int RoundId { get; set; }
-    public int DriveCandidateId { get; set; }
-    public int InterviewerId { get; set; }
+    public int DriveId { get; set; }
+    public string DriveName { get; set; } = null!;
+    public DateTime DriveDate { get; set; }
+    public string DriveStatus { get; set; } = null!;
+    public int CandidateId { get; set; }
+    public string CandidateName { get; set; } = null!;
+    public string CandidateEmail { get; set; } = null!;
+    public int UserId { get; set; }
+    public string UserName { get; set; } = null!;
+    public string UserEmail { get; set; } = null!;
     public string Type { get; set; } = null!;
     public string RoundStatus { get; set; } = null!;
     public string RoundResult { get; set; } = null!;

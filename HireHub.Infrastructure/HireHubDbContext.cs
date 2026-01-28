@@ -659,7 +659,7 @@ public class HireHubDbContext : DbContext
             b.Property(x => x.StatusSetBy)
             .HasColumnName("status_set_by")
             .HasColumnType("INT")
-            .IsRequired();
+            .IsRequired(false);
 
             b.Property(x => x.CreatedDate)
             .HasColumnName("created_date")

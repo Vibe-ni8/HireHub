@@ -1,6 +1,7 @@
 ﻿using HireHub.Core.Data.Filters;
 using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
+using HireHub.Core.DTO;
 using HireHub.Shared.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -159,6 +160,68 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
         return await query.ToListAsync(cancellationToken);
     }
 
+    public async Task<List<DriveMemberDTO>> GetDriveMembersAsDtoAsync(DriveMemberFilter filter, CancellationToken cancellationToken = default)
+    {
+        var query = _context.DriveMembers.Select(dm => dm);
+
+        if (filter.DriveId != null)
+            query = query
+                .Where(dm => dm.DriveId == filter.DriveId);
+
+        if (filter.UserId != null)
+            query = query
+                .Where(dm => dm.UserId == filter.UserId);
+
+        if (filter.Role != null)
+            query = query
+                .Where(dm => dm.Role!.RoleName == filter.Role);
+
+        if (filter.DriveStatus != null)
+            query = query
+                .Where(dm => dm.Drive!.Status == filter.DriveStatus);
+
+        if (!filter.IncludePastDrives)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate >= DateTime.Today);
+
+        if (filter.StartDate != null)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate >= filter.StartDate);
+
+        if (filter.EndDate != null)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate <= filter.EndDate);
+
+        if (filter.PageNumber != null && filter.PageSize != null)
+        {
+            var pageNumber = (int)filter.PageNumber;
+            var pageSize = (int)filter.PageSize;
+            query = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+        }
+
+        query = filter.IsLatestFirst ?
+            query.OrderByDescending(dm => dm.Drive!.DriveDate).ThenByDescending(dm => dm.Drive!.CreatedDate) :
+            query.OrderBy(dm => dm.Drive!.DriveDate).ThenBy(dm => dm.Drive!.CreatedDate);
+
+        return await query
+            .Select(e => new DriveMemberDTO
+            {
+                DriveMemberId = e.DriveMemberId,
+                DriveId = e.DriveId,
+                DriveName = e.Drive!.DriveName,
+                DriveDate = e.Drive.DriveDate,
+                DriveStatus = e.Drive.Status.ToString(),
+                UserId = e.UserId,
+                UserName = e.User!.FullName,
+                UserEmail = e.User.Email,
+                RoleId = e.RoleId,
+                RoleName = e.Role!.RoleName.ToString()
+            })
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<List<DriveCandidate>> GetDriveCandidatesWithDetailsAsync(DriveCandidateFilter filter, CancellationToken cancellationToken = default)
     {
         var query = _context.DriveCandidates
@@ -208,6 +271,68 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
             query.OrderBy(dm => dm.Drive!.DriveDate).ThenBy(dm => dm.Drive!.CreatedDate);
 
         return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<DriveCandidateDTO>> GetDriveCandidatesAsDtoAsync(DriveCandidateFilter filter, CancellationToken cancellationToken = default)
+    {
+        var query = _context.DriveCandidates.Select(dc => dc);
+
+        if (filter.DriveId != null)
+            query = query
+                .Where(dc => dc.DriveId == filter.DriveId);
+
+        if (filter.CandidateId != null)
+            query = query
+                .Where(dc => dc.CandidateId == filter.CandidateId);
+
+        if (filter.CandidateStatus != null)
+            query = query
+                .Where(dc => dc.Status == filter.CandidateStatus);
+
+        if (filter.DriveStatus != null)
+            query = query
+                .Where(dm => dm.Drive!.Status == filter.DriveStatus);
+
+        if (!filter.IncludePastDrives)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate >= DateTime.Today);
+
+        if (filter.StartDate != null)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate >= filter.StartDate);
+
+        if (filter.EndDate != null)
+            query = query
+                .Where(dm => dm.Drive!.DriveDate <= filter.EndDate);
+
+        if (filter.PageNumber != null && filter.PageSize != null)
+        {
+            var pageNumber = (int)filter.PageNumber;
+            var pageSize = (int)filter.PageSize;
+            query = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+        }
+
+        query = filter.IsLatestFirst ?
+            query.OrderByDescending(dm => dm.Drive!.DriveDate).ThenByDescending(dm => dm.Drive!.CreatedDate) :
+            query.OrderBy(dm => dm.Drive!.DriveDate).ThenBy(dm => dm.Drive!.CreatedDate);
+
+        return await query
+            .Select(e => new DriveCandidateDTO
+            {
+                DriveCandidateId = e.DriveCandidateId,
+                CandidateId = e.CandidateId,
+                CandidateName = e.Candidate!.FullName,
+                CandidateEmail = e.Candidate.Email,
+                DriveId = e.DriveId,
+                DriveName = e.Drive!.DriveName,
+                DriveDate = e.Drive.DriveDate,
+                DriveStatus = e.Drive.Status.ToString(),
+                CandidateStatus = e.Status.ToString(),
+                StatusSetBy = e.StatusSetBy
+            })
+            .ToListAsync(cancellationToken);
     }
 
     #endregion
