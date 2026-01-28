@@ -7,7 +7,7 @@ public interface IRoundRepository : IGenericRepository<Round>
 {
     #region DQL
 
-    Task<int> CountInterviewsAsync(CancellationToken cancellationToken = default);
+    Task<int> CountInterviewsAsync(RoundStatus? roundStatus, CancellationToken cancellationToken = default);
 
     #endregion
 

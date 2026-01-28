@@ -17,9 +17,12 @@ public class RoundRepository : GenericRepository<Round>, IRoundRepository
 
     #region DQL
 
-    public async Task<int> CountInterviewsAsync(CancellationToken cancellationToken = default)
+    public async Task<int> CountInterviewsAsync(RoundStatus? roundStatus,CancellationToken cancellationToken = default)
     {
-        return await _context.Rounds.CountAsync(cancellationToken);
+        var query = _context.Rounds.Select(e => e);
+        if (roundStatus != null)
+            query = query.Where(r => r.Status == roundStatus);
+        return await query.CountAsync(cancellationToken);
     }
 
     #endregion

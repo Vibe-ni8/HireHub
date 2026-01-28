@@ -15,6 +15,10 @@ public class AdminDashboardDetails
     public int TotalMentors { get; set; }
     public int TotalHrs { get; set; }
     public int TotalInterviews { get; set; }
+    public int InterviewsScheduled { get; set; }
+    public int InterviewsOnProcess { get; set; }
+    public int InterviewsCompleted { get; set; }
+    public int InterviewsSkipped { get; set; }
     public int TotalCandidatesHired { get; set; }
     public int TotalCandidatesRejected { get; set; }
 }

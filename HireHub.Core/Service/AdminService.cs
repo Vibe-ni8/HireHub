@@ -39,7 +39,11 @@ public class AdminService
             TotalPanelMembers = await _userRepository.CountUsersByRoleAsync(UserRole.Panel),
             TotalMentors = await _userRepository.CountUsersByRoleAsync(UserRole.Mentor),
             TotalHrs = await _userRepository.CountUsersByRoleAsync(UserRole.HR),
-            TotalInterviews = await _roundRepository.CountInterviewsAsync(),
+            TotalInterviews = await _roundRepository.CountInterviewsAsync(null),
+            InterviewsScheduled = await _roundRepository.CountInterviewsAsync(RoundStatus.Scheduled),
+            InterviewsOnProcess = await _roundRepository.CountInterviewsAsync(RoundStatus.OnProcess),
+            InterviewsCompleted = await _roundRepository.CountInterviewsAsync(RoundStatus.Completed),
+            InterviewsSkipped = await _roundRepository.CountInterviewsAsync(RoundStatus.Skipped),
             TotalCandidatesHired = await _candidateRepository.CountByDriveStatusAsync(CandidateStatus.Selected),
             TotalCandidatesRejected = await _candidateRepository.CountByDriveStatusAsync(CandidateStatus.Rejected)
         };
