@@ -30,7 +30,7 @@ public class EditDriveCandidateRequestValidator : AbstractValidator<JObject>
             {
                 int driveId = req[JOPropertyName.DriveId]!.ToObject<int>();
                 var drive = repoService.DriveRepository
-                    .GetDriveWithMembersAsync(driveId).WaitAsync(CancellationToken.None).Result;
+                    .GetByIdAsync(driveId).WaitAsync(CancellationToken.None).Result;
                 if (drive == null)
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.DriveNotFound);
@@ -41,8 +41,8 @@ public class EditDriveCandidateRequestValidator : AbstractValidator<JObject>
                 var currentUserId = int.Parse(userProvider.CurrentUserId);
                 var candidateId = req[JOPropertyName.CandidateId]!.ToObject<int>();
                 var isHrInterviewer = repoService.RoundRepository
-                    .IsInterviewerForHrRoundForCandidate(currentUserId, driveId, candidateId);
-                if (currentUserRole != RoleName.Admin && currentUserId != drive.CreatedBy && isHrInterviewer)
+                    .IsHrInterviewerForCandidateOnDrive(currentUserId, candidateId, driveId);
+                if (currentUserRole != RoleName.Admin && currentUserId != drive.CreatedBy && !isHrInterviewer)
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.AdminOrDriveOwnerOrHrInterviewerCanEdit);
                     return;

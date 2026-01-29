@@ -74,6 +74,7 @@ public static class ResponseMessage
     public const string AdminOrDriveOwnerCanAdd = "Admin or Owner of the Drive can able to add";
     public const string AdminOrDriveOwnerCanRemove = "Admin or Owner of the Drive can able to remove";
     public const string AdminOrDriveOwnerOrHrInterviewerCanEdit = "Admin or Drive Owner or Interviewer(Hr) can able to edit";
+    public const string AdminOrDriveOwnerOrInterviewerCanEdit = "Admin or Drive Owner or Interviewer can able to edit";
     public const string DriveNameAlreadyExist = "Drive Name Already Exist";
     public const string DriveNameCannotBeChange = "Drive Name cannot be change";
     public const string DriveDateCannotBeChange = "Drive Date cannot be change";
@@ -94,6 +95,8 @@ public static class ResponseMessage
     public const string AlreadyMemberOfDrive = "Already a member of the Drive";
     public const string SomeCandidateAlreadyAddedToDrive = "Some Candidate already added to the Drive";
     public const string FeedbackNotFound = "Feedback not found";
+    public const string RoundIdRequired = "RoundId is required";
+    public const string InvalidRoundId = "Invalid RoundId";
 }
 
 public static class InnerExceptionMessage
@@ -211,6 +214,17 @@ public static class ActionType
 
 public static class Options
 {
+    public static string[] RoundResults => [
+        nameof(RoundResult.Pending),
+        nameof(RoundResult.Selected),
+        nameof(RoundResult.Rejected)
+    ];
+    public static string[] RoundStatuses => [
+        nameof(RoundStatus.OnProcess),
+        nameof(RoundStatus.Scheduled),
+        nameof(RoundStatus.Completed),
+        nameof(RoundStatus.Skipped),
+    ];
     public static string[] CandidateStatuses => [
         nameof(CandidateStatus.Pending),
         nameof(CandidateStatus.Selected),

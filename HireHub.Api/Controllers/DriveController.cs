@@ -712,7 +712,7 @@ public class DriveController : ControllerBase
                 var baseResponse = new BaseResponse();
 
                 var validator = await new
-                    EditRoundRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
+                    EditInterviewRoundRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
                     .ValidateAsync(request);
 
                 if (!validator.IsValid)

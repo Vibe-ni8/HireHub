@@ -149,13 +149,29 @@ public class RoundRepository : GenericRepository<Round>, IRoundRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public bool IsInterviewerForHrRoundForCandidate(int userId, int driveId, int candidateId)
+    public bool IsHrInterviewerForCandidateOnDrive(int userId, int candidateId, int driveId)
     {
         return _context.Rounds
             .Where(e => e.DriveCandidate!.DriveId == driveId && e.DriveCandidate.CandidateId == candidateId)
             .Where(e => e.Interviewer!.DriveId == driveId && e.Interviewer.UserId == userId)
             .Where(e => e.RoundType == RoundType.Hr)
             .Any();
+    }
+
+    public bool IsInterviewerForRound(int userId, int roundId)
+    {
+        return _context.Rounds
+            .Where(e => e.RoundId == roundId)
+            .Where(e => e.Interviewer!.UserId == userId)
+            .Any();
+    }
+
+    public async Task<Round?> GetRoundByIdWithDetails(int roundId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Rounds
+            .Include(e => e.Interviewer)
+            .Include(e => e.DriveCandidate)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     #endregion
