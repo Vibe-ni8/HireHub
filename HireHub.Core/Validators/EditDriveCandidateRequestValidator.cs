@@ -39,8 +39,9 @@ public class EditDriveCandidateRequestValidator : AbstractValidator<JObject>
 
                 var currentUserRole = userProvider.CurrentUserRole;
                 var currentUserId = int.Parse(userProvider.CurrentUserId);
-                var driveMember = drive.DriveMembers.FirstOrDefault(x => x.UserId == currentUserId);
-                if (currentUserRole != RoleName.Admin && driveMember == null)
+                var hrRoleId = repoService.RoleRepository.GetByName(UserRole.HR).WaitAsync(CancellationToken.None).Result.RoleId;
+                var hrDriveMember = drive.DriveMembers.FirstOrDefault(x => x.UserId == currentUserId && x.RoleId == hrRoleId);
+                if (currentUserRole != RoleName.Admin && currentUserId != drive.CreatedBy && hrDriveMember == null)
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.AdminOrDriveMemberHrCanEdit);
                     return;
@@ -49,6 +50,12 @@ public class EditDriveCandidateRequestValidator : AbstractValidator<JObject>
                 if (drive.Status == DriveStatus.Completed || drive.Status == DriveStatus.Cancelled)
                 {
                     context.AddFailure(PropertyName.Main, ResponseMessage.ClosedDriveCannotBeEdit);
+                    return;
+                }
+
+                if (drive.Status == DriveStatus.Halted)
+                {
+                    context.AddFailure(PropertyName.Main, ResponseMessage.PausedDriveCannotBeEdit);
                     return;
                 }
 

@@ -592,14 +592,14 @@ public class DriveService
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(RemoveCandidatesFromDrive));
 
-        var drive = await _driveRepository.GetDriveWithCandidatesAsync(request.DriveId) ??
+        var drive = await _driveRepository.GetDriveWithCandidatesAsync(request.DriveId, request.CandidateIds) ??
             throw new CommonException(ResponseMessage.DriveNotFound);
 
         var driveCandidateIds = new List<int>();
         foreach (var candidateId in request.CandidateIds)
         {
             var driveCandidate = drive.DriveCandidates.FirstOrDefault(e => e.CandidateId == candidateId) ??
-            throw new CommonException(ResponseMessage.DriveCandidateNotFound + $" : {candidateId}");
+                throw new CommonException(ResponseMessage.DriveCandidateNotFound + $" : {candidateId}");
             _driveRepository.RemoveDriveCandidate(driveCandidate);
             driveCandidateIds.Add(driveCandidate.DriveCandidateId);
         }
@@ -617,10 +617,11 @@ public class DriveService
         _logger.LogInformation(LogMessage.StartMethod, nameof(EditDriveCandidate));
 
         int driveId = request[JOPropertyName.DriveId]!.ToObject<int>();
-        var drive = await _driveRepository.GetDriveWithCandidatesAsync(driveId) ??
+        int candidateId = request[JOPropertyName.CandidateId]!.ToObject<int>();
+
+        var drive = await _driveRepository.GetDriveWithCandidatesAsync(driveId, [candidateId]) ??
             throw new CommonException(ResponseMessage.DriveNotFound);
 
-        int candidateId = request[JOPropertyName.CandidateId]!.ToObject<int>();
         var driveCandidate = drive.DriveCandidates.FirstOrDefault(e => e.CandidateId == candidateId) ??
             throw new CommonException(ResponseMessage.DriveCandidateNotFound);
 
@@ -648,6 +649,32 @@ public class DriveService
         _logger.LogInformation(LogMessage.EndMethod, nameof(EditDriveCandidate));
 
         return new() { Data = driveCandidateDTO };
+    }
+
+
+    public async Task<Response<RoundDTO>> EditInterviewRound(JObject request)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(EditInterviewRound));
+
+        int roundId = request[JOPropertyName.RoundId]!.ToObject<int>();
+        var round = await _roundRepository.GetByIdAsync(roundId) ??
+            throw new CommonException(ResponseMessage.InterviewRoundNotFound);
+
+        if (request.ContainsKey(JOPropertyName.RoundStatus))
+            round.Status = Enum
+                .Parse<RoundStatus>(request[JOPropertyName.RoundStatus]!.ToString());
+        if (request.ContainsKey(JOPropertyName.RoundResult))
+            round.Result = Enum
+                .Parse<RoundResult>(request[JOPropertyName.RoundResult]!.ToString());
+
+        _roundRepository.Update(round);
+        _saveRepository.SaveChanges();
+
+        var roundDTO = await _roundRepository.GetByIdAsDtoAsync(roundId);
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(EditInterviewRound));
+
+        return new() { Data = roundDTO };
     }
 
     #endregion

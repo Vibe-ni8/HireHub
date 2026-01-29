@@ -55,6 +55,7 @@ public static class ResponseMessage
     public const string CannotAddMemberOnClosedDrive = "Cannot add Member on a closed Drive";
     public const string CannotAddCandidatesOnClosedDrive = "Cannot add candidates on a closed Drive";
     public const string ClosedDriveCannotBeEdit = "Closed Drive cannot be edit";
+    public const string PausedDriveCannotBeEdit = "Paused Drive cannot be edit";
     public const string SomeDriveNotFound = "Some Drive not found";
     public const string CandidateNotFound = "Candidate not found";
     public const string UserNotInSpecifiedRole = "User not in a Specified Role";
@@ -132,6 +133,9 @@ public static class JOPropertyName
     public const string DriveStatus = "driveStatus";
     public const string CreatedBy = "createdBy";
     public const string CandidateStatus = "candidateStatus";
+    public const string RoundId = "roundId";
+    public const string RoundStatus = "roundStatus";
+    public const string RoundResult = "roundResult";
 
     public const string PanelVisibilitySettings = "panelVisibilitySettings";
     public const string PVS_ShowPhone = "panelVisibilitySettings.showPhone";

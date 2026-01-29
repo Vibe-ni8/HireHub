@@ -100,12 +100,25 @@ public class DriveRepository : GenericRepository<Drive>, IDriveRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    [Obsolete]
     public async Task<Drive?> GetDriveWithCandidatesAsync(int driveId, CancellationToken cancellationToken = default)
     {
         return await _context.Drives
             .Where(d => d.DriveId == driveId)
             .Include(e => e.DriveCandidates)
             .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<Drive?> GetDriveWithCandidatesAsync(int driveId, List<int> candidateIds, CancellationToken cancellationToken = default)
+    {
+        var drive = await _context.Drives
+            .Where(d => d.DriveId == driveId)
+            .FirstOrDefaultAsync();
+        if (drive != null)
+            drive.DriveCandidates = await _context.DriveCandidates
+                .Where(dc => dc.DriveId == driveId && candidateIds.Contains(dc.CandidateId))
+                .ToListAsync();
+        return drive;
     }
 
     [Obsolete]

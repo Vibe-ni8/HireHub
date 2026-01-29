@@ -38,7 +38,7 @@ public class AddMemberToDriveRequestValidator : AbstractValidator<AddMemberToDri
                 return;
             }
 
-            if (drive.Status == DriveStatus.Completed)
+            if (drive.Status == DriveStatus.Completed || drive.Status == DriveStatus.Cancelled)
             {
                 context.AddFailure(PropertyName.Main, ResponseMessage.CannotAddMemberOnClosedDrive);
                 return;
