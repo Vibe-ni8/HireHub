@@ -92,14 +92,12 @@ public static class ResponseMessage
     public const string InvalidRoundResult = "Invalid Round Result";
     public const string InterviewRoundNotFound = "Interview Round not found";
     public const string AlreadyMemberOfDrive = "Already a member of the Drive";
+    public const string SomeCandidateAlreadyAddedToDrive = "Some Candidate already added to the Drive";
 }
 
-public static class FieldName
+public static class InnerExceptionMessage
 {
-    //public const string Password = "Password";
-    //public const string Username = "Username";
-    //public const string Email = "Email";
-    //public const string Role = "Role";
+    public const string DriveCandidateAlreadyExistViolation = "Violation of UNIQUE KEY constraint 'UQ_CandidateId_DriveId'.";
 }
 
 public static class PropertyName
@@ -178,12 +176,6 @@ public static class AppSettingKey
     public const string DefaultConnection = "DefaultConnection";
     public const string JwtSettings = "JwtSettings";
     public const string AzureLogicApp = "AzureLogicApp";
-}
-
-public static class EmailAddress
-{
-    //public const string DisplayName = "Darkwolf Org";
-    //public const string NoReplyDarkwolf = "noreply@darkwolf.com";
 }
 
 public static class Key

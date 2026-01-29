@@ -12,6 +12,7 @@ using HireHub.Shared.Common.Exceptions;
 using HireHub.Shared.Common.Models;
 using HireHub.Shared.Middleware.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
 namespace HireHub.Api.Controllers;
@@ -414,6 +415,18 @@ public class DriveController : ControllerBase
             {
                 Errors = [
                     new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+        catch (DbUpdateException ex) 
+        when (ex.InnerException != null && ex.InnerException.Message.Contains(InnerExceptionMessage.DriveCandidateAlreadyExistViolation))
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(AddCandidatesToDrive), ex.Message);
+            _transactionRepository.RollbackTransaction();
+            return BadRequest(new BaseResponse
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ResponseMessage.SomeCandidateAlreadyAddedToDrive }
                 ]
             });
         }
