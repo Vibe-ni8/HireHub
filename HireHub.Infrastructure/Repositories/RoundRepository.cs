@@ -174,6 +174,13 @@ public class RoundRepository : GenericRepository<Round>, IRoundRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public Task<List<Round>> GetRoundsForDriveCandidate(int driveCandidateId, CancellationToken cancellationToken = default)
+    {
+        return _context.Rounds
+            .Where(e => e.DriveCandidateId == driveCandidateId)
+            .ToListAsync(cancellationToken);
+    }
+
     #endregion
 
     #region DML
