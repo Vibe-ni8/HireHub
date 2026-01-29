@@ -65,11 +65,23 @@ public class EditInterviewRoundRequestValidator : AbstractValidator<JObject>
                     return;
                 }
 
+                if (round.Status == RoundStatus.Completed || round.Status == RoundStatus.Skipped)
+                {
+                    context.AddFailure(PropertyName.Main, ResponseMessage.InterviewRoundClosed);
+                    return;
+                }
+
                 if (req.ContainsKey(JOPropertyName.RoundStatus))
                 {
                     if (!Options.RoundStatuses.Contains(req[JOPropertyName.RoundStatus]!.ToString()))
                     {
                         context.AddFailure(PropertyName.Main, ResponseMessage.InvalidRoundStatus);
+                        return;
+                    }
+
+                    if (req[JOPropertyName.RoundStatus]!.ToString() == nameof(RoundStatus.Completed) && round.Result == RoundResult.Pending)
+                    {
+                        context.AddFailure(PropertyName.Main, ResponseMessage.NeedToSetRoundResultBeforeCloseRound);
                         return;
                     }
                 }
@@ -79,6 +91,12 @@ public class EditInterviewRoundRequestValidator : AbstractValidator<JObject>
                     if (!Options.RoundResults.Contains(req[JOPropertyName.RoundResult]!.ToString()))
                     {
                         context.AddFailure(PropertyName.Main, ResponseMessage.InvalidRoundResult);
+                        return;
+                    }
+
+                    if (round.Status == RoundStatus.Scheduled)
+                    {
+                        context.AddFailure(PropertyName.Main, ResponseMessage.NeedToStartRoundBeforeSetRoundResult);
                         return;
                     }
                 }

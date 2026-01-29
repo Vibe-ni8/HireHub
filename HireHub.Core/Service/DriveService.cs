@@ -652,20 +652,33 @@ public class DriveService
     }
 
 
-    public async Task<Response<RoundDTO>> EditInterviewRound(JObject request)
+    public async Task<Response<RoundDTO>> EditInterviewRound(JObject request, int requestUserId)
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(EditInterviewRound));
 
         int roundId = request[JOPropertyName.RoundId]!.ToObject<int>();
-        var round = await _roundRepository.GetByIdAsync(roundId) ??
+        var round = await _roundRepository.GetRoundByIdWithDetails(roundId) ??
             throw new CommonException(ResponseMessage.InterviewRoundNotFound);
 
         if (request.ContainsKey(JOPropertyName.RoundStatus))
             round.Status = Enum
                 .Parse<RoundStatus>(request[JOPropertyName.RoundStatus]!.ToString());
+
         if (request.ContainsKey(JOPropertyName.RoundResult))
+        {
             round.Result = Enum
                 .Parse<RoundResult>(request[JOPropertyName.RoundResult]!.ToString());
+            if (round.RoundType == RoundType.Hr)
+            {
+                round.DriveCandidate!.Status = round.Result switch
+                {
+                    RoundResult.Selected => CandidateStatus.Selected,
+                    RoundResult.Rejected => CandidateStatus.Rejected,
+                    _ => CandidateStatus.Pending
+                };
+                round.DriveCandidate.StatusSetBy = requestUserId;
+            }
+        }
 
         _roundRepository.Update(round);
         _saveRepository.SaveChanges();

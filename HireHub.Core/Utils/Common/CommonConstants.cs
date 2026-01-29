@@ -97,6 +97,9 @@ public static class ResponseMessage
     public const string FeedbackNotFound = "Feedback not found";
     public const string RoundIdRequired = "RoundId is required";
     public const string InvalidRoundId = "Invalid RoundId";
+    public const string InterviewRoundClosed = "Interview Round was closed";
+    public const string NeedToSetRoundResultBeforeCloseRound = "Need to set Round Result before closing Round";
+    public const string NeedToStartRoundBeforeSetRoundResult = "Need to Start Round before set Round Result";
 }
 
 public static class InnerExceptionMessage

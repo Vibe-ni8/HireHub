@@ -727,7 +727,8 @@ public class DriveController : ControllerBase
                     return BadRequest(baseResponse);
                 }
 
-                var response = await _driveService.EditInterviewRound(request);
+                var currentUserId = int.Parse(_userProvider.CurrentUserId);
+                var response = await _driveService.EditInterviewRound(request, currentUserId);
 
                 baseResponse.Warnings.ForEach(response.Warnings.Add);
 
