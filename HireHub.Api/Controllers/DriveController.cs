@@ -226,6 +226,52 @@ public class DriveController : ControllerBase
         }
     }
 
+
+    [HttpGet("rounds/fetch/all")]
+    [RequirePermission(UserAction.Drive, ActionType.View)]
+    [ProducesResponseType<Response<List<RoundDTO>>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetInterviewRounds([FromQuery] int? driveId, [FromQuery] int? userId, 
+        [FromQuery] string? roundType, [FromQuery] string? roundStatus, [FromQuery] string? roundResult,
+        [FromQuery] int? pageNumber, [FromQuery] int? pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetInterviewRounds));
+
+        try
+        {
+            object? roundTypeObj = null;
+            if (roundType != null && !Enum.TryParse(typeof(RoundType), roundType, true, out roundTypeObj))
+                throw new CommonException(ResponseMessage.InvalidRoundType);
+            object? roundStatusObj = null;
+            if (roundStatus != null && !Enum.TryParse(typeof(RoundStatus), roundStatus, true, out roundStatusObj))
+                throw new CommonException(ResponseMessage.InvalidRoundStatus);
+            object? roundResultObj = null;
+            if (roundResult != null && !Enum.TryParse(typeof(RoundResult), roundResult, true, out roundResultObj))
+                throw new CommonException(ResponseMessage.InvalidRoundResult);
+
+            var response = await _driveService.GetInterviewRounds(driveId, userId,
+                roundTypeObj != null ? (RoundType)roundTypeObj : null, 
+                roundStatusObj != null ? (RoundStatus)roundStatusObj : null,
+                roundResultObj != null ? (RoundResult)roundResultObj : null,
+                pageNumber, pageSize);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetInterviewRounds));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetInterviewRounds), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
     #endregion
 
     #region Post API's

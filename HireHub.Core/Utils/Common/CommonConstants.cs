@@ -87,6 +87,9 @@ public static class ResponseMessage
     public const string CandidateIdRequired = "CandidateId is required";
     public const string CandidateStatusCannotChangeToPending = "CandidateStatus cannot be change to Pending";
     public const string DriveNeedToStartFirst = "Drive need to be start first";
+    public const string InvalidRoundType = "Invalid Round Type";
+    public const string InvalidRoundStatus = "Invalid Round Status";
+    public const string InvalidRoundResult = "Invalid Round Result";
 }
 
 public static class FieldName

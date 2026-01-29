@@ -15,17 +15,20 @@ public class DriveService
     private readonly IRoleRepository _roleRepository;
     private readonly IUserRepository _userRepository;
     private readonly ICandidateRepository _candidateRepository;
+    private readonly IRoundRepository _roundRepository;
     private readonly ISaveRepository _saveRepository;
     private readonly ILogger<DriveService> _logger;
 
     public DriveService(IDriveRepository driveRepository, IRoleRepository roleRepository,
         IUserRepository userRepository, ICandidateRepository candidateRepository,
+        IRoundRepository roundRepository,
         ISaveRepository saveRepository, ILogger<DriveService> logger)
     {
         _driveRepository = driveRepository;
         _roleRepository = roleRepository;
         _userRepository = userRepository;
         _candidateRepository = candidateRepository;
+        _roundRepository = roundRepository;
         _saveRepository = saveRepository;
         _logger = logger;
     }
@@ -154,6 +157,32 @@ public class DriveService
         return new()
         {
             Data = driveCandidateDTOs
+        };
+    }
+
+
+    public async Task<Response<List<RoundDTO>>> GetInterviewRounds(int? driveId, int? userId, RoundType? roundType,
+        RoundStatus? roundStatus, RoundResult? roundResult, int? pageNumber, int? pageSize)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetInterviewRounds));
+
+        var filter = new RoundFilter
+        {
+            DriveId = driveId,
+            UserId = userId,
+            RoundType = roundType,
+            RoundStatus = roundStatus,
+            RoundResult = roundResult,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+        var roundDTOs = await _roundRepository.GetAllAsDtoAsync(filter, CancellationToken.None);
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetInterviewRounds));
+
+        return new()
+        {
+            Data = roundDTOs
         };
     }
 
