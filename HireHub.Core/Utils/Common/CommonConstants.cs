@@ -90,6 +90,7 @@ public static class ResponseMessage
     public const string InvalidRoundType = "Invalid Round Type";
     public const string InvalidRoundStatus = "Invalid Round Status";
     public const string InvalidRoundResult = "Invalid Round Result";
+    public const string InterviewRoundNotFound = "Interview Round not found";
 }
 
 public static class FieldName

@@ -16,6 +16,8 @@ public interface IRoundRepository : IGenericRepository<Round>
 
     Task<List<RoundDTO>> GetAllAsDtoAsync(RoundFilter filter, CancellationToken cancellationToken = default);
 
+    Task<RoundDTO?> GetByIdAsDtoAsync(int? roundId, CancellationToken cancellationToken = default);
+
     #endregion
 
     #region DML

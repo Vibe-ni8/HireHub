@@ -124,6 +124,31 @@ public class RoundRepository : GenericRepository<Round>, IRoundRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<RoundDTO?> GetByIdAsDtoAsync(int? roundId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Rounds
+            .Where(e =>  e.RoundId == roundId)
+            .Select(e => new RoundDTO
+            {
+                RoundId = e.RoundId,
+                DriveId = e.Interviewer!.DriveId,
+                DriveName = e.Interviewer.Drive!.DriveName,
+                DriveDate = e.Interviewer.Drive.DriveDate,
+                DriveStatus = e.Interviewer.Drive.Status.ToString(),
+                CandidateId = e.DriveCandidate!.CandidateId,
+                CandidateName = e.DriveCandidate.Candidate!.FullName,
+                CandidateEmail = e.DriveCandidate.Candidate.Email,
+                UserId = e.Interviewer.UserId,
+                UserName = e.Interviewer.User!.FullName,
+                UserEmail = e.Interviewer.User.Email,
+                Type = e.RoundType.ToString(),
+                RoundStatus = e.Status.ToString(),
+                RoundResult = e.Result.ToString(),
+                FeedbackId = e.FeedbackId
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     #endregion
 
     #region DML

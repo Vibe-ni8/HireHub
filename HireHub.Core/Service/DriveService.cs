@@ -186,6 +186,19 @@ public class DriveService
         };
     }
 
+
+    public async Task<Response<RoundDTO>> GetInterviewRound(int interviewRoundId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetInterviewRound));
+
+        var roundDTO = await _roundRepository.GetByIdAsDtoAsync(interviewRoundId) ??
+            throw new CommonException(ResponseMessage.InterviewRoundNotFound);
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetInterviewRound));
+
+        return new() { Data = roundDTO };
+    }
+
     #endregion
 
     #region Command Services

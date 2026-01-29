@@ -272,6 +272,37 @@ public class DriveController : ControllerBase
         }
     }
 
+
+    [RequireAuth([RoleName.Admin])]
+    [RequirePermission(UserAction.Drive, ActionType.View)]
+    [HttpGet("round/fetch/{interviewRoundId:int}")]
+    [ProducesResponseType<Response<RoundDTO>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetInterviewRound([FromRoute] int interviewRoundId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetInterviewRound));
+
+        try
+        {
+            var response = await _driveService.GetInterviewRound(interviewRoundId);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetInterviewRound));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetInterviewRound), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
     #endregion
 
     #region Post API's
