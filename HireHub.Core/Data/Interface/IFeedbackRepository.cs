@@ -3,11 +3,11 @@ using HireHub.Shared.Persistence.Interface;
 
 namespace HireHub.Core.Data.Interface;
 
-public interface IUserPermissionRepository : IGenericRepository<UserPermission>
+public interface IFeedbackRepository : IGenericRepository<Feedback>
 {
     #region DQL
 
-    Task<UserPermission> GetUserPermissionAsync(int userId, string userAction);
+
 
     #endregion
 

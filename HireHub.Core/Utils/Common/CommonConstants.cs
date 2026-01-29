@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using HireHub.Core.Data.Models;
+﻿using HireHub.Core.Data.Models;
 
 namespace HireHub.Core.Utils.Common;
 
@@ -93,6 +92,7 @@ public static class ResponseMessage
     public const string InterviewRoundNotFound = "Interview Round not found";
     public const string AlreadyMemberOfDrive = "Already a member of the Drive";
     public const string SomeCandidateAlreadyAddedToDrive = "Some Candidate already added to the Drive";
+    public const string FeedbackNotFound = "Feedback not found";
 }
 
 public static class InnerExceptionMessage

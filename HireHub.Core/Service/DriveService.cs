@@ -16,12 +16,13 @@ public class DriveService
     private readonly IUserRepository _userRepository;
     private readonly ICandidateRepository _candidateRepository;
     private readonly IRoundRepository _roundRepository;
+    private readonly IFeedbackRepository _feedbackRepository;
     private readonly ISaveRepository _saveRepository;
     private readonly ILogger<DriveService> _logger;
 
     public DriveService(IDriveRepository driveRepository, IRoleRepository roleRepository,
         IUserRepository userRepository, ICandidateRepository candidateRepository,
-        IRoundRepository roundRepository,
+        IRoundRepository roundRepository, IFeedbackRepository feedbackRepository,
         ISaveRepository saveRepository, ILogger<DriveService> logger)
     {
         _driveRepository = driveRepository;
@@ -29,6 +30,7 @@ public class DriveService
         _userRepository = userRepository;
         _candidateRepository = candidateRepository;
         _roundRepository = roundRepository;
+        _feedbackRepository = feedbackRepository;
         _saveRepository = saveRepository;
         _logger = logger;
     }
@@ -197,6 +199,22 @@ public class DriveService
         _logger.LogInformation(LogMessage.EndMethod, nameof(GetInterviewRound));
 
         return new() { Data = roundDTO };
+    }
+
+
+    public async Task<Response<FeedbackDTO>> GetFeedback(int feedbackId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetFeedback));
+
+        var feedback = await _feedbackRepository.GetByIdAsync(feedbackId) ??
+            throw new CommonException(ResponseMessage.FeedbackNotFound);
+
+        var feedbackDTO = Helper.Map<Feedback, FeedbackDTO>(feedback);
+        feedbackDTO.CandidateRecommendation = feedback.Recommendation.ToString();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(GetFeedback));
+
+        return new() { Data = feedbackDTO };
     }
 
     #endregion

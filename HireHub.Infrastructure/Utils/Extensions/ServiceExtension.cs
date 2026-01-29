@@ -23,8 +23,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
         services.AddScoped<ICandidateRepository, CandidateRepository>();
-        services.AddScoped<IRoundRepository, RoundRepository>();
         services.AddScoped<IDriveRepository, DriveRepository>();
+        services.AddScoped<IRoundRepository, RoundRepository>();
+        services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 
         return services;
     }

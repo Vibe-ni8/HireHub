@@ -1,4 +1,5 @@
-﻿using HireHub.Shared.Common.Models;
+﻿using HireHub.Core.Data.Models;
+using HireHub.Shared.Common.Models;
 
 namespace HireHub.Core.DTO;
 
@@ -180,5 +181,17 @@ public class RoundDTO
     public string RoundStatus { get; set; } = null!;
     public string RoundResult { get; set; } = null!;
     public int? FeedbackId { get; set; } = null;
+}
+
+public class FeedbackDTO
+{
+    public int FeedbackId { get; set; }
+    public int? OverallRating { get; set; }
+    public int? TechnicalSkill { get; set; }
+    public int? Communication { get; set; }
+    public int? ProblemSolving { get; set; }
+    public string? OverallFeedback { get; set; }
+    public string CandidateRecommendation { get; set; } = null!;
+    public DateTime SubmittedDate { get; set; }
 }
 

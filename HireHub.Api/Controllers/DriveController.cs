@@ -145,7 +145,7 @@ public class DriveController : ControllerBase
     }
 
 
-    [HttpGet("members/fetch/all")]
+    [HttpGet("member/fetch/all")]
     [RequirePermission(UserAction.Drive, ActionType.View)]
     [ProducesResponseType<Response<List<DriveMemberDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
@@ -186,7 +186,7 @@ public class DriveController : ControllerBase
     }
 
 
-    [HttpGet("candidates/fetch/all")]
+    [HttpGet("candidate/fetch/all")]
     [RequirePermission(UserAction.Drive, ActionType.View)]
     [ProducesResponseType<Response<List<DriveCandidateDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
@@ -228,7 +228,7 @@ public class DriveController : ControllerBase
     }
 
 
-    [HttpGet("rounds/fetch/all")]
+    [HttpGet("round/fetch/all")]
     [RequirePermission(UserAction.Drive, ActionType.View)]
     [ProducesResponseType<Response<List<RoundDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
@@ -295,6 +295,37 @@ public class DriveController : ControllerBase
         catch (CommonException ex)
         {
             _logger.LogWarning(LogMessage.EndMethodException, nameof(GetInterviewRound), ex.Message);
+            return BadRequest(new BaseResponse()
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+    }
+
+
+    [RequireAuth([RoleName.Admin])]
+    [RequirePermission(UserAction.Drive, ActionType.View)]
+    [HttpGet("feedback/fetch/{feedbackId:int}")]
+    [ProducesResponseType<Response<FeedbackDTO>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> GetFeedback([FromRoute] int feedbackId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(GetFeedback));
+
+        try
+        {
+            var response = await _driveService.GetFeedback(feedbackId);
+
+            _logger.LogInformation(LogMessage.EndMethod, nameof(GetFeedback));
+
+            return Ok(response);
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(GetFeedback), ex.Message);
             return BadRequest(new BaseResponse()
             {
                 Errors = [

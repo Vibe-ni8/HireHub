@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HireHub.Infrastructure.Repositories;
 
-public class UserPermissionRepository : GenericRepository<Role>, IUserPermissionRepository
+public class UserPermissionRepository : GenericRepository<UserPermission>, IUserPermissionRepository
 {
     private new readonly HireHubDbContext _context;
 
