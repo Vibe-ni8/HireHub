@@ -149,6 +149,15 @@ public class RoundRepository : GenericRepository<Round>, IRoundRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public bool IsInterviewerForHrRoundForCandidate(int userId, int driveId, int candidateId)
+    {
+        return _context.Rounds
+            .Where(e => e.DriveCandidate!.DriveId == driveId && e.DriveCandidate.CandidateId == candidateId)
+            .Where(e => e.Interviewer!.DriveId == driveId && e.Interviewer.UserId == userId)
+            .Where(e => e.RoundType == RoundType.Hr)
+            .Any();
+    }
+
     #endregion
 
     #region DML

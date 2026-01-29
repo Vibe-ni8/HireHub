@@ -39,11 +39,12 @@ public class EditDriveCandidateRequestValidator : AbstractValidator<JObject>
 
                 var currentUserRole = userProvider.CurrentUserRole;
                 var currentUserId = int.Parse(userProvider.CurrentUserId);
-                var hrRoleId = repoService.RoleRepository.GetByName(UserRole.HR).WaitAsync(CancellationToken.None).Result.RoleId;
-                var hrDriveMember = drive.DriveMembers.FirstOrDefault(x => x.UserId == currentUserId && x.RoleId == hrRoleId);
-                if (currentUserRole != RoleName.Admin && currentUserId != drive.CreatedBy && hrDriveMember == null)
+                var candidateId = req[JOPropertyName.CandidateId]!.ToObject<int>();
+                var isHrInterviewer = repoService.RoundRepository
+                    .IsInterviewerForHrRoundForCandidate(currentUserId, driveId, candidateId);
+                if (currentUserRole != RoleName.Admin && currentUserId != drive.CreatedBy && isHrInterviewer)
                 {
-                    context.AddFailure(PropertyName.Main, ResponseMessage.AdminOrDriveMemberHrCanEdit);
+                    context.AddFailure(PropertyName.Main, ResponseMessage.AdminOrDriveOwnerOrHrInterviewerCanEdit);
                     return;
                 }
 
@@ -59,7 +60,6 @@ public class EditDriveCandidateRequestValidator : AbstractValidator<JObject>
                     return;
                 }
 
-                var candidateId = req[JOPropertyName.CandidateId]!.ToObject<int>();
                 var candidate = repoService.CandidateRepository
                     .GetByIdAsync(candidateId).WaitAsync(CancellationToken.None).Result;
                 if (candidate == null) 

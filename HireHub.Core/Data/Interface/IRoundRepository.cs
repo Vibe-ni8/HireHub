@@ -18,6 +18,8 @@ public interface IRoundRepository : IGenericRepository<Round>
 
     Task<RoundDTO?> GetByIdAsDtoAsync(int? roundId, CancellationToken cancellationToken = default);
 
+    bool IsInterviewerForHrRoundForCandidate(int userId, int driveId, int candidateId);
+
     #endregion
 
     #region DML
