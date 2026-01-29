@@ -4,6 +4,7 @@ using HireHub.Core.DTO;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
 using HireHub.Core.Utils.UserProgram.Interface;
+using HireHub.Shared.Common.Exceptions;
 
 namespace HireHub.Core.Validators;
 
@@ -21,7 +22,7 @@ public class AddMemberToDriveRequestValidator : AbstractValidator<AddMemberToDri
 
         RuleFor(e => e).Custom((request, context) =>
         {
-            var drive = repoService.DriveRepository.GetByIdAsync(request.DriveId)
+            var drive = repoService.DriveRepository.GetDriveWithMembersAsync(request.DriveId)
                         .WaitAsync(CancellationToken.None).Result;
             if (drive == null)
             {
@@ -56,10 +57,17 @@ public class AddMemberToDriveRequestValidator : AbstractValidator<AddMemberToDri
                 return;
             }
 
-            var alreadyAssigned = repoService.DriveRepository
+            var isAlreadyAdded = drive.DriveMembers.Any(e => e.UserId == request.MemberId);
+            if (isAlreadyAdded)
+            {
+                context.AddFailure(PropertyName.Main, ResponseMessage.AlreadyMemberOfDrive);
+                return;
+            }
+
+            var alreadyAssignedToSome = repoService.DriveRepository
                 .IsUserAssignedInAnyActiveDriveOnDateAsync(user.UserId, drive.DriveDate)
                 .WaitAsync(CancellationToken.None).Result;
-            if (alreadyAssigned)
+            if (alreadyAssignedToSome)
             {
                 context.AddFailure(PropertyName.Main, ResponseMessage.UsersAssignedToAnotherActiveDriveOnSameDate);
                 return;

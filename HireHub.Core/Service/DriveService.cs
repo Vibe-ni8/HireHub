@@ -339,8 +339,11 @@ public class DriveService
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(AddCandidatesToDriveAsync));
 
-        var drive = await _driveRepository.GetByIdAsync(request.DriveId) ??
+        var drive = await _driveRepository.GetDriveWithMembersAsync(request.DriveId) ??
                     throw new CommonException(ResponseMessage.DriveNotFound);
+
+        var isAlreadyAdded = drive.DriveMembers.Any(e => e.UserId == request.MemberId);
+        if (isAlreadyAdded) throw new CommonException(ResponseMessage.AlreadyMemberOfDrive);
 
         var user = await _userRepository.GetByIdAsync(request.MemberId) ??
                     throw new CommonException(ResponseMessage.UserNotFound);
