@@ -169,7 +169,7 @@ CREATE TABLE feedbacks (
     communication INT NULL,
     problem_solving INT NULL,
     overall_feedback TEXT,
-    recommendation VARCHAR(20) NOT NULL DEFAULT 'NotSelected', -- NotSelected, Hire, May be, No Hire
+    recommendation VARCHAR(20) NOT NULL DEFAULT 'NA', -- NA, Hire, May be, No Hire
     submitted_date DATETIME DEFAULT GETDATE(),
 );
 

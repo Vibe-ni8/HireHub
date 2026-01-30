@@ -861,7 +861,7 @@ public class HireHubDbContext : DbContext
             .HasColumnName("recommendation")
             .HasColumnType("VARCHAR(20)")
             .HasMaxLength(20)
-            .HasDefaultValue(Recommendation.NotSelected)
+            .HasDefaultValue(Recommendation.NA)
             .HasConversion(Helper.EnumConverter<Recommendation>())
             .IsRequired();
 

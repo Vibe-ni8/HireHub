@@ -103,6 +103,7 @@ public static class ResponseMessage
     public const string NoFeedbackProvidedForRound = "No Feedback was provided for the Interview Round";
     public const string InvalidCandidateRecommendation = "Invalid Candidate Recommendation";
     public const string InvalidRatingNumber = "Invalid Rating Number";
+    public const string FeedbackAlreadyProvided = "Feedback already provided";
 }
 
 public static class InnerExceptionMessage
@@ -252,7 +253,7 @@ public static class Options
         nameof(DriveStatus.Cancelled)
     ];
     public static string[] Recommendations => [
-        nameof(Recommendation.NotSelected),
+        nameof(Recommendation.NA),
         nameof(Recommendation.NoHire),
         nameof(Recommendation.Maybe),
         nameof(Recommendation.Hire)

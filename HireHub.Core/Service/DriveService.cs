@@ -668,16 +668,7 @@ public class DriveService
         {
             round.Result = Enum
                 .Parse<RoundResult>(request[JOPropertyName.RoundResult]!.ToString());
-            if (round.RoundType == RoundType.Hr)
-            {
-                round.DriveCandidate!.Status = round.Result switch
-                {
-                    RoundResult.Selected => CandidateStatus.Selected,
-                    RoundResult.Rejected => CandidateStatus.Rejected,
-                    _ => CandidateStatus.Pending
-                };
-                round.DriveCandidate.StatusSetBy = requestUserId;
-            }
+            UpdateDriveCandidateStatusBasedOnRoundResult(round, requestUserId);
         }
 
         _roundRepository.Update(round);
@@ -726,16 +717,7 @@ public class DriveService
                 Recommendation.NoHire => RoundResult.Rejected,
                 _ => RoundResult.Pending
             };
-            if (round.RoundType == RoundType.Hr)
-            {
-                round.DriveCandidate!.Status = round.Result switch
-                {
-                    RoundResult.Selected => CandidateStatus.Selected,
-                    RoundResult.Rejected => CandidateStatus.Rejected,
-                    _ => CandidateStatus.Pending
-                };
-                round.DriveCandidate.StatusSetBy = requestUserId;
-            }
+            UpdateDriveCandidateStatusBasedOnRoundResult(round, requestUserId);
         }
         feedback.SubmittedDate = DateTime.Now;
 
@@ -747,6 +729,42 @@ public class DriveService
         feedbackDTO.CandidateRecommendation = feedback.Recommendation.ToString();
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(EditFeedback));
+
+        return new() { Data = feedbackDTO };
+    }
+
+
+    public async Task<Response<FeedbackDTO>> AddFeedback(AddFeedbackRequest request, int requestUserId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(AddFeedback));
+
+        var round = await _roundRepository.GetRoundByIdWithDetails(request.RoundId) ??
+            throw new CommonException(ResponseMessage.InterviewRoundNotFound);
+
+        if (round.FeedbackId != null)
+            throw new CommonException(ResponseMessage.FeedbackAlreadyProvided);
+
+        var feedback = Helper.Map<AddFeedbackRequest, Feedback>(request);
+        feedback.Recommendation = Enum.Parse<Recommendation>(request.CandidateRecommendation);
+
+        round.Feedback = feedback;
+
+        round.Result = feedback.Recommendation switch
+        {
+            Recommendation.Hire => RoundResult.Selected,
+            Recommendation.Maybe => RoundResult.Selected,
+            Recommendation.NoHire => RoundResult.Rejected,
+            _ => RoundResult.Pending
+        };
+        UpdateDriveCandidateStatusBasedOnRoundResult(round, requestUserId);
+
+        _roundRepository.Update(round);
+        _saveRepository.SaveChanges();
+
+        var feedbackDTO = Helper.Map<Feedback, FeedbackDTO>(feedback);
+        feedbackDTO.CandidateRecommendation = feedback.Recommendation.ToString();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(AddFeedback));
 
         return new() { Data = feedbackDTO };
     }
@@ -822,6 +840,20 @@ public class DriveService
             driveCandidateDTOs.Add(driveCandidateDTO);
         });
         return driveCandidateDTOs;
+    }
+
+    private void UpdateDriveCandidateStatusBasedOnRoundResult(Round round, int requestUserId)
+    {
+        if (round.RoundType == RoundType.Hr)
+        {
+            round.DriveCandidate!.Status = round.Result switch
+            {
+                RoundResult.Selected => CandidateStatus.Selected,
+                RoundResult.Rejected => CandidateStatus.Rejected,
+                _ => CandidateStatus.Pending
+            };
+            round.DriveCandidate.StatusSetBy = requestUserId;
+        }
     }
 
     #endregion
