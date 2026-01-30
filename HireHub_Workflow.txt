@@ -238,7 +238,7 @@ Feedbacks (
     Communication VARCHAR(500),
     ProblemSolving VARCHAR(500),
     OverallFeedback TEXT,
-    Recommendation VARCHAR(20) NOT NULL, -- Hire, May be, No Hire
+    Recommendation VARCHAR(20) NOT NULL, -- NotSelected, Hire, May be, No Hire
     SubmittedDate DATETIME DEFAULT GETDATE()
 )
 

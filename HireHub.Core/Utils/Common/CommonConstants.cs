@@ -100,6 +100,9 @@ public static class ResponseMessage
     public const string InterviewRoundClosed = "Interview Round was closed";
     public const string NeedToSetRoundResultBeforeCloseRound = "Need to set Round Result before closing Round";
     public const string NeedToStartRoundBeforeSetRoundResult = "Need to Start Round before set Round Result";
+    public const string NoFeedbackProvidedForRound = "No Feedback was provided for the Interview Round";
+    public const string InvalidCandidateRecommendation = "Invalid Candidate Recommendation";
+    public const string InvalidRatingNumber = "Invalid Rating Number";
 }
 
 public static class InnerExceptionMessage
@@ -142,6 +145,13 @@ public static class JOPropertyName
     public const string RoundId = "roundId";
     public const string RoundStatus = "roundStatus";
     public const string RoundResult = "roundResult";
+    public const string FeedbackId = "feedbackId";
+    public const string OverallRating = "overallRating";
+    public const string TechnicalSkill = "technicalSkill";
+    public const string Communication = "communication";
+    public const string ProblemSolving = "problemSolving";
+    public const string OverallFeedback = "overallFeedback";
+    public const string Recommendation = "recommendation";
 
     public const string PanelVisibilitySettings = "panelVisibilitySettings";
     public const string PVS_ShowPhone = "panelVisibilitySettings.showPhone";
@@ -217,6 +227,7 @@ public static class ActionType
 
 public static class Options
 {
+    public static int[] RatingNumbers => [1, 2, 3, 4, 5];
     public static string[] RoundResults => [
         nameof(RoundResult.Pending),
         nameof(RoundResult.Selected),
@@ -241,6 +252,7 @@ public static class Options
         nameof(DriveStatus.Cancelled)
     ];
     public static string[] Recommendations => [
+        nameof(Recommendation.NotSelected),
         nameof(Recommendation.NoHire),
         nameof(Recommendation.Maybe),
         nameof(Recommendation.Hire)

@@ -690,6 +690,67 @@ public class DriveService
         return new() { Data = roundDTO };
     }
 
+
+    public async Task<Response<FeedbackDTO>> EditFeedback(JObject request, int requestUserId)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(EditFeedback));
+
+        int roundId = request[JOPropertyName.RoundId]!.ToObject<int>();
+        var round = await _roundRepository.GetRoundByIdWithDetails(roundId) ??
+            throw new CommonException(ResponseMessage.InterviewRoundNotFound);
+
+        if (round.FeedbackId == null) 
+            throw new CommonException(ResponseMessage.NoFeedbackProvidedForRound);
+
+        var feedback = await _feedbackRepository.GetByIdAsync(round.FeedbackId) ??
+            throw new CommonException(ResponseMessage.FeedbackNotFound);
+
+        if (request.ContainsKey(JOPropertyName.OverallRating))
+            feedback.OverallRating = request[JOPropertyName.OverallRating]!.ToObject<int?>();
+        if (request.ContainsKey(JOPropertyName.TechnicalSkill))
+            feedback.TechnicalSkill = request[JOPropertyName.TechnicalSkill]!.ToObject<int?>();
+        if (request.ContainsKey(JOPropertyName.Communication))
+            feedback.Communication = request[JOPropertyName.Communication]!.ToObject<int?>();
+        if (request.ContainsKey(JOPropertyName.ProblemSolving))
+            feedback.ProblemSolving = request[JOPropertyName.ProblemSolving]!.ToObject<int?>();
+        if (request.ContainsKey(JOPropertyName.OverallFeedback))
+            feedback.OverallFeedback = request[JOPropertyName.OverallFeedback]!.ToString();
+        if (request.ContainsKey(JOPropertyName.Recommendation))
+        {
+            feedback.Recommendation = Enum
+                .Parse<Recommendation>(request[JOPropertyName.Recommendation]!.ToString());
+            round.Result = feedback.Recommendation switch
+            {
+                Recommendation.Hire => RoundResult.Selected,
+                Recommendation.Maybe => RoundResult.Selected,
+                Recommendation.NoHire => RoundResult.Rejected,
+                _ => RoundResult.Pending
+            };
+            if (round.RoundType == RoundType.Hr)
+            {
+                round.DriveCandidate!.Status = round.Result switch
+                {
+                    RoundResult.Selected => CandidateStatus.Selected,
+                    RoundResult.Rejected => CandidateStatus.Rejected,
+                    _ => CandidateStatus.Pending
+                };
+                round.DriveCandidate.StatusSetBy = requestUserId;
+            }
+        }
+        feedback.SubmittedDate = DateTime.Now;
+
+        _feedbackRepository.Update(feedback);
+        _roundRepository.Update(round);
+        _saveRepository.SaveChanges();
+
+        var feedbackDTO = Helper.Map<Feedback, FeedbackDTO>(feedback);
+        feedbackDTO.CandidateRecommendation = feedback.Recommendation.ToString();
+
+        _logger.LogInformation(LogMessage.EndMethod, nameof(EditFeedback));
+
+        return new() { Data = feedbackDTO };
+    }
+
     #endregion
 
     #region Private Methods

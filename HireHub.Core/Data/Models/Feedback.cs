@@ -16,12 +16,13 @@ public class Feedback : BaseEntity
     public int? Communication { get; set; }
     public int? ProblemSolving { get; set; }
     public string? OverallFeedback { get; set; }
-    public Recommendation Recommendation { get; set; } = Recommendation.Hire;
+    public Recommendation Recommendation { get; set; } = Recommendation.NotSelected;
     public DateTime SubmittedDate { get; set; } = DateTime.Now;
 }
 
 public enum Recommendation
 {
+    NotSelected,
     Hire,
     Maybe,
     NoHire
