@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using HireHub.Api.Utils.Filters;
+﻿using HireHub.Api.Utils.Filters;
 using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;

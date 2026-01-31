@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using HireHub.Core.Data.Models;
-using HireHub.Core.DTO;
 using HireHub.Core.Service;
 using HireHub.Core.Utils.Common;
 using HireHub.Core.Utils.UserProgram.Interface;

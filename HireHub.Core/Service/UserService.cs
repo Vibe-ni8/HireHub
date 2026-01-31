@@ -4,7 +4,6 @@ using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
 using HireHub.Core.Utils.Common;
 using HireHub.Shared.Common.Exceptions;
-using HireHub.Shared.Common.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using HireHub.Core.Data.Interface;
+﻿using HireHub.Core.Data.Interface;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HireHub.Infrastructure.Repositories;
