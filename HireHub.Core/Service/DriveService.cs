@@ -310,16 +310,16 @@ public class DriveService
     }
 
 
-    public async Task<Response<List<DriveCandidateDTO>>> AddCandidatesToDriveAsync(AddCandidatesToDriveRequest request)
+    public async Task<Response<List<int>>> AddCandidatesToDriveAsync(AddCandidatesToDriveRequest request)
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(AddCandidatesToDriveAsync));
-
-        var driveCandidateDTOs = new List<DriveCandidateDTO>();
 
         var drive = await _driveRepository.GetByIdAsync(request.DriveId) ?? 
                     throw new CommonException(ResponseMessage.DriveNotFound);
 
-        foreach(int candidateId in request.CandidateIds)
+        var driveCandidates = new List<DriveCandidate>();
+
+        foreach (int candidateId in request.CandidateIds)
         {
             var candidate = await _candidateRepository.GetByIdAsync(candidateId) ??
                     throw new CommonException(ResponseMessage.CandidateNotFound);
@@ -334,14 +334,7 @@ public class DriveService
             };
             drive.DriveCandidates.Add(driveCandidate);
 
-            var driveCandidateDTO = Helper.Map<DriveCandidate, DriveCandidateDTO>(driveCandidate);
-            driveCandidateDTO.CandidateStatus = driveCandidate.Status.ToString();
-            driveCandidateDTO.DriveName = drive.DriveName;
-            driveCandidateDTO.DriveDate = drive.DriveDate;
-            driveCandidateDTO.DriveStatus = drive.Status.ToString();
-            driveCandidateDTO.CandidateName = candidate.FullName;
-            driveCandidateDTO.CandidateEmail = candidate.Email;
-            driveCandidateDTOs.Add(driveCandidateDTO);
+            driveCandidates.Add(driveCandidate);
         }
 
         _driveRepository.Update(drive);
@@ -349,7 +342,7 @@ public class DriveService
 
         _logger.LogInformation(LogMessage.EndMethod, nameof(AddCandidatesToDriveAsync));
 
-        return new() { Data = driveCandidateDTOs };
+        return new() { Data = driveCandidates.Select(e => e.DriveCandidateId).ToList() };
     }
 
 

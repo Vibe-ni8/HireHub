@@ -1,4 +1,5 @@
-﻿using HireHub.Api.Utils.Filters;
+﻿using Azure.Core;
+using HireHub.Api.Utils.Filters;
 using HireHub.Core.Data.Interface;
 using HireHub.Core.Data.Models;
 using HireHub.Core.DTO;
@@ -25,16 +26,18 @@ public class DriveController : ControllerBase
     private readonly DriveService _driveService;
     private readonly IUserProvider _userProvider;
     private readonly RepoService _repoService;
+    private readonly CommonService _commonService;
     private readonly ITransactionRepository _transactionRepository;
     private readonly ILogger<DriveController> _logger;
 
     public DriveController(DriveService driveService, IUserProvider userProvider,
-        RepoService repoService, ITransactionRepository transactionRepository,
-        ILogger<DriveController> logger)
+        RepoService repoService, CommonService commonService,
+        ITransactionRepository transactionRepository, ILogger<DriveController> logger)
     {
         _driveService = driveService;
         _userProvider = userProvider;
         _repoService = repoService;
+        _commonService = commonService;
         _transactionRepository = transactionRepository;
         _logger = logger;
     }
@@ -335,6 +338,19 @@ public class DriveController : ControllerBase
         }
     }
 
+
+    [HttpGet("candidate/template/bulk-upload")]
+    [ProducesResponseType<FileContentResult>(200)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public IActionResult DownloadBulkUploadTemplate()
+    {
+        return File(
+            TemplateService.CandidateBulkUploadTemplate.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Candidate_Bulk_Upload_Template.xlsx"
+        );
+    }
+
     #endregion
 
     #region Post API's
@@ -399,7 +415,7 @@ public class DriveController : ControllerBase
     [RequireAuth([RoleName.Admin])]
     [RequirePermission(UserAction.Drive, ActionType.Update)]
     [HttpPost("candidates/add")]
-    [ProducesResponseType<Response<List<DriveCandidateDTO>>>(200)]
+    [ProducesResponseType<Response<List<int>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> AddCandidatesToDrive([FromBody] AddCandidatesToDriveRequest request)
@@ -450,6 +466,111 @@ public class DriveController : ControllerBase
             });
         }
         catch (DbUpdateException ex) 
+        when (ex.InnerException != null && ex.InnerException.Message.Contains(InnerExceptionMessage.DriveCandidateAlreadyExistViolation))
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(AddCandidatesToDrive), ex.Message);
+            _transactionRepository.RollbackTransaction();
+            return BadRequest(new BaseResponse
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ResponseMessage.SomeCandidateAlreadyAddedToDrive }
+                ]
+            });
+        }
+    }
+
+
+    [RequireAuth([RoleName.Admin])]
+    [RequirePermission(UserAction.Drive, ActionType.Update)]
+    [HttpPost("candidate/upload/bulk")]
+    [ProducesResponseType<Response<List<int>>>(200)]
+    [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ErrorResponse>(500)]
+    public async Task<IActionResult> DriveCandidateBulkUpload([FromQuery] int driveId, IFormFile file)
+    {
+        _logger.LogInformation(LogMessage.StartMethod, nameof(DriveCandidateBulkUpload));
+
+        try
+        {
+            using (_transactionRepository.BeginTransaction())
+            {
+                var baseResponse = new BaseResponse();
+
+                var drive = await _repoService.DriveRepository.GetByIdAsync(driveId) ??
+                    throw new CommonException(ResponseMessage.DriveNotFound);
+
+                # region Adding Candidates
+
+                var addCandidateRequests = await ExcelMapper.ExtractAsync<AddCandidateRequest>(file);
+
+                var validator = await new
+                    BulkCandidateInsertRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
+                    .ValidateAsync(addCandidateRequests);
+
+                if (!validator.IsValid)
+                {
+                    validator.Errors.ForEach(e =>
+                        baseResponse.Errors.Add(new ValidationError
+                        {
+                            PropertyName = e.PropertyName,
+                            ErrorMessage = e.ErrorMessage
+                        })
+                    );
+                    return BadRequest(baseResponse);
+                }
+
+                var insertCandidateBulkResponse = await _commonService.InsertCandidatesBulk(addCandidateRequests);
+
+                # endregion
+
+                # region Adding Drive Candidates
+
+                var addCandidatesToDriveRequest = new AddCandidatesToDriveRequest
+                {
+                    DriveId = driveId,
+                    CandidateIds = insertCandidateBulkResponse.Data!
+                };
+
+                validator = await new AddCandidatesToDriveRequestValidator(baseResponse.Warnings, _repoService, _userProvider)
+                    .ValidateAsync(addCandidatesToDriveRequest);
+
+                if (!validator.IsValid)
+                {
+                    validator.Errors.ForEach(e =>
+                        baseResponse.Errors.Add(new ValidationError
+                        {
+                            PropertyName = e.PropertyName,
+                            ErrorMessage = e.ErrorMessage
+                        })
+                    );
+                    return BadRequest(baseResponse);
+                }
+
+                var response = await _driveService.AddCandidatesToDriveAsync(addCandidatesToDriveRequest);
+
+                # endregion
+
+                baseResponse.Warnings.ForEach(response.Warnings.Add);
+
+                _transactionRepository.CommitTransaction();
+
+                _logger.LogInformation(LogMessage.EndMethod, nameof(DriveCandidateBulkUpload));
+
+                return Ok(response);
+            }
+        }
+        catch (CommonException ex)
+        {
+            _logger.LogWarning(LogMessage.EndMethodException, nameof(DriveCandidateBulkUpload), ex.Message);
+            _transactionRepository.RollbackTransaction();
+            return BadRequest(new BaseResponse
+            {
+                Errors = [
+                    new ValidationError { PropertyName = PropertyName.Main, ErrorMessage = ex.Message }
+                ]
+            });
+        }
+        catch (DbUpdateException ex)
         when (ex.InnerException != null && ex.InnerException.Message.Contains(InnerExceptionMessage.DriveCandidateAlreadyExistViolation))
         {
             _logger.LogWarning(LogMessage.EndMethodException, nameof(AddCandidatesToDrive), ex.Message);

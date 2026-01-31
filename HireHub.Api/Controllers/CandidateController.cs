@@ -23,16 +23,18 @@ public class CandidateController : ControllerBase
     private readonly CandidateService _candidateService;
     private readonly IUserProvider _userProvider;
     private readonly RepoService _repoService;
+    private readonly CommonService _commonService;
     private readonly ITransactionRepository _transactionRepository;
     private readonly ILogger<CandidateController> _logger;
 
     public CandidateController(CandidateService candidateService, IUserProvider userProvider,
-        RepoService repoService, ITransactionRepository transactionRepository,
-        ILogger<CandidateController> logger)
+        RepoService repoService, CommonService commonService,
+        ITransactionRepository transactionRepository, ILogger<CandidateController> logger)
     {
         _candidateService = candidateService;
         _userProvider = userProvider;
         _repoService = repoService;
+        _commonService = commonService;
         _transactionRepository = transactionRepository;
         _logger = logger;
     }
@@ -213,7 +215,7 @@ public class CandidateController : ControllerBase
                     return BadRequest(baseResponse);
                 }
 
-                var response = await _candidateService.InsertCandidatesBulk(request);
+                var response = await _commonService.InsertCandidatesBulk(request);
 
                 baseResponse.Warnings.ForEach(response.Warnings.Add);
 

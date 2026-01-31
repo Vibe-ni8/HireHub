@@ -86,30 +86,6 @@ public class CandidateService
         return new() { Data = candidateDTO };
     }
 
-    public async Task<Response<List<int>>> InsertCandidatesBulk(List<AddCandidateRequest> request)
-    {
-        _logger.LogInformation(LogMessage.StartMethod, nameof(InsertCandidatesBulk));
-
-        var candidates = new List<Candidate>();
-        request.ForEach(req =>
-        {
-            var candidate = Helper.Map<AddCandidateRequest, Candidate>(req);
-            candidate.ExperienceLevel = (CandidateExperienceLevel)Enum
-                .Parse(typeof(CandidateExperienceLevel), req.ExperienceLevelName, true);
-            candidates.Add(candidate);
-        });
-
-        await _candidateRepository.BulkInsertAsync(candidates, CancellationToken.None);
-        _saveRepository.SaveChanges();
-
-        var ids = new List<int>();
-        candidates.ForEach(c => ids.Add(c.CandidateId));
-
-        _logger.LogInformation(LogMessage.EndMethod, nameof(InsertCandidatesBulk));
-
-        return new() { Data = ids };
-    }
-
     public async Task<Response<CandidateDTO>> EditCandidate(JObject request)
     {
         _logger.LogInformation(LogMessage.StartMethod, nameof(EditCandidate));
