@@ -46,6 +46,8 @@ public class CandidateController : ControllerBase
     [HttpGet("fetch/all")]
     [ProducesResponseType<Response<List<CandidateDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetCandidates([FromQuery] string? experienceLevel,
         [FromQuery] bool isLatestFirst, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate,
@@ -82,6 +84,7 @@ public class CandidateController : ControllerBase
 
     [HttpGet("template/bulk-upload")]
     [ProducesResponseType<FileContentResult>(200)]
+    [ProducesResponseType<ContentResult>(401)]
     [ProducesResponseType<ErrorResponse>(500)]
     public IActionResult DownloadBulkUploadTemplate()
     {
@@ -97,6 +100,8 @@ public class CandidateController : ControllerBase
     [HttpGet("fetch/{candidateId:int}")]
     [ProducesResponseType<Response<CandidateDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetCandidate([FromRoute] int candidateId)
     {
@@ -130,6 +135,8 @@ public class CandidateController : ControllerBase
     [HttpPost("add")]
     [ProducesResponseType<Response<CandidateDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> AddCandidate([FromBody] AddCandidateRequest request)
     {
@@ -186,6 +193,8 @@ public class CandidateController : ControllerBase
     [HttpPost("upload/bulk")]
     [ProducesResponseType<Response<List<int>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> CandidateBulkUpload(IFormFile file)
     {
@@ -247,6 +256,8 @@ public class CandidateController : ControllerBase
     [HttpPut("edit")]
     [ProducesResponseType<Response<CandidateDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> EditCandidate([FromBody] JObject request)
     {

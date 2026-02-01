@@ -44,6 +44,8 @@ public class UserController : ControllerBase
     [HttpGet("fetch/all")]
     [ProducesResponseType<Response<List<UserDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetUsers([FromQuery] string? role, [FromQuery] bool? isActive,
         [FromQuery] bool isLatestFirst, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate,
@@ -82,6 +84,8 @@ public class UserController : ControllerBase
     [HttpGet("fetch/{userId:int}")]
     [ProducesResponseType<Response<UserDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetUser([FromRoute] int userId)
     {
@@ -115,6 +119,8 @@ public class UserController : ControllerBase
     [HttpPost("add")]
     [ProducesResponseType<Response<UserDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> AddUser([FromBody] AddUserRequest request)
     {
@@ -174,6 +180,8 @@ public class UserController : ControllerBase
     [HttpPut("edit")]
     [ProducesResponseType<Response<UserDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> EditUser([FromBody] JObject request)
     {

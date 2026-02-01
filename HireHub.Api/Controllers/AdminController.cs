@@ -40,6 +40,8 @@ public class AdminController : ControllerBase
     [HttpGet("dashboard/details")]
     [ProducesResponseType<Response<AdminDashboardDetails>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetDashboardDetails()
     {

@@ -49,6 +49,8 @@ public class DriveController : ControllerBase
     [HttpGet("fetch/all")]
     [ProducesResponseType<Response<List<DriveDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetDrives([FromQuery] string? driveStatus,
         [FromQuery] string? creatorEmail, [FromQuery] int? technicalRounds, [FromQuery] bool isLatestFirst, 
@@ -90,6 +92,8 @@ public class DriveController : ControllerBase
     [HttpGet("fetch/{driveId:int}")]
     [ProducesResponseType<Response<DriveDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetDrive([FromRoute] int driveId)
     {
@@ -121,6 +125,8 @@ public class DriveController : ControllerBase
     [HttpGet("config/fetch/{driveId:int}")]
     [ProducesResponseType<Response<DriveConfigDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetDriveConfig([FromRoute] int driveId)
     {
@@ -151,6 +157,8 @@ public class DriveController : ControllerBase
     [RequirePermission(UserAction.Drive, ActionType.View)]
     [ProducesResponseType<Response<List<DriveMemberDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetDriveMembers([FromQuery] int? driveId, [FromQuery] int? userId, [FromQuery] string? role,
         [FromQuery] string? driveStatus, [FromQuery] bool isLatestFirst, [FromQuery] bool includePastDrives, 
@@ -192,6 +200,8 @@ public class DriveController : ControllerBase
     [RequirePermission(UserAction.Drive, ActionType.View)]
     [ProducesResponseType<Response<List<DriveCandidateDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetDriveCandidates([FromQuery] int? driveId, [FromQuery] int? candidateId, [FromQuery] string? candidateStatus,
         [FromQuery] string? driveStatus, [FromQuery] bool isLatestFirst, [FromQuery] bool includePastDrives,
@@ -234,6 +244,8 @@ public class DriveController : ControllerBase
     [RequirePermission(UserAction.Drive, ActionType.View)]
     [ProducesResponseType<Response<List<RoundDTO>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetInterviewRounds([FromQuery] int? driveId, [FromQuery] int? userId, 
         [FromQuery] string? roundType, [FromQuery] string? roundStatus, [FromQuery] string? roundResult,
@@ -281,6 +293,8 @@ public class DriveController : ControllerBase
     [HttpGet("round/fetch/{interviewRoundId:int}")]
     [ProducesResponseType<Response<RoundDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetInterviewRound([FromRoute] int interviewRoundId)
     {
@@ -312,6 +326,8 @@ public class DriveController : ControllerBase
     [HttpGet("feedback/fetch/{feedbackId:int}")]
     [ProducesResponseType<Response<FeedbackDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> GetFeedback([FromRoute] int feedbackId)
     {
@@ -340,6 +356,7 @@ public class DriveController : ControllerBase
 
     [HttpGet("candidate/template/bulk-upload")]
     [ProducesResponseType<FileContentResult>(200)]
+    [ProducesResponseType<ContentResult>(401)]
     [ProducesResponseType<ErrorResponse>(500)]
     public IActionResult DownloadBulkUploadTemplate()
     {
@@ -359,6 +376,8 @@ public class DriveController : ControllerBase
     [HttpPost("create")]
     [ProducesResponseType<Response<DriveDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> CreateDrive([FromBody] CreateDriveRequest request)
     {
@@ -416,6 +435,8 @@ public class DriveController : ControllerBase
     [HttpPost("candidates/add")]
     [ProducesResponseType<Response<List<int>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> AddCandidatesToDrive([FromBody] AddCandidatesToDriveRequest request)
     {
@@ -484,6 +505,8 @@ public class DriveController : ControllerBase
     [HttpPost("candidate/upload/bulk")]
     [ProducesResponseType<Response<List<int>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> DriveCandidateBulkUpload([FromQuery] int driveId, IFormFile file)
     {
@@ -589,6 +612,8 @@ public class DriveController : ControllerBase
     [HttpPost("member/add")]
     [ProducesResponseType<Response<DriveMemberDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> AddMemberToDrive([FromBody] AddMemberToDriveRequest request)
     {
@@ -645,6 +670,8 @@ public class DriveController : ControllerBase
     [HttpPost("feedback/add")]
     [ProducesResponseType<Response<FeedbackDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> AddFeedback([FromBody] AddFeedbackRequest request)
     {
@@ -705,6 +732,8 @@ public class DriveController : ControllerBase
     [HttpPut("edit")]
     [ProducesResponseType<Response<DriveDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> EditDrive([FromBody] JObject request)
     {
@@ -762,6 +791,8 @@ public class DriveController : ControllerBase
     [HttpPut("config/edit")]
     [ProducesResponseType<Response<DriveConfigDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> EditDriveConfig([FromBody] JObject request)
     {
@@ -819,6 +850,8 @@ public class DriveController : ControllerBase
     [HttpPut("candidate/edit")]
     [ProducesResponseType<Response<DriveCandidateDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> EditDriveCandidate([FromBody] JObject request)
     {
@@ -877,6 +910,8 @@ public class DriveController : ControllerBase
     [HttpPut("round/edit")]
     [ProducesResponseType<Response<RoundDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> EditInterviewRound([FromBody] JObject request)
     {
@@ -935,6 +970,8 @@ public class DriveController : ControllerBase
     [HttpPut("feedback/edit")]
     [ProducesResponseType<Response<FeedbackDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> EditFeedback([FromBody] JObject request)
     {
@@ -996,6 +1033,8 @@ public class DriveController : ControllerBase
     [HttpDelete("member/remove")]
     [ProducesResponseType<Response<DriveMemberDTO>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> RemoveDriveMember([FromBody] RemoveDriveMemberRequest request)
     {
@@ -1053,6 +1092,8 @@ public class DriveController : ControllerBase
     [HttpDelete("candidates/remove")]
     [ProducesResponseType<Response<List<int>>>(200)]
     [ProducesResponseType<BaseResponse>(400)]
+    [ProducesResponseType<ContentResult>(401)]
+    [ProducesResponseType<ContentResult>(403)]
     [ProducesResponseType<ErrorResponse>(500)]
     public async Task<IActionResult> RemoveDriveCandidates([FromBody] RemoveDriveCandidatesRequest request)
     {
