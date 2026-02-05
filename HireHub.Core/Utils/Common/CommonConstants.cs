@@ -88,6 +88,7 @@ public static class ResponseMessage
     public const string TechRoundsShouldBe = "Technical Rounds should be 1 or 2";
     public const string InvalidDriveStatus = "Invalid Drive Status";
     public const string DriveStatusCannotChangeToInproposal = "DriveStatus cannot be change to InProposal";
+    public const string DriveCannotStartedBeforeScheduledDate = "Drive cannot be started before the scheduled date";
     public const string CannotRemoveMembersOnStartedDrive = "Cannot remove Members on a started Drive";
     public const string InvalidCandidateStatus = "Invalid Candidate Status";
     public const string CandidateIdRequired = "CandidateId is required";
