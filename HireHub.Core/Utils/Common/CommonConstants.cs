@@ -317,7 +317,7 @@ Username: {1}
 Password: {2}
 
 You can access HireHub using the link below:
-{3}
+https://hirehub/login
 
 For security reasons, we strongly recommend that you change your password after your first login.
 
