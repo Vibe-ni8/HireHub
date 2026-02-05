@@ -118,7 +118,8 @@ public class UserService
                 Body = string.Format(EmailBody.NewUserWelcome, user.FullName, user.Email, request.Password)
             }, _httpClientFactory);
         }
-        catch {
+        catch (InvalidOperationException ex) when (ex.Message.Contains(InnerExceptionMessage.MsgTriggeredToInvalidEmail))
+        {
             throw new CommonException(ResponseMessage.InvalidEmail);
         }
 
@@ -177,7 +178,8 @@ public class UserService
                     Body = string.Format(EmailBody.EmailChangedNotification, user.FullName, oldEmail, user.Email)
                 }, _httpClientFactory);
             }
-            catch {
+            catch (InvalidOperationException ex) when (ex.Message.Contains(InnerExceptionMessage.MsgTriggeredToInvalidEmail))
+            {
                 throw new CommonException(ResponseMessage.InvalidEmail);
             }
 
